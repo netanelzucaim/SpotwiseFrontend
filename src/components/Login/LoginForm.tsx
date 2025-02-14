@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import userService, { User } from "../services/user_service";
+import userService, { User } from "../../services/user_service";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginForm.css'
 
@@ -69,7 +69,7 @@ const LoginForm: FC = () => {
 
       <div className="signup-container">
           <p className="stroke-text">
-              Don't have an account? <a href="/signup" className="stroke-text">Sign Up</a>
+              Don't have an account? <a href="#" className="stroke-text" onClick={() => navigate('/register')}>Sign Up</a>
           </p>
       </div>
     </div>

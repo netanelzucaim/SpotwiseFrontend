@@ -1,5 +1,5 @@
 import RegistrationForm from "./RegistrationForm";
-import LoginForm from "./LoginForm";
+import LoginForm from "./Login/LoginForm";
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 
