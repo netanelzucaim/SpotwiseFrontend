@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginForm.css'
 
 interface FormData {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -17,7 +17,7 @@ const LoginForm: FC = () => {
   const onSubmit = (data: FormData) => {
     console.log(data);
     const user: User = {
-      username: data.username,
+      email: data.email,
       password: data.password,
     };
     userService.login(user)
@@ -38,11 +38,33 @@ const LoginForm: FC = () => {
       </div>
       <h2 className="subtitle; stroke-text">Sign in & Continue your journey</h2>
 
-      <form className="login-form">
-        <input type="text" className="input-field" placeholder="Email" />
-        <input type="password" className="input-field" placeholder="Password" />
-        <button type="submit" className="sign-in-button">Sign in</button>
-      </form>
+      <form className="login-form row g-3 needs-validation" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <div>
+        <input
+          type="text"
+          className={`input-field form-control ${errors.email ? 'is-invalid' : ''}`}
+          placeholder="Email"
+          {...register("email", { 
+            required: "Email is required",
+            pattern: { 
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, 
+              message: "Invalid email format" 
+            } 
+          })}
+        />
+        {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
+      </div>
+      <div>
+        <input
+          type="password"
+          className={`input-field form-control ${errors.password ? 'is-invalid' : ''}`}
+          placeholder="Password"
+          {...register("password", { required: "Password is required" })}
+        />
+        {errors.password && <div className="invalid-feedback">{errors.password.message}</div>} {/* Use invalid-feedback div */}
+      </div>
+      <button type="submit" className="sign-in-button btn btn-primary">Sign in</button> {/* Add Bootstrap button class */}
+    </form>
 
 
       <div className="signup-container">
