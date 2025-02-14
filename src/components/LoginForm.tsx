@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import userService, { User } from "../services/user_service";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './LoginForm.css'
 
 interface FormData {
   username: string;
@@ -30,35 +31,24 @@ const LoginForm: FC = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 shadow-sm" style={{ width: '350px' }}>
-        <h2 className="text-center">Challenge Zone</h2>
-        <p className="text-center text-muted">Sign in</p>
-        <p className="text-center text-muted">Enter your username and sign in</p>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Username"
-              {...register("username", { required: "Username is required" })}
-            />
-            {errors.username && <small className="text-danger">{errors.username.message}</small>}
-          </div>
-          <div className="mb-3">
-            <input
-              type="password"
-              className="form-control"
-              placeholder="Password"
-              {...register("password", { required: "Password is required" })}
-            />
-            {errors.password && <small className="text-danger">{errors.password.message}</small>}
-          </div>
-          <button type="submit" className="btn btn-dark w-100">Continue</button>
-        </form>
-        <div className="text-center mt-3">
-          <p className="text-muted">Don't have an account? <a href="#" className="text-dark" onClick={() => navigate('/register')}>Sign up</a></p>
-        </div>
+    <div className="login-container">
+      <div className="logo">
+        <h1 className="logoName">SpotWise</h1>
+        <p className="tagline">Your Vision <br></br> The Perfect Location</p>
+      </div>
+      <h2 className="subtitle; stroke-text">Sign in & Continue your journey</h2>
+
+      <form className="login-form">
+        <input type="text" className="input-field" placeholder="Email" />
+        <input type="password" className="input-field" placeholder="Password" />
+        <button type="submit" className="sign-in-button">Sign in</button>
+      </form>
+
+
+      <div className="signup-container">
+          <p className="stroke-text">
+              Don't have an account? <a href="/signup" className="stroke-text">Sign Up</a>
+          </p>
       </div>
     </div>
   );
