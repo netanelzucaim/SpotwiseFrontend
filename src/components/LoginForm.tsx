@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import userService, { User } from "../services/user_service";
+import userService, { IUser } from "../services/user_service";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface FormData {
@@ -15,7 +15,7 @@ const LoginForm: FC = () => {
 
   const onSubmit = (data: FormData) => {
     console.log(data);
-    const user: User = {
+    const user: IUser = {
       username: data.username,
       password: data.password,
     };

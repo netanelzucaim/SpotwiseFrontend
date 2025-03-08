@@ -1,8 +1,7 @@
 import RegistrationForm from "./RegistrationForm";
 import LoginForm from "./LoginForm";
-import React from 'react';
-import AIRecommendations from './components/AiRecommendations';
-import SignupForm from './components/signup/SignupForm'
+import AIRecommendations from './AIRecommendations/AIRecommendations';
+import SignupForm from './Signup/SignupForm';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import RealEstateService from '../services/realestate-service';
-import GeminiService from '../services/gemini-service';
-import './../styles/AIRecommendations.css';
+import RealEstateService from '../../services/realestate-service';
+import GeminiService from '../../services/gemini-service';
+import '../../styles/AIRecommendations.css';
 
 interface RealEstate {
   city: string;
@@ -13,7 +13,7 @@ interface RealEstate {
   _id: string;
 }
 
-const AiRecommendations: React.FC = () => {
+const AIRecommendations: React.FC = () => {
   const [dream, setDream] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,4 +66,4 @@ const AiRecommendations: React.FC = () => {
   );
 };
 
-export default AiRecommendations;
+export default AIRecommendations;

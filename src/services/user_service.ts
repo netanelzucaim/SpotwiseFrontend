@@ -3,10 +3,10 @@ import apiClient, { CanceledError } from "./api-client";
 export { CanceledError }
 
 export interface IUser {
-    email: string;
+    email?: string;
     username: string;
     password: string;
-    imgUrl: string;
+    imgUrl?: string;
     phoneNumber?: string;
     fullName?: string;
     _id?: string;
@@ -14,7 +14,7 @@ export interface IUser {
     refreshToken?: string;
   }
 
-  export const registerUser = (user: IUser) => {
+  export const register = (user: IUser) => {
     return new Promise<{ status: number; message: string }>((resolve, reject) => {
       apiClient
         .post("/auth/register", user)
@@ -30,7 +30,7 @@ export interface IUser {
 
 const login = async (user: IUser) => {
     const abortController = new AbortController();
-    const credentials = { username: user.username, password: user.password, email: user.email }
+    const credentials = { username: user.username, password: user.password }
     const response = await apiClient.post('/auth/login', credentials, { signal: abortController.signal });
     const { accessToken, refreshToken, _id } = response.data;
     localStorage.setItem('accessToken', accessToken);

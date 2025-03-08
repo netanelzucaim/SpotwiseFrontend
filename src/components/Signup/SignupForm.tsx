@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, ChangeEvent } from "react";
-import { registerUser, IUser } from "./../../services/user-service";
-import { uploadPhoto } from "./../../services/file-service";
+import { register, IUser } from "../../services/user_service";
+import { uploadPhoto } from "../../services/file-service";
 import "./../../styles/signup.css";
 import logo from '../../../public/logo.png';
 
@@ -112,14 +112,15 @@ const SignupForm = () => {
         imgUrl: url,
         phoneNumber: formData.phoneNumber
       };
-      const response = await registerUser(user);
+      const response = await register(user);
 
-      if (response.status === 200 && !hasErrors) {
+      if (response.status === 201 && !hasErrors) {
         setSuccess(response.message || "Registration successful! You can now sign in.");
         setError(null);
         resetForm();
         navigate("/ai-recommendations");
       } else {
+        console.log("Registration failed:", response.message);
         setError(response.message || "Registration failed. Please try again.");
         setSuccess(null);
       }

@@ -5,6 +5,11 @@ const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-
 
 const GeminiService = {
   async analyzeDream(dream: string, realEstateData: any[]): Promise<string> {
+    if (!GEMINI_API_KEY) {
+      console.error("GEMINI_API_KEY is undefined");
+      return "API key is missing. Please check your configuration.";
+    }
+
     try {
       const prompt = `Given the user dream: "${dream}" and the following real estate data: ${JSON.stringify(
         realEstateData
@@ -43,6 +48,9 @@ const handleGeminiApiError = (error: any): string => {
   console.error('Gemini API Error:', error);
   if (error.response) {
     switch (error.response.status) {
+      case 400:
+        console.error("Bad Request. Please check the request payload and API key.");
+        return "Bad Request. Please check the request payload and API key.";
       case 429:
         console.error("Rate limit exceeded. Please try again later.");
         return "Rate limit exceeded. Please try again later.";
