@@ -1,0 +1,103 @@
+.ai-recommendations-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #2ca597;
+    color: #212529; 
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  .header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-top: 20px;
+  }
+  
+  .header h1 {
+    font-size: 2em; 
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #ffffff; 
+    text-shadow: 2px 2px 0 #000000, -2px -2px 0 #000000, 2px -2px 0 #000000, -2px 2px 0 #000000; 
+  }
+  
+  .header p {
+    font-size: 1em; 
+    color: #ffffff; 
+    font-weight: 600;
+    text-shadow: 1px 1px 0 #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000; 
+  }
+  
+  .content {
+    width: 80%;
+    max-width: 800px; 
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+  
+  .content p {
+    font-size: 1.2em; 
+    color: #ffffff; 
+    font-weight: 600;
+    text-shadow: 1px 1px 0 #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000; 
+  }
+  
+  .textarea-container {
+    margin-bottom: 20px;
+  }
+  
+  textarea {
+    width: 100%;
+    min-height: 400px;
+    padding: 15px;
+    border: 1px solid #457b9d;
+    border-radius: 10px;
+    font-size: 18px; 
+    resize: vertical;
+    background-color: #bce2e2; 
+    color: #212529;
+  }
+  
+  textarea::placeholder {
+    color: #031f1a; 
+    font-weight: 600;
+  }
+  
+  button {
+    padding: 10px 30px; 
+    background-color: #bce2e2; 
+    color: #031f1a; 
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: 600;
+  }
+  
+  button:disabled {
+    background-color: #a8dadc;
+    color: #457b9d;
+    cursor: not-allowed;
+  }
+  
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
+  
+  .search-results {
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .search-results ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .search-results li {
+    margin-bottom: 5px;
+  }

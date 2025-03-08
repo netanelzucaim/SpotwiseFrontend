@@ -2,22 +2,36 @@ import apiClient, { CanceledError } from "./api-client";
 
 export { CanceledError }
 
-export interface User {
-    _id?: string,
-    username: string,
-    password?: string,
-    avatar?: string
-}
+export interface IUser {
+    email: string;
+    username: string;
+    password: string;
+    imgUrl: string;
+    phoneNumber?: string;
+    fullName?: string;
+    _id?: string;
+    accessToken?: string;
+    refreshToken?: string;
+  }
 
-const register = async (user: User) => {
-    const abortController = new AbortController();
-    const request = await apiClient.post('/auth/register', user, { signal: abortController.signal });
-    return { request, abort: () => abortController.abort() };
-}
+  export const registerUser = (user: IUser) => {
+    return new Promise<{ status: number; message: string }>((resolve, reject) => {
+      apiClient
+        .post("/auth/register", user)
+        .then(async (response) => {
+          await login(user);
+          resolve({ status: response.status, message: response.data.message });
+        })
+        .catch((error) => {
+          reject({ status: error.response.status, message: error.response.data.message });
+        });
+    });
+  };
 
-const login = async (user: User) => {
+const login = async (user: IUser) => {
     const abortController = new AbortController();
-    const response = await apiClient.post('/auth/login', user, { signal: abortController.signal });
+    const credentials = { username: user.username, password: user.password, email: user.email }
+    const response = await apiClient.post('/auth/login', credentials, { signal: abortController.signal });
     const { accessToken, refreshToken, _id } = response.data;
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
@@ -27,13 +41,13 @@ const login = async (user: User) => {
 
 const getUser = (userId: string) => {
     const abortController = new AbortController();
-    const request = apiClient.get<User>(`/users/${userId}`, {
+    const request = apiClient.get<IUser>(`/users/${userId}`, {
         signal: abortController.signal
     });
     return { request, abort: () => abortController.abort() };
 }
 
-const updateUser = async (userId: string, updatedUser: Partial<User>) => {
+const updateUser = async (userId: string, updatedUser: Partial<IUser>) => {
     const abortController = new AbortController();
     const token = localStorage.getItem('accessToken');
     try {

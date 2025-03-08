@@ -1,0 +1,65 @@
+.signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: url(..\assets\Spotwise_background.png) no-repeat center center/cover;
+    color: white;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .form-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+  
+  .form-row.spaced {
+    margin-bottom: 50px; 
+  }
+  
+  input {
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    width: 200px;
+    text-align: center;
+  }
+  
+  .signup-button {
+    background: #4deeea;
+    color: black;
+    padding: 12px 40px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .signin-text {
+    margin-top: 10px;
+  }
+  
+  .error-message {
+    color: red;
+  }
+  
+  .error {
+    color: red;
+  }
+  
+  .success-message {
+    color: green;
+  }
+  
+  .error-messages {
+    margin-top: 20px;
+  }
