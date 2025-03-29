@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useRef, ChangeEvent } from "react";
 import { register, IUser } from "../../services/user_service";
 import { uploadPhoto } from "../../services/file-service";
-import "./../../styles/signup.css";
+import "./../../styles/Signup.css";
 import logo from '../../../public/logo.png';
 
 const SignupForm = () => {
@@ -132,16 +132,16 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="signup-container">
+    <div className="signup-div">
       <h2>Sign up & Start your journey</h2>
       <form onSubmit={handleSubmit} className="signup-form">
-        <div className="form-row">
+        <div className="form-rows">
           <div className="d-flex justify-content-center position-relative">
             <img src={imgSrc ? URL.createObjectURL(imgSrc) : logo} style={{ height: "100px", width: "100px", cursor: "pointer" }} className="img-fluid" onClick={selectImg} />
             <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
           </div>
         </div>
-        <div className="form-row spaced">
+        <div className="form-rows spaced">
           <input
             type="text"
             name="username"
@@ -158,7 +158,7 @@ const SignupForm = () => {
             onChange={handleChange}
           />
         </div>
-        <div className="form-row spaced">
+        <div className="form-rows spaced">
           <input
             type="email"
             name="email"
@@ -175,7 +175,7 @@ const SignupForm = () => {
             onChange={handleChange}
           />
         </div>
-        <div className="form-row spaced">
+        <div className="form-rows spaced">
           <input
             type="password"
             name="password"
@@ -203,7 +203,6 @@ const SignupForm = () => {
       </div>
       {error && <p className="error-message">{error}</p>}
       {success && <p className="success-message">{success}</p>}
-      <p className="signin-text">Already have an account? <a href="/login">Sign In</a></p>
     </div>
   );
 };

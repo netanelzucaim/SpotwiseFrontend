@@ -57,7 +57,7 @@ const AIRecommendations: React.FC = () => {
             cols={50}
           />
         </div>
-        <button onClick={handleNext} disabled={loading}>
+        <button className="button-next" onClick={handleNext} disabled={loading}>
           {loading ? 'Loading...' : 'Next'}
         </button>
         {error && <p className="error-message">{error}</p>}
