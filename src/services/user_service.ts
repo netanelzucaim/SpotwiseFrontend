@@ -4,7 +4,7 @@ export { CanceledError }
 
 export interface IUser {
     email?: string;
-    username: string;
+    username?: string;
     password: string;
     imgUrl?: string;
     phoneNumber?: string;
@@ -30,7 +30,7 @@ export interface IUser {
 
 const login = async (user: IUser) => {
     const abortController = new AbortController();
-    const credentials = { username: user.username, password: user.password }
+    const credentials = { email: user.email, password: user.password }
     const response = await apiClient.post('/auth/login', credentials, { signal: abortController.signal });
     const { accessToken, refreshToken, _id } = response.data;
     localStorage.setItem('accessToken', accessToken);

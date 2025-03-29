@@ -101,7 +101,7 @@ const SignupForm = () => {
     }
 
     try {
-      const url = await uploadPhoto(imgSrc);
+      const url = imgSrc ? await uploadPhoto(imgSrc) : "";
       setImgUrl(url);
 
       const user: IUser = {

@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import userService, { User } from "../../services/user_service";
+import userService, { IUser } from "../../services/user_service";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginForm.css'
 
@@ -16,14 +16,14 @@ const LoginForm: FC = () => {
 
   const onSubmit = (data: FormData) => {
     console.log(data);
-    const user: User = {
+    const user: IUser = {
       email: data.email,
       password: data.password,
     };
     userService.login(user)
       .then((response) => {
         console.log(response);
-        navigate('/home'); // Navigate to /home on successful login
+        navigate('/home'); 
       })
       .catch((error) => {
         console.error(error);
@@ -61,9 +61,9 @@ const LoginForm: FC = () => {
           placeholder="Password"
           {...register("password", { required: "Password is required" })}
         />
-        {errors.password && <div className="invalid-feedback">{errors.password.message}</div>} {/* Use invalid-feedback div */}
+        {errors.password && <div className="invalid-feedback">{errors.password.message}</div>} 
       </div>
-      <button type="submit" className="sign-in-button btn btn-primary">Sign in</button> {/* Add Bootstrap button class */}
+      <button type="submit" className="sign-in-button btn btn-primary">Sign in</button> 
     </form>
 
 
