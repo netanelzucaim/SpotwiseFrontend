@@ -1,0 +1,99 @@
+.business-profile-wrapper {
+    background: url("../../utils/Spotwise_background.png") no-repeat center center/cover;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+  
+  .glass-form {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border-radius: 30px;
+    padding: 2rem 3rem;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 0 30px rgba(0, 225, 255, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .headline {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+  
+  .business-input {
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    margin: 0.5rem 0;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 225, 255, 0.3);
+  }
+  
+  .business-input::placeholder {
+    color: #ddd;
+  }
+  
+  .description {
+    height: 100px;
+    resize: none;
+  }
+  
+  .logo-upload {
+    width: 100%;
+    text-align: center;
+    margin: 1rem 0;
+    color: #fff;
+  }
+  
+  .logo-upload input[type="file"] {
+    margin-bottom: 0.5rem;
+  }
+  
+  .logo-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    object-fit: cover;
+    margin-top: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 225, 255, 0.4);
+  }
+  
+  .business-button {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background-color: #00e5ff;
+    color: #000;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  }
+  
+  .business-button:hover {
+    background-color: #00d1f5;
+  }
+  
+  .message {
+    margin-top: 1rem;
+    color: #fff;
+    font-weight: 500;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+  }
+  
