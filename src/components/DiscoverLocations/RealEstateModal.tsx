@@ -1,5 +1,6 @@
 import React from "react";
 import { RealEstate } from "../../services/realestate-service";
+import "../../styles/RealEstateModal.css"; // Import the CSS file
 
 interface RealEstateModalProps {
   realEstate: RealEstate;

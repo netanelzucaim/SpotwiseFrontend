@@ -1,11 +1,13 @@
 .discover-locations-container {
     display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  background: url("../../utils/Spotwise_background.png") no-repeat center center/cover;
-  color: #212529; 
-  font-family: 'Montserrat', sans-serif;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background: url(../../utils/Spotwise_background.png) no-repeat center center/cover;
+    height: 100vh;
+    width: 100%;
+    color: #1f5790;
+    text-align: center;
   }
   
   .header {
@@ -28,4 +30,106 @@
     color: #ffffff;
     font-weight: 600;
     text-shadow: 1px 1px 0 #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000;
+  }
+
+  .container-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff; /* White text color */
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 0 #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000; /* Subtle shadow for better visibility */
+  }
+
+    .real-estate-container {
+        background: #21948d; /* Light background for the rectangle */
+        border-radius: 12px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+        padding: 20px; /* Padding inside the rectangle */
+        width: 80%; /* Width of the rectangle */
+        max-width: 1200px; /* Maximum width */
+        height: 70vh; /* Height of the rectangle */
+        overflow-y: auto; /* Enable scrolling if content overflows */
+        margin: 20px auto; /* Center the rectangle horizontally */
+      }
+  
+
+  
+  .real-estate-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two cards per row */
+    gap: 20px;
+    width: 100%;
+  }
+  
+  .real-estate-card {
+    background: #bce2e2;
+    border: 1px solid #bce2e2;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .real-estate-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .real-estate-card h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #212529;
+  }
+  
+  .real-estate-card p {
+    margin: 10px 0 0;
+    color: #666;
+    font-size: 1rem;
+  }
+
+  .filter-textbox {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 20px; /* Center the textbox and add spacing below */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filter-textbox:focus {
+    outline: none;
+    border-color: #21948d; /* Highlight border on focus */
+    box-shadow: 0 0 5px rgba(33, 148, 141, 0.5);
+  }
+
+  .show-more-button {
+    display: block;
+    margin: 20px auto; /* Center the button horizontally */
+    padding: 12px 24px; /* Add padding for a larger button */
+    background-color: #3baaa2; /* Button background color */
+    color: #ffffff; /* Button text color */
+    border: none; /* Remove default border */
+    border-radius: 8px; /* Rounded corners */
+    font-size: 1rem; /* Font size */
+    font-weight: 600; /* Bold text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  }
+  
+  .show-more-button:hover {
+    background-color: #1b7a74; /* Darker background on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+  }
+  
+  .show-more-button:active {
+    background-color: #176a64; /* Even darker background when clicked */
+    transform: scale(0.95); /* Slightly shrink the button when clicked */
   }
