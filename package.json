@@ -10,13 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.22.0",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@google/generative-ai": "^0.22.0",
     "@hookform/resolvers": "^3.10.0",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "lucide-react": "^0.486.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.3.1",
