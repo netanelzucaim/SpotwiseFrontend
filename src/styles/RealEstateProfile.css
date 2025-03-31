@@ -47,7 +47,7 @@
   }
   
   .description {
-    height: 100px;
+    min-height: 80px;
     resize: none;
   }
   

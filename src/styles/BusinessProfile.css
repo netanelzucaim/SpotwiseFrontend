@@ -1,6 +1,6 @@
 .business-profile-wrapper {
     background: url("../../utils/Spotwise_background.png") no-repeat center center/cover;
-    min-height: 100vh;
+    min-height: 10vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -47,7 +47,7 @@
   }
   
   .description {
-    height: 100px;
+    min-height: 80px;
     resize: none;
   }
   

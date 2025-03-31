@@ -48,7 +48,7 @@ const RealEstateProfile: React.FC = () => {
   return (
     <div className="realestate-profile-wrapper">
       <div className="glass-form">
-        <h1 className="headline">List your property & Turn dreams into addresses 🏡</h1>
+        <h1 className="headline">Create your real estate profile & Make your dream come true ⚡</h1>
 
         <input
           className="realestate-input"
