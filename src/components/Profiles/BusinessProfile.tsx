@@ -14,6 +14,7 @@ const BusinessProfile: React.FC = () => {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -38,7 +39,20 @@ const BusinessProfile: React.FC = () => {
     }
   };
 
+  const validateFields = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!name) newErrors.name = "Business Name is required";
+    if (!logo) newErrors.logo = "Logo is required";
+    if (!siteUrl) newErrors.siteUrl = "Website URL is required";
+    if (!category) newErrors.category = "Category is required";
+    if (!description) newErrors.description = "Description is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async () => {
+    if (!validateFields()) return;
+
     try {
       let logoUrl = "";
       if (logo) {
@@ -72,6 +86,7 @@ const BusinessProfile: React.FC = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
+        {errors.name && <p className="error-message">{errors.name}</p>}
 
         <label className="input-label">Logo</label>
         <input
@@ -80,6 +95,7 @@ const BusinessProfile: React.FC = () => {
             accept="image/*"
             onChange={handleLogoChange}
         />
+        {errors.logo && <p className="error-message">{errors.logo}</p>} 
         {preview && (
             <img src={preview} alt="Logo" className="logo-preview" />
         )}
@@ -91,6 +107,7 @@ const BusinessProfile: React.FC = () => {
           value={siteUrl}
           onChange={(e) => setSiteUrl(e.target.value)}
         />
+        {errors.siteUrl && <p className="error-message">{errors.siteUrl}</p>}
 
         <input
           className="business-input"
@@ -106,6 +123,7 @@ const BusinessProfile: React.FC = () => {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         />
+        {errors.category && <p className="error-message">{errors.category}</p>}
 
         <textarea
           className="business-input description"
@@ -113,6 +131,8 @@ const BusinessProfile: React.FC = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+        {errors.description && <p className="error-message">{errors.description}</p>}
+
 
         <button className="business-button" onClick={handleSubmit}>
           Create My Business

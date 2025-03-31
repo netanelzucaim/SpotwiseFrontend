@@ -12,6 +12,7 @@ const RealEstateProfile: React.FC = () => {
   const [ownerId, setOwnerId] = useState(localStorage.getItem("userId") || "");
   const [ownerName, setOwnerName] = useState("");
   const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -27,8 +28,21 @@ const RealEstateProfile: React.FC = () => {
 
     fetchOwner();
   }, [ownerId]);
+  
+  const validateFields = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!city.trim()) newErrors.city = "City is required";
+    if (!address.trim()) newErrors.address = "Address is required";
+    if (!area.trim()) newErrors.area = "Area is required";
+    if (!location.trim()) newErrors.location = "Location is required";
+    if (!description.trim()) newErrors.description = "Description is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async () => {
+    if (!validateFields()) return;
+
     try {
       await RealEstateService.create({
         city,
@@ -57,6 +71,7 @@ const RealEstateProfile: React.FC = () => {
           value={city}
           onChange={(e) => setCity(e.target.value)}
         />
+        {errors.city && <p className="error-message">{errors.city}</p>}
 
         <input
           className="realestate-input"
@@ -65,6 +80,7 @@ const RealEstateProfile: React.FC = () => {
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
+        {errors.address && <p className="error-message">{errors.address}</p>}
 
         <input
           className="realestate-input"
@@ -73,6 +89,7 @@ const RealEstateProfile: React.FC = () => {
           value={area}
           onChange={(e) => setArea(e.target.value)}
         />
+        {errors.area && <p className="error-message">{errors.area}</p>}
 
         <input
           className="realestate-input"
@@ -81,6 +98,7 @@ const RealEstateProfile: React.FC = () => {
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
+        {errors.location && <p className="error-message">{errors.location}</p>}
 
         <input
           className="realestate-input"
@@ -95,6 +113,7 @@ const RealEstateProfile: React.FC = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+        {errors.description && <p className="error-message">{errors.description}</p>}
 
         <button className="realestate-button" onClick={handleSubmit}>
           Publish Property
