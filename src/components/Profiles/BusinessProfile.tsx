@@ -3,7 +3,8 @@ import { TextField, Typography, IconButton } from "@mui/material";
 import { uploadPhoto } from "../../services/file-service";
 import BusinessService from "../../services/business_service";
 import userService from "../../services/user_service";
-import { BusinessProfileWrapper, GlassForm, StyledButton, StyledUploadFileIcon } from "../../styles/BusinessProfileStyle"; 
+import { ProfileWrapper, GlassForm, StyledButton, StyledUploadFileIcon } from "../../styles/ProfilePageStyle"; 
+import { useNavigate } from "react-router-dom";
 
 const BusinessProfile: React.FC = () => {
   const [name, setName] = useState("");
@@ -16,11 +17,13 @@ const BusinessProfile: React.FC = () => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchOwner = async () => {
       try {
         if (ownerId) {
-          const user = await userService.getUser(ownerId);
+          await userService.getUser(ownerId);
         }
       } catch (error) {
         console.error("Failed to fetch user name", error);
@@ -57,16 +60,17 @@ const BusinessProfile: React.FC = () => {
       }
       await BusinessService.create({ name, logo: logoUrl, owner: ownerId, siteUrl, category, description });
       setMessage("Business created successfully!");
+      navigate("/home");
     } catch (error) {
       setMessage("Failed to create business. Try again.");
     }
   };
 
   return (
-    <BusinessProfileWrapper>
+    <ProfileWrapper>
       <GlassForm elevation={3}>
         <Typography variant="h5" sx={{ color: "#fff", textShadow: "0 0 10px rgba(255, 255, 255, 0.5)", textAlign: "center" }}>
-          Create your business profile & Make your dream come true ⚡
+          Create your business profile & Make your dream come true⚡
         </Typography>
         <TextField fullWidth label="Business Name" variant="outlined" margin="normal" value={name} onChange={(e) => setName(e.target.value)} error={!!errors.name} helperText={errors.name} />
         <TextField 
@@ -95,7 +99,7 @@ const BusinessProfile: React.FC = () => {
         <StyledButton onClick={handleSubmit}>Create My Business</StyledButton>
         {message && <Typography color="success.main" sx={{ mt: 2 }}>{message}</Typography>}
       </GlassForm>
-    </BusinessProfileWrapper>
+    </ProfileWrapper>
   );
 };
 

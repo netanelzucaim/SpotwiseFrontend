@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import userService from "../../services/user_service";
-import RealEstateService from '../../services/realestate-service';
-import "./../../styles/RealEstateProfile.css";
+import RealEstateService from "../../services/realestate-service";
+import { ProfileWrapper, GlassForm, StyledButton } from "../../styles/ProfilePageStyle";
+import { TextField, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const RealEstateProfile: React.FC = () => {
   const [city, setCity] = useState("");
@@ -13,6 +15,8 @@ const RealEstateProfile: React.FC = () => {
   const [ownerName, setOwnerName] = useState("");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -28,7 +32,7 @@ const RealEstateProfile: React.FC = () => {
 
     fetchOwner();
   }, [ownerId]);
-  
+
   const validateFields = () => {
     const newErrors: { [key: string]: string } = {};
     if (!city.trim()) newErrors.city = "City is required";
@@ -54,74 +58,79 @@ const RealEstateProfile: React.FC = () => {
       });
 
       setMessage("Real estate profile created successfully!");
+      navigate("/ai-recommensations");
     } catch (error) {
       setMessage("Failed to create real estate profile. Try again.");
     }
   };
 
   return (
-    <div className="realestate-profile-wrapper">
-      <div className="glass-form">
-        <h1 className="headline">Create your real estate profile & Make your dream come true ⚡</h1>
+    <ProfileWrapper>
+      <GlassForm elevation={3}>
+        <Typography variant="h5" sx={{ color: "#fff", textAlign: "center" }}>
+          Create your real estate profile & Make your dream come true⚡
+        </Typography>
 
-        <input
-          className="realestate-input"
-          type="text"
-          placeholder="City"
+        <TextField
+          fullWidth
+          label="City"
+          variant="outlined"
+          margin="normal"
           value={city}
           onChange={(e) => setCity(e.target.value)}
+          error={!!errors.city}
+          helperText={errors.city}
         />
-        {errors.city && <p className="error-message">{errors.city}</p>}
 
-        <input
-          className="realestate-input"
-          type="text"
-          placeholder="Address"
+        <TextField
+          fullWidth
+          label="Address"
+          variant="outlined"
+          margin="normal"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          error={!!errors.address}
+          helperText={errors.address}
         />
-        {errors.address && <p className="error-message">{errors.address}</p>}
 
-        <input
-          className="realestate-input"
-          type="text"
-          placeholder="Area (e.g. 120 sqm)"
+        <TextField
+          fullWidth
+          label="Area (e.g. 120 sqm)"
+          variant="outlined"
+          margin="normal"
           value={area}
           onChange={(e) => setArea(e.target.value)}
+          error={!!errors.area}
+          helperText={errors.area}
         />
-        {errors.area && <p className="error-message">{errors.area}</p>}
 
-        <input
-          className="realestate-input"
-          type="text"
-          placeholder="Location Link (e.g. Google Maps URL)"
+        <TextField
+          fullWidth
+          label="Location Link (e.g. Google Maps URL)"
+          variant="outlined"
+          margin="normal"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-        />
-        {errors.location && <p className="error-message">{errors.location}</p>}
-
-        <input
-          className="realestate-input"
-          type="text"
-          value={ownerName}
-          disabled
+          error={!!errors.location}
+          helperText={errors.location}
         />
 
-        <textarea
-          className="realestate-input description"
-          placeholder="Description"
+        <TextField
+          fullWidth
+          label="Description"
+          variant="outlined"
+          margin="normal"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          error={!!errors.description}
+          helperText={errors.description}
         />
-        {errors.description && <p className="error-message">{errors.description}</p>}
 
-        <button className="realestate-button" onClick={handleSubmit}>
-          Publish Property
-        </button>
+        <StyledButton onClick={handleSubmit}>Publish Property</StyledButton>
 
-        {message && <p className="message">{message}</p>}
-      </div>
-    </div>
+        {message && <Typography sx={{ color: "green", marginTop: "1rem" }}>{message}</Typography>}
+      </GlassForm>
+    </ProfileWrapper>
   );
 };
 

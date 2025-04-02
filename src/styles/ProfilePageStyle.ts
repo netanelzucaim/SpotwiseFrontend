@@ -2,7 +2,7 @@ import { styled } from "@mui/system";
 import { Box, Button, Paper } from "@mui/material";
 import { UploadFile } from "@mui/icons-material";
 
-export const BusinessProfileWrapper = styled(Box)({
+export const ProfileWrapper = styled(Box)({
   background: "url('../../utils/Spotwise_background.png') no-repeat center center/cover",
   minHeight: "100vh",
   display: "flex",
