@@ -1,4 +1,7 @@
+import axios from "axios";
 import apiClient, { CanceledError } from "./api-client";
+import { CredentialResponse } from "@react-oauth/google";
+import { BASE_URL } from "../config.ts";
 
 export { CanceledError }
 
@@ -28,7 +31,7 @@ export interface IUser {
     });
   };
 
-const login = async (user: IUser) => {
+export const login = async (user: IUser) => {
     const abortController = new AbortController();
     const credentials = { username: user.username, password: user.password }
     const response = await apiClient.post('/auth/login', credentials, { signal: abortController.signal });
@@ -38,6 +41,24 @@ const login = async (user: IUser) => {
     localStorage.setItem('userId', _id);
     return response.data;
 }
+
+export const googleSignin = (credentialResponse: CredentialResponse) => {
+  return new Promise<{ status: number; message: string; accessToken?: string; refreshToken?: string }>((resolve, reject) => {
+    axios
+      .post<{ status: number; message: string; accessToken: string; refreshToken: string; _id: string }>(`${BASE_URL}/auth/google`, credentialResponse)
+      .then((response) => {
+        const { accessToken, refreshToken, _id } = response.data;
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("id", _id);
+        resolve({ status: response.status, message: response.data.message, accessToken, refreshToken });
+      })
+      .catch((error) => {
+        console.log(error);
+        reject(error);
+      });
+  });
+};
 
 const getUser = async (userId: string): Promise<IUser> => {
     const token = localStorage.getItem('accessToken');
