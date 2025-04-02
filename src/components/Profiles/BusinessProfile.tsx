@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { TextField, Typography, IconButton } from "@mui/material";
 import { uploadPhoto } from "../../services/file-service";
 import BusinessService from "../../services/business_service";
 import userService from "../../services/user_service";
-import "./../../styles/BusinessProfile.css";
+import { BusinessProfileWrapper, GlassForm, StyledButton, StyledUploadFileIcon } from "../../styles/BusinessProfileStyle"; 
 
 const BusinessProfile: React.FC = () => {
   const [name, setName] = useState("");
   const [logo, setLogo] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [logoName, setLogoName] = useState("Choose a file");
   const [siteUrl, setSiteUrl] = useState("");
   const [ownerId, setOwnerId] = useState(localStorage.getItem("userId") || "");
-  const [ownerName, setOwnerName] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState("");
@@ -21,13 +21,11 @@ const BusinessProfile: React.FC = () => {
       try {
         if (ownerId) {
           const user = await userService.getUser(ownerId);
-          setOwnerName(user.fullName || user.username || "Unknown User");
         }
       } catch (error) {
         console.error("Failed to fetch user name", error);
       }
     };
-
     fetchOwner();
   }, [ownerId]);
 
@@ -35,7 +33,7 @@ const BusinessProfile: React.FC = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setLogo(file);
-      setPreview(URL.createObjectURL(file));
+      setLogoName(file.name);
     }
   };
 
@@ -52,22 +50,12 @@ const BusinessProfile: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!validateFields()) return;
-
     try {
       let logoUrl = "";
       if (logo) {
         logoUrl = await uploadPhoto(logo);
       }
-
-      await BusinessService.create({
-        name,
-        logo: logoUrl,
-        owner: ownerId,
-        siteUrl,
-        category,
-        description,
-      });
-
+      await BusinessService.create({ name, logo: logoUrl, owner: ownerId, siteUrl, category, description });
       setMessage("Business created successfully!");
     } catch (error) {
       setMessage("Failed to create business. Try again.");
@@ -75,72 +63,39 @@ const BusinessProfile: React.FC = () => {
   };
 
   return (
-    <div className="business-profile-wrapper">
-      <div className="glass-form">
-        <h1 className="headline">Create your business profile & Make your dream come true ⚡</h1>
-
-        <input
-          className="business-input"
-          type="text"
-          placeholder="Business Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+    <BusinessProfileWrapper>
+      <GlassForm elevation={3}>
+        <Typography variant="h5" sx={{ color: "#fff", textShadow: "0 0 10px rgba(255, 255, 255, 0.5)", textAlign: "center" }}>
+          Create your business profile & Make your dream come true ⚡
+        </Typography>
+        <TextField fullWidth label="Business Name" variant="outlined" margin="normal" value={name} onChange={(e) => setName(e.target.value)} error={!!errors.name} helperText={errors.name} />
+        <TextField 
+          fullWidth 
+          label="Logo" 
+          variant="outlined" 
+          margin="normal" 
+          value={logoName} 
+          InputProps={{
+            readOnly: true,
+            endAdornment: (
+              <label htmlFor="logo-upload">
+                <input type="file" accept="image/*" onChange={handleLogoChange} style={{ display: "none" }} id="logo-upload" />
+                <IconButton component="span">
+                  <StyledUploadFileIcon />
+                </IconButton>
+              </label>
+            ),
+          }}
+          error={!!errors.logo} 
+          helperText={errors.logo} 
         />
-        {errors.name && <p className="error-message">{errors.name}</p>}
-
-        <label className="input-label">Logo</label>
-        <input
-            className="business-input"
-            type="file"
-            accept="image/*"
-            onChange={handleLogoChange}
-        />
-        {errors.logo && <p className="error-message">{errors.logo}</p>} 
-        {preview && (
-            <img src={preview} alt="Logo" className="logo-preview" />
-        )}
-
-        <input
-          className="business-input"
-          type="text"
-          placeholder="URL to my site"
-          value={siteUrl}
-          onChange={(e) => setSiteUrl(e.target.value)}
-        />
-        {errors.siteUrl && <p className="error-message">{errors.siteUrl}</p>}
-
-        <input
-          className="business-input"
-          type="text"
-          value={ownerName}
-          disabled
-        />
-
-        <input
-          className="business-input"
-          type="text"
-          placeholder="Category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        />
-        {errors.category && <p className="error-message">{errors.category}</p>}
-
-        <textarea
-          className="business-input description"
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        {errors.description && <p className="error-message">{errors.description}</p>}
-
-
-        <button className="business-button" onClick={handleSubmit}>
-          Create My Business
-        </button>
-
-        {message && <p className="message">{message}</p>}
-      </div>
-    </div>
+        <TextField fullWidth label="Website URL" variant="outlined" margin="normal" value={siteUrl} onChange={(e) => setSiteUrl(e.target.value)} error={!!errors.siteUrl} helperText={errors.siteUrl} />
+        <TextField fullWidth label="Category" variant="outlined" margin="normal" value={category} onChange={(e) => setCategory(e.target.value)} error={!!errors.category} helperText={errors.category} />
+        <TextField fullWidth label="Description" variant="outlined" margin="normal" value={description} onChange={(e) => setDescription(e.target.value)} error={!!errors.description} helperText={errors.description} />
+        <StyledButton onClick={handleSubmit}>Create My Business</StyledButton>
+        {message && <Typography color="success.main" sx={{ mt: 2 }}>{message}</Typography>}
+      </GlassForm>
+    </BusinessProfileWrapper>
   );
 };
 
