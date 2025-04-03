@@ -2,8 +2,8 @@ import { useState, useRef, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { register, IUser } from "../../services/user_service";
 import { uploadPhoto } from "../../services/file-service";
-import { TextField, Button, Avatar, Typography, Box } from "@mui/material";
-import "./../../styles/Signup.css";
+import { TextField, Avatar, Typography } from "@mui/material";
+import { ProfileWrapper, GlassForm, StyledButton } from "../../styles/ProfilePageStyle";
 import logo from "../../../public/logo.png";
 
 const SignupForm = () => {
@@ -109,39 +109,39 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="signup-div">
-      <Typography variant="h5">Sign up & Start your journey</Typography>
-      <form onSubmit={handleSubmit} className="signup-form">
-        <div className="form-rows">
-          <div className="d-flex justify-content-center position-relative">
-            <Avatar
-              src={imgSrc ? URL.createObjectURL(imgSrc) : logo}
-              sx={{ height: 100, width: 100, cursor: "pointer" }}
-              onClick={selectImg}
-            />
-            <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
-          </div>
+    <ProfileWrapper>
+      <GlassForm elevation={3}>
+        <Typography variant="h5" sx={{ color: "#fff", textAlign: "center", textShadow: "0 0 10px rgba(255, 255, 255, 0.5)", marginBottom: "20px" }}>
+          Sign up & Start your journey
+        </Typography>
+
+        <div className="form-rows" style={{ marginBottom: "30px" }}>
+          <Avatar
+            src={imgSrc ? URL.createObjectURL(imgSrc) : logo}
+            sx={{ height: 100, width: 100, cursor: "pointer", boxShadow: "0 0 15px rgba(0, 225, 255, 0.6)" }}
+            onClick={selectImg}
+          />
+          <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
         </div>
-        <div className="form-rows spaced">
-          <TextField fullWidth label="Username" name="username" value={formData.username} onChange={handleChange} required sx={{ background: "white" }} />
-          <TextField fullWidth label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} sx={{ background: "white" }} />
+
+        <TextField fullWidth label="Username" name="username" value={formData.username} onChange={handleChange} required sx={{ marginBottom: "20px" }} />
+        <TextField fullWidth label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} sx={{ marginBottom: "20px" }} />
+
+        <TextField fullWidth label="Email" name="email" type="email" value={formData.email} onChange={handleChange} required error={!!errors.email} helperText={errors.email} sx={{ marginBottom: "20px" }} />
+        <TextField fullWidth label="Phone Number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} sx={{ marginBottom: "20px" }} />
+
+        <TextField fullWidth label="Password" name="password" type="password" value={formData.password} onChange={handleChange} required error={!!errors.password} helperText={errors.password} sx={{ marginBottom: "20px" }} />
+        <TextField fullWidth label="Confirm Password" name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} required error={!!errors.confirmPassword} helperText={errors.confirmPassword} sx={{ marginBottom: "30px" }} />
+
+        <StyledButton type="submit" onClick={handleSubmit} sx={{ marginBottom: "20px" }}>Sign up</StyledButton>
+
+        <div className="error-messages">
+          {errors.imgSrc && <Typography color="error">{errors.imgSrc}</Typography>}
+          {error && <Typography color="error">{error}</Typography>}
+          {success && <Typography color="success.main">{success}</Typography>}
         </div>
-        <div className="form-rows spaced">
-          <TextField fullWidth label="Email" name="email" type="email" value={formData.email} onChange={handleChange} required error={!!errors.email} helperText={errors.email} sx={{ background: "white" }} />
-          <TextField fullWidth label="Phone Number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} sx={{ background: "white" }} />
-        </div>
-        <div className="form-rows spaced">
-          <TextField fullWidth label="Password" name="password" type="password" value={formData.password} onChange={handleChange} required error={!!errors.password} helperText={errors.password} sx={{ background: "white" }} />
-          <TextField fullWidth label="Confirm Password" name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} required error={!!errors.confirmPassword} helperText={errors.confirmPassword} sx={{ background: "white" }} />
-        </div>
-        <Button type="submit" variant="contained" className="signup-button">Sign up</Button>
-      </form>
-      <div className="error-messages">
-        {errors.imgSrc && <Typography color="error">{errors.imgSrc}</Typography>}
-        {error && <Typography color="error">{error}</Typography>}
-        {success && <Typography color="success.main">{success}</Typography>}
-      </div>
-    </div>
+      </GlassForm>
+    </ProfileWrapper>
   );
 };
 
