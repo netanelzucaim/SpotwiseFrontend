@@ -43,6 +43,7 @@ export const login = async (user: IUser) => {
 }
 
 export const googleSignin = (credentialResponse: CredentialResponse) => {
+  console.log(credentialResponse)
   return new Promise<{ status: number; message: string; accessToken?: string; refreshToken?: string }>((resolve, reject) => {
     axios
       .post<{ status: number; message: string; accessToken: string; refreshToken: string; _id: string }>(`${BASE_URL}/auth/google`, credentialResponse)

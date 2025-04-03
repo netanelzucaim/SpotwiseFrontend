@@ -15,6 +15,7 @@ const LoginForm = () => {
   const onLoginUser = async () => {
       setError(null);
       if (emailInputRef.current?.value && passwordInputRef.current?.value) {
+        console.log(emailInputRef, passwordInputRef)
           const user: IUser = {
               email: emailInputRef.current?.value,
               password: passwordInputRef.current?.value
