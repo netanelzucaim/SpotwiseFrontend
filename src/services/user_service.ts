@@ -39,12 +39,12 @@ const login = async (user: IUser) => {
     return response.data;
 }
 
-const getUser = (userId: string) => {
+const getUser = async (userId: string) => {
     const abortController = new AbortController();
-    const request = apiClient.get<IUser>(`/users/${userId}`, {
+    const response =  await apiClient.get<IUser>(`/users/${userId}`, {
         signal: abortController.signal
     });
-    return { request, abort: () => abortController.abort() };
+    return { response, abort: () => abortController.abort() };
 }
 
 const updateUser = async (userId: string, updatedUser: Partial<IUser>) => {

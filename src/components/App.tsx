@@ -12,7 +12,7 @@ const App = () => {
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/ai-recommendations" element={<AIRecommendations />} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/real-estate" element={<DiscoverLocations />} />
+          <Route path="/discover-locations" element={<DiscoverLocations />} />
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
       </div>

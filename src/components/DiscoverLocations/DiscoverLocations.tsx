@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import RealEstateService from "../../services/realestate-service";
 import { RealEstate } from "../../services/realestate-service";
-import RealEstateModal from "./RealEstateModal";
+import RealEstateModal from "../Realestate/RealEstate";
+import UserService from "../../services/user_service";
 import "../../styles/DiscoverLocations.css";
 
+
+interface RealEstateWithUser extends RealEstate {
+  userFullName?: string; // Optional full name of the owner
+}
+
 const DiscoverLocations: React.FC = () => {
-    const [realEstates, setRealEstates] = useState<RealEstate[]>([]);
+    const [realEstates, setRealEstates] = useState<RealEstateWithUser[]>([]);
     const [visibleCount, setVisibleCount] = useState(6); // Number of cards to show initially
-    const [selectedRealEstate, setSelectedRealEstate] = useState<RealEstate | null>(null);
-    const [filteredRealEstates, setFilteredRealEstates] = useState<RealEstate[]>([]);
+    const [selectedRealEstate, setSelectedRealEstate] = useState<RealEstateWithUser | null>(null);
+    const [filteredRealEstates, setFilteredRealEstates] = useState<RealEstateWithUser[]>([]);
     const [filterText, setFilterText] = useState(""); // State for the filter input
 
 
@@ -17,8 +23,19 @@ const DiscoverLocations: React.FC = () => {
       const fetchRealEstates = async () => {
         try {
           const data = await RealEstateService.getAll();
-          setRealEstates(data);
-          setFilteredRealEstates(data); // Initialize filtered list
+      
+          const realEstatesWithUserNames = await Promise.all(
+            data.map(async (realEstate) => {
+              const user = await UserService.getUser(realEstate.owner); // Fetch user by ID
+              return {
+                ...realEstate,
+                userFullName: user.response.data.fullName, // Add full name to the real estate object
+              };
+            })
+          );
+      
+          setRealEstates(realEstatesWithUserNames);
+          setFilteredRealEstates(realEstatesWithUserNames); // Initialize filtered list
         } catch (error) {
           console.error("Error fetching real estates:", error);
         }
@@ -47,6 +64,7 @@ const DiscoverLocations: React.FC = () => {
             (realEstate) =>
               realEstate.city.toLowerCase().includes(value) ||
               realEstate.address.toLowerCase().includes(value) ||
+              realEstate.userFullName?.toLowerCase().includes(value) ||
               realEstate.description.toLowerCase().includes(value) ||
               realEstate.area.toLowerCase().includes(value) ||
               realEstate.location.toLowerCase().includes(value)
