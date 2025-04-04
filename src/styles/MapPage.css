@@ -5,12 +5,14 @@
 }
 
 .info-panel {
-  width: 3500px;                      
-  background-color: rgba(0, 229, 255, 0.5);           
+  width: 350px;                      
+  background-color: #4deeea;           
   padding: 10px;
   overflow-y: auto;
   font-size: 2rem;
-  font-weight: bold;                    
+  font-weight: bold;   
+  color: black;
+  text-align:center;             
 }
 .info-panel h2 {
   margin-top: 0;                       

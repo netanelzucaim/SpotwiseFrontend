@@ -1,4 +1,4 @@
-import React, { FC, useRef, useEffect, useState } from 'react';
+import { FC, useRef, useEffect, useState } from 'react';
 import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 import '../../styles/MapPage.css';
@@ -81,7 +81,7 @@ const MapPage: FC = () => {
   return (
     <div className="map-page-container">
       <div className="info-panel">
-        <h2>The real dream properties</h2>
+        <h2>Properties For You</h2>
         {realEstates.map((listing, index) => (
           <button 
             key={index}
