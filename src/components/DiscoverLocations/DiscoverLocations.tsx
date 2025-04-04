@@ -29,7 +29,7 @@ const DiscoverLocations: React.FC = () => {
               const user = await UserService.getUser(realEstate.owner); // Fetch user by ID
               return {
                 ...realEstate,
-                userFullName: user.response.data.fullName, // Add full name to the real estate object
+                userFullName: user.fullName, // Add full name to the real estate object
               };
             })
           );
