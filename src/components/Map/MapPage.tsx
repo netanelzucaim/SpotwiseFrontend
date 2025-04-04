@@ -21,6 +21,8 @@ const MapPage: FC = () => {
   const markersRef = useRef<maptilersdk.Marker[]>([]);
   const [realEstates, setRealEstates] = useState<iRealestate[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [failedIndexes, setFailedIndexes] = useState<Set<number>>(new Set());
+  const [error, setError] = useState<string | null>(null);
 
   const initialCenter = { lng: 34.792501, lat: 31.973001 };
   const initialZoom = 14;
@@ -59,13 +61,15 @@ const MapPage: FC = () => {
             if (coords) {
               addMarker(coords, listing, index);
             } else {
-              console.warn(`No geocoding results for "${fullAddress}"`);
+              setFailedIndexes(prev => new Set(prev).add(index));
             }
-          })
-            .catch(err => console.error("Geocoding API error:", err));
+          }).catch(err => console.error("Geocoding API error: ", err));
         }
       });
-    }).catch(err => console.error("Failed to fetch real estate listings:", err));
+    }).catch(err => {
+      setError("Akward... it seems like we can't see our locations... Please check your internet or try again later.");
+      console.error("Cannot fetch realEstate: ", err);
+    });
   }, []);
 
   const handleListingClick = (index: number) => {
@@ -82,13 +86,33 @@ const MapPage: FC = () => {
     <div className="map-page-container">
       <div className="info-panel">
         <h2>Properties For You</h2>
+        {error && (
+          <div className="error-popup">
+          {error}
+          <button onClick={() => setError(null)}>X</button>
+          </div>
+        )}
         {realEstates.map((listing, index) => (
           <button 
             key={index}
             className={`listing-button ${selectedIndex === index ? 'selected' : ''}`}
             onClick={() => handleListingClick(index)}
           >
-            {listing.address}, {listing.city}
+            {failedIndexes.has(index) ? (
+            <>
+              Seems like we can't pinpoint this one...
+              </>
+              ) : (
+              <>
+              <strong>{listing.city}</strong>
+              <br />
+              {listing.address}
+              <div className="listing-meta">
+              Area: {listing.area} <br />
+              Owner: {listing.owner}
+              </div>
+            </>
+            )}
           </button>
         ))}
       </div>

@@ -49,3 +49,31 @@
 .listing-button.selected {
   background-color: #d0e8ff;          
 }
+
+.listing-meta {
+  font-size: 0.8em;
+  color: #777; /* faded gray */
+  margin-top: 4px;
+}
+
+.error-popup {
+  background-color: #ffe0e0;
+  color: #a00;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #a00;
+  border-radius: 4px;
+  position: relative;
+  font-size: 0.9em;
+}
+
+.error-popup button {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: transparent;
+  border: none;
+  color: #a00;
+  font-weight: bold;
+  cursor: pointer;
+}
