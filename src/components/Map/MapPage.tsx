@@ -3,6 +3,7 @@ import * as maptilersdk from '@maptiler/sdk';
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 import '../../styles/MapPage.css';
 import { MAPTILER_API_KEY } from '../../config';
+import MapService from '../../services/map-service';
 import RealEstateService  from '../../services/realestate-service';
 
 interface iRealestate {
@@ -54,18 +55,13 @@ const MapPage: FC = () => {
           const coords = JSON.parse(cachedCoords);
           addMarker({ lat: coords.lat, lon: coords.lon }, listing, index);
         } else {
-          const geocodeUrl = `https://api.maptiler.com/geocoding/${encodeURIComponent(fullAddress)}.json?key=${MAPTILER_API_KEY}`;
-          fetch(geocodeUrl)
-            .then(response => response.json())
-            .then(data => {
-              if (data && data.features && data.features.length > 0) {
-                const [lon, lat] = data.features[0].center;
-                localStorage.setItem(fullAddress, JSON.stringify({ lat, lon }));
-                addMarker({ lat, lon }, listing, index);
-              } else {
-                console.warn(`No geocoding results for "${fullAddress}"`);
-              }
-            })
+          MapService.getLatLonForAddress(fullAddress).then(coords => {
+            if (coords) {
+              addMarker(coords, listing, index);
+            } else {
+              console.warn(`No geocoding results for "${fullAddress}"`);
+            }
+          })
             .catch(err => console.error("Geocoding API error:", err));
         }
       });
