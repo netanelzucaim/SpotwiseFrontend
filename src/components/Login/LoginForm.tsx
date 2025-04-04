@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./../../styles/LoginForm.css";
 
 const LoginForm = () => {
-  const emailInputRef = useRef<HTMLInputElement>(null);
+  const usernameInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -14,20 +14,19 @@ const LoginForm = () => {
 
   const onLoginUser = async () => {
       setError(null);
-      if (emailInputRef.current?.value && passwordInputRef.current?.value) {
-        console.log(emailInputRef, passwordInputRef)
+      if (usernameInputRef.current?.value && passwordInputRef.current?.value) {
           const user: IUser = {
-              email: emailInputRef.current?.value,
+              username: usernameInputRef.current?.value,
               password: passwordInputRef.current?.value
           };
           try {
               await login({ username: user.username!, password: user.password! });
-              navigate("/posts");
+              navigate("/home");
           } catch (err: any) {
-              setError(err.message || "Login failed. Please try again.");
+              setError('Failed to login user - ' + err);
           }
       } else {
-          setError("Please enter both email and password.");
+          setError("Please enter both username and password.");
       }
   };
 
@@ -51,10 +50,20 @@ const LoginForm = () => {
           <h1 className="title">SpotWise</h1>
           <p className="subtitle">Your Vision, The Perfect Location.</p>
           <p className="instruction">Sign in & Continue your journey</p>
-          <input ref={emailInputRef} type="text" placeholder="Email" className="input-field" />
+          <input 
+            ref={usernameInputRef} 
+            type="text" 
+            placeholder="Username" 
+            className="input-field"
+            required />
           <br />
-          <input ref={passwordInputRef} type="password" placeholder="Password" className="input-field" />
-          <button className="signin-button" onClick={onLoginUser}>Sign in</button>
+          <input 
+            ref={passwordInputRef} 
+            type="password" 
+            placeholder="Password" 
+            className="input-field" 
+            required />
+          <button onClick={onLoginUser} className="signin-button">Sign in</button>
           <div className="google-login-container">
               <GoogleLogin onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginFailure} locale="en" />
           </div>

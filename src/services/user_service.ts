@@ -32,6 +32,7 @@ export interface IUser {
   };
 
 export const login = async (user: IUser) => {
+  try {
     const abortController = new AbortController();
     const credentials = { username: user.username, password: user.password }
     const response = await apiClient.post('/auth/login', credentials, { signal: abortController.signal });
@@ -40,10 +41,13 @@ export const login = async (user: IUser) => {
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('userId', _id);
     return response.data;
+  } catch (error: any) {
+    console.error('Failed to login user -', error.response.data);
+    throw error.response.data;
+  }
 }
 
 export const googleSignin = (credentialResponse: CredentialResponse) => {
-  console.log(credentialResponse)
   return new Promise<{ status: number; message: string; accessToken?: string; refreshToken?: string }>((resolve, reject) => {
     axios
       .post<{ status: number; message: string; accessToken: string; refreshToken: string; _id: string }>(`${BASE_URL}/auth/google`, credentialResponse)
