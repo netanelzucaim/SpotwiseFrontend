@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import { useState, useRef, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { register, IUser } from "../../services/user_service";
 import { uploadPhoto } from "../../services/file-service";
-import "./../../styles/Signup.css";
-import logo from '../../../public/logo.png';
+import { TextField, Avatar, Typography } from "@mui/material";
+import { ProfileWrapper, GlassForm, StyledButton } from "../../styles/ProfilePageStyle";
+import logo from "../../../public/logo.png";
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -28,7 +29,6 @@ const SignupForm = () => {
   const [imgUrl, setImgUrl] = useState<string>("");
 
   const navigate = useNavigate();
-
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const validateEmail = (email: string): boolean => {
@@ -38,12 +38,10 @@ const SignupForm = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
     setErrors({ ...errors, [name]: "" });
   };
 
   const imgSelected = (e: ChangeEvent<HTMLInputElement>): void => {
-    console.log(e.target.value);
     if (e.target.files && e.target.files.length > 0) {
       setImgSrc(e.target.files[0]);
       setErrors({ ...errors, imgSrc: "" });
@@ -51,26 +49,11 @@ const SignupForm = () => {
   };
 
   const selectImg = (): void => {
-    console.log("Selecting image...");
     fileInputRef.current?.click();
-  };
-
-  const resetForm = (): void => {
-    setFormData({
-      username: "",
-      fullName: "",
-      email: "",
-      phoneNumber: "",
-      password: "",
-      confirmPassword: "",
-    });
-    setImgSrc(null);
-    setImgUrl("");
   };
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-
     let hasErrors = false;
     const newErrors = { ...errors };
 
@@ -95,115 +78,70 @@ const SignupForm = () => {
     }
 
     setErrors(newErrors);
-
-    if (hasErrors) {
-      return;
-    }
+    if (hasErrors) return;
 
     try {
       const url = imgSrc ? await uploadPhoto(imgSrc) : "";
       setImgUrl(url);
-
       const user: IUser = {
         username: formData.username,
         fullName: formData.fullName,
         email: formData.email,
         password: formData.password,
         imgUrl: url,
-        phoneNumber: formData.phoneNumber
+        phoneNumber: formData.phoneNumber,
       };
       const response = await register(user);
 
-      if (response.status === 201 && !hasErrors) {
-        setSuccess(response.message || "Registration successful! You can now sign in.");
+      if (response.status === 201) {
+        setSuccess("Registration successful! You can now sign in.");
         setError(null);
-        resetForm();
+        setFormData({ username: "", fullName: "", email: "", phoneNumber: "", password: "", confirmPassword: "" });
+        setImgSrc(null);
+        setImgUrl("");
         navigate("/ai-recommendations");
       } else {
-        console.log("Registration failed:", response.message);
         setError(response.message || "Registration failed. Please try again.");
-        setSuccess(null);
       }
     } catch (error) {
-      console.error("Registration failed:", error);
       setError("Registration failed. Please try again.");
-      setSuccess(null);
     }
   };
 
   return (
-    <div className="signup-div">
-      <h2>Sign up & Start your journey</h2>
-      <form onSubmit={handleSubmit} className="signup-form">
-        <div className="form-rows">
-          <div className="d-flex justify-content-center position-relative">
-            <img src={imgSrc ? URL.createObjectURL(imgSrc) : logo} style={{ height: "100px", width: "100px", cursor: "pointer" }} className="img-fluid" onClick={selectImg} />
-            <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
-          </div>
+    <ProfileWrapper>
+      <GlassForm elevation={3}>
+        <Typography variant="h5" sx={{ color: "#fff", textAlign: "center", textShadow: "0 0 10px rgba(255, 255, 255, 0.5)", marginBottom: "20px" }}>
+          Sign up & Start your journey
+        </Typography>
+
+        <div className="form-rows" style={{ marginBottom: "30px" }}>
+          <Avatar
+            src={imgSrc ? URL.createObjectURL(imgSrc) : logo}
+            sx={{ height: 100, width: 100, cursor: "pointer", boxShadow: "0 0 15px rgba(0, 225, 255, 0.6)" }}
+            onClick={selectImg}
+          />
+          <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
         </div>
-        <div className="form-rows spaced">
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            value={formData.fullName}
-            onChange={handleChange}
-          />
+
+        <TextField fullWidth label="Username" name="username" value={formData.username} onChange={handleChange} required sx={{ marginBottom: "20px" }} />
+        <TextField fullWidth label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} sx={{ marginBottom: "20px" }} />
+
+        <TextField fullWidth label="Email" name="email" type="email" value={formData.email} onChange={handleChange} required error={!!errors.email} helperText={errors.email} sx={{ marginBottom: "20px" }} />
+        <TextField fullWidth label="Phone Number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} sx={{ marginBottom: "20px" }} />
+
+        <TextField fullWidth label="Password" name="password" type="password" value={formData.password} onChange={handleChange} required error={!!errors.password} helperText={errors.password} sx={{ marginBottom: "20px" }} />
+        <TextField fullWidth label="Confirm Password" name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} required error={!!errors.confirmPassword} helperText={errors.confirmPassword} sx={{ marginBottom: "30px" }} />
+
+        <StyledButton type="submit" onClick={handleSubmit} sx={{ marginBottom: "20px" }}>Sign up</StyledButton>
+
+        <div className="error-messages">
+          {errors.imgSrc && <Typography color="error">{errors.imgSrc}</Typography>}
+          {error && <Typography color="error">{error}</Typography>}
+          {success && <Typography color="success.main">{success}</Typography>}
         </div>
-        <div className="form-rows spaced">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="phoneNumber"
-            placeholder="Phone Number"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-rows spaced">
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit" className="signup-button">Sign up</button>
-      </form>
-      <div className="error-messages">
-        {errors.email && <p className="error">{errors.email}</p>}
-        {errors.password && <p className="error">{errors.password}</p>}
-        {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
-        {errors.imgSrc && <p className="error">{errors.imgSrc}</p>}
-      </div>
-      {error && <p className="error-message">{error}</p>}
-      {success && <p className="success-message">{success}</p>}
-    </div>
+      </GlassForm>
+    </ProfileWrapper>
   );
 };
 
