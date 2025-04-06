@@ -1,6 +1,6 @@
 import apiClient from './api-client';
 
-interface RealEstate {
+export interface RealEstate {
   city: string;
   address: string;
   owner: string;

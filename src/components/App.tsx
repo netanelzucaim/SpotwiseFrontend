@@ -3,9 +3,9 @@ import SignupForm from './Signup/SignupForm';
 import LoginForm from './Login/LoginForm';
 import MapPage from './Map/MapPage';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import DiscoverLocations from './DiscoverLocations/DiscoverLocations';
 import RealEstateProfile from './Profiles/RealEstateProfile';
 import BusinessProfile from './Profiles/BusinessProfile';
-
 
 const App = () => {
   return (
@@ -17,6 +17,7 @@ const App = () => {
           <Route path="/real-estate-profile" element={<RealEstateProfile />} />
           <Route path="/business-profile" element={<BusinessProfile />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/discover-locations" element={<DiscoverLocations />} />
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/map" element={<MapPage />} />
         </Routes>
