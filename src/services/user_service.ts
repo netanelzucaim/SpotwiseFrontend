@@ -1,4 +1,7 @@
+import axios from "axios";
 import apiClient, { CanceledError } from "./api-client";
+import { CredentialResponse } from "@react-oauth/google";
+import { BASE_URL } from "../config.ts";
 
 export { CanceledError }
 
@@ -28,24 +31,49 @@ export interface IUser {
     });
   };
 
-const login = async (user: IUser) => {
+export const login = async (user: IUser) => {
+  try {
     const abortController = new AbortController();
     const credentials = { username: user.username, password: user.password }
     const response = await apiClient.post('/auth/login', credentials, { signal: abortController.signal });
     const { accessToken, refreshToken, _id } = response.data;
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
-    localStorage.setItem('userId', _id);
+    localStorage.setItem('id', _id);
     return response.data;
+  } catch (error: any) {
+    console.error('Failed to login user -', error.response.data);
+    throw error.response.data;
+  }
 }
 
-const getUser = (userId: string) => {
-    const abortController = new AbortController();
-    const request = apiClient.get<IUser>(`/users/${userId}`, {
-        signal: abortController.signal
+export const googleSignin = (credentialResponse: CredentialResponse) => {
+  return new Promise<{ status: number; message: string; accessToken?: string; refreshToken?: string }>((resolve, reject) => {
+    axios
+      .post<{ status: number; message: string; accessToken: string; refreshToken: string; _id: string }>(`${BASE_URL}/auth/google`, credentialResponse)
+      .then((response) => {
+        const { accessToken, refreshToken, _id } = response.data;
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("id", _id);
+        resolve({ status: response.status, message: response.data.message, accessToken, refreshToken });
+      })
+      .catch((error) => {
+        console.log(error);
+        reject(error);
+      });
+  });
+};
+
+const getUser = async (userId: string): Promise<IUser> => {
+    const token = localStorage.getItem('accessToken');
+    const response = await apiClient.get<IUser>(`/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    return { request, abort: () => abortController.abort() };
-}
+    return response.data;
+  };
 
 const updateUser = async (userId: string, updatedUser: Partial<IUser>) => {
     const abortController = new AbortController();
@@ -79,7 +107,7 @@ const logout = async () => {
         });
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        localStorage.removeItem('userId');
+        localStorage.removeItem('id');
     } catch (error) {
         console.error('Failed to logout', error);
         throw error;

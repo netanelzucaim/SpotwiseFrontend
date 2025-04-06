@@ -1,78 +1,119 @@
-import { FC } from "react";
-import { useForm } from "react-hook-form";
+import { useRef, useState } from "react";
+import { IUser, login, googleSignin } from "../../services/user_service"
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
-import userService, { IUser } from "../../services/user_service";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import "./../../styles/LoginForm.css";
+import { GlassForm, StyledButton } from "../../styles/ProfilePageStyle";
+import { Box, Link, Stack, TextField, Typography } from "@mui/material";
 
-interface FormData {
-  email: string;
-  password: string;
-}
-
-const LoginForm: FC = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+const LoginForm = () => {
+  const usernameInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    const user: IUser = {
-      email: data.email,
-      password: data.password,
-    };
-    userService.login(user)
-      .then((response) => {
-        console.log(response);
-        navigate('/home'); 
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const [error, setError] = useState<string | null>(null);
+
+  const onLoginUser = async () => {
+      setError(null);
+      if (usernameInputRef.current?.value && passwordInputRef.current?.value) {
+          const user: IUser = {
+              username: usernameInputRef.current?.value,
+              password: passwordInputRef.current?.value
+          };
+          try {
+              await login({ username: user.username!, password: user.password! });
+              navigate("/home");
+          } catch (err: any) {
+              setError('Failed to login user - ' + err);
+          }
+      } else {
+          setError("Please enter both username and password.");
+      }
+  };
+
+  const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
+      setError(null);
+      try {
+          await googleSignin(credentialResponse);
+          navigate("/home");
+      } catch (err: any) {
+          setError(err.message || "Google login failed. Please try again.");
+      }
+  };
+
+  const onGoogleLoginFailure = () => {
+      setError("Google login failed. Please try again.");
   };
 
   return (
-    <div className="login-container">
-      <div className="logo">
-        <h1 className="logoName">SpotWise</h1>
-        <p className="tagline">Your Vision <br></br> The Perfect Location</p>
-      </div>
-      <h2 className="subtitle; stroke-text">Sign in & Continue your journey</h2>
-
-      <form className="login-form row g-3 needs-validation" onSubmit={handleSubmit(onSubmit)} noValidate>
-      <div>
-        <input
-          type="text"
-          className={`input-field form-control ${errors.email ? 'is-invalid' : ''}`}
-          placeholder="Email"
-          {...register("email", { 
-            required: "Email is required",
-            pattern: { 
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, 
-              message: "Invalid email format" 
-            } 
-          })}
+  <Box>
+    <GlassForm elevation={4} sx={{ padding: 4, mt: 8, borderRadius: 4 }}>
+      <Stack spacing={2} alignItems="center">
+        <Typography variant="h3" fontWeight="bold" color="text.secondary" fontFamily={"Montserrat"}>
+          SpotWise
+        </Typography>
+        <Typography variant="subtitle1" color="text.secondary" fontFamily={"Montserrat"} fontWeight="bold">
+          Your Vision, The Perfect Location.
+        </Typography>
+      </Stack>
+      <Stack spacing={2} alignItems="center" sx={{ mt: 4 }}>
+        <TextField
+          inputRef={usernameInputRef}
+          label="Username"
+          variant="outlined"
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '30px',
+              backgroundColor: 'white'
+            }
+          }}
+          fullWidth
+          required
         />
-        {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
-      </div>
-      <div>
-        <input
+        <TextField
+          inputRef={passwordInputRef}
+          label="Password"
           type="password"
-          className={`input-field form-control ${errors.password ? 'is-invalid' : ''}`}
-          placeholder="Password"
-          {...register("password", { required: "Password is required" })}
+          variant="outlined"
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '30px',
+              backgroundColor: 'white'
+            }
+          }}
+          fullWidth
+          required
         />
-        {errors.password && <div className="invalid-feedback">{errors.password.message}</div>} 
-      </div>
-      <button type="submit" className="sign-in-button btn btn-primary">Sign in</button> 
-    </form>
+        <StyledButton 
+          type="submit"
+          onClick={onLoginUser}
+        >
+          Sign In
+        </StyledButton>
 
+        <Box sx={{ mt: 2 }}>
+          <GoogleLogin
+            onSuccess={onGoogleLoginSuccess}
+            onError={onGoogleLoginFailure}
+            locale="en"
+          />
+        </Box>
 
-      <div className="signup-container">
-          <p className="stroke-text">
-              Don't have an account? <a href="#" className="stroke-text" onClick={() => navigate('/signup')}>Sign Up</a>
-          </p>
-      </div>
-    </div>
+        {error && (
+          <Typography color="error" variant="body2" fontFamily={"Montserrat"}>
+              {error}
+          </Typography>
+        )}
+
+        <Typography variant="body2" fontFamily={"Montserrat"}>
+          Don't have an account?{" "}
+          <Link href="/signup" underline="hover">
+            Sign Up
+          </Link>
+        </Typography>
+      </Stack>
+    </GlassForm>
+  </Box>
   );
 };
 

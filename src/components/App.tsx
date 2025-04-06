@@ -1,12 +1,23 @@
 import React from "react";
-import AppRouter from "./Router";
+import { BrowserRouter as Router, useLocation } from "react-router-dom";
+import AppMenu from "./menu/appMenu";
+import AppRoutes from "./Router";
 
-const App = () => {
+const App: React.FC = () => {
+  const location = useLocation();
+
   return (
-    <div className="app-container">
-      <AppRouter />
+    <div>
+      {location.pathname !== "/login" && location.pathname !== "/signup" && <AppMenu />}
+      <AppRoutes />
     </div>
   );
 };
 
-export default App;
+const AppWrapper: React.FC = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default AppWrapper;

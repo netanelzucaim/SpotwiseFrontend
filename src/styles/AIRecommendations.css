@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background: url("../../utils/Spotwise_background.png") no-repeat center center/cover;
+  /* background: url("../../utils/Spotwise_background.png") no-repeat center center/cover; */
   color: #212529; 
   font-family: 'Montserrat', sans-serif;
 }

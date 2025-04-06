@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: url("../../utils/Spotwise_background.png") no-repeat center center/cover;
+  /* background: url("../../utils/Spotwise_background.png") no-repeat center center/cover; */
   color: white;
   text-align: center;
   font-family: 'Montserrat', sans-serif;

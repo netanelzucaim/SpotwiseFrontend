@@ -8,15 +8,35 @@ import {
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
+import userService from "../../services/user_service"; // Import user_service as default
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate(); // Initialize useNavigate
+  const isLoggedIn = Boolean(localStorage.getItem("id")); // Check if user is logged in
+
+  const handleLogout = async () => {
+    try {
+      await userService.logout(); // Call the logout method from user_service
+      navigate("/login"); // Redirect to login page
+    } catch (error) {
+      console.error("Failed to logout", error);
+    }
+  };
+
+  const navItems = [
+    { label: "Home", icon: "🏠", action: () => navigate("/home") },
+    { label: "Why SpotWise", icon: "❓", action: () => navigate("/home") },
+    { label: "Success Stories", icon: "🌟", action: () => navigate("/home") },
+    { label: "Contact", icon: "📞", action: () => navigate("/home") },
+    isLoggedIn
+      ? { label: "Logout", icon: "🚪", action: handleLogout }
+      : { label: "Login", icon: "🔑", action: () => navigate("/login") },
+  ];
 
   return (
     <div
       className="min-h-screen bg-cover bg-center text-white flex flex-col items-center"
       style={{
-        backgroundImage: "url('/utils/Spotwise_background.png')",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundAttachment: "fixed",
@@ -37,14 +57,12 @@ const HomePage: React.FC = () => {
             <Button
               key={index}
               startIcon={<span>{item.icon}</span>}
-              onClick={() =>
-                navigate(item.label === "Login" ? "/login" : "/home")
-              } // Use navigate for routing
+              onClick={item.action} // Use the action for routing or logout
               sx={{
                 backgroundColor: "",
                 "&:hover": { backgroundColor: "#588C87" },
                 borderRadius: "20px",
-                padding: "0.5rem 2rem", // Replaced px with rem
+                padding: "0.5rem 2rem",
                 color: "white",
                 fontWeight: "bold",
                 textTransform: "none",
@@ -68,84 +86,118 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <Box
-        sx={{
-          width: "100%",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(20%, 1fr))", // Replaced px with %
-          gap: "2%",
-          padding: "2%",
-          zIndex: 10,
-        }}
-      >
-        {features.map((feature, index) => (
-          <Card
-            key={index}
-            sx={{
-              width: "100%",
-              height: "auto",
-              borderRadius: "1rem", // Replaced px with rem
-              boxShadow: 3,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              flexShrink: 0,
-              "&:hover": {
-                transform: "scale(1.05)",
-                boxShadow: 6,
-              },
-              transition: "transform 0.3s, box-shadow 0.3s",
-            }}
-          >
-            <CardMedia
-              component="div"
+      {isLoggedIn && (
+        <Box
+          sx={{
+            width: "100%",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(20%, 1fr))",
+            gap: "2%",
+            padding: "2%",
+            zIndex: 10,
+          }}
+        >
+          {features.map((feature, index) => (
+            <Card
+              key={index}
               sx={{
-                height: "20%", // Replaced px with %
+                width: "100%",
+                height: "auto",
+                borderRadius: "1rem",
+                boxShadow: 3,
                 display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#588C87",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                flexShrink: 0,
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  boxShadow: 6,
+                },
+                transition: "transform 0.3s, box-shadow 0.3s",
               }}
             >
-              <Typography variant="h3">{feature.icon}</Typography>
-            </CardMedia>
-            <CardContent sx={{ backgroundColor: "white" }}>
-              <Typography variant="h6" component="div">
-                {feature.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" mb={2}>
-                {feature.description}
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={() =>
-                  navigate(
-                    feature.title === "Find What’s Best For You"
-                      ? "/ai-recommendations"
-                      : "#"
-                  )
-                } // Use navigate for routing
-                sx={{ marginTop: "1rem" }} // Replaced px with rem
+              <CardMedia
+                component="div"
+                sx={{
+                  height: "20%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#588C87",
+                }}
               >
-                {feature.buttonText}
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
+                <Typography variant="h3">{feature.icon}</Typography>
+              </CardMedia>
+              <CardContent
+                sx={{
+                  backgroundColor: "white",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{
+                    textAlign: "center",
+                    marginBottom: "1rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {feature.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" mb={2}>
+                  {feature.description}
+                </Typography>
+                {feature.title === "Create Your Property" ? (
+                  <Box sx={{ display: "flex", gap: 2, marginTop: "1rem" }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      onClick={() => navigate("/real-estate-profile")}
+                    >
+                      Real Estate
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      fullWidth
+                      onClick={() => navigate("/business-profile")}
+                    >
+                      Business
+                    </Button>
+                  </Box>
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    onClick={() =>
+                      navigate(
+                        feature.title === "Find What’s Best For You"
+                          ? "/ai-recommendations"
+                          : feature.title === "Discover Locations"
+                          ? "/discover-locations"
+                          : feature.title === "Live Map"
+                          ? "/map"
+                          : "#"
+                      )
+                    }
+                    sx={{ marginTop: "1rem" }}
+                  >
+                    {feature.buttonText}
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      )}
     </div>
   );
 };
-
-const navItems = [
-  { label: "Home", icon: "🏠" },
-  { label: "Why SpotWise", icon: "❓" },
-  { label: "Success Stories", icon: "🌟" },
-  { label: "Contact", icon: "📞" },
-  { label: "Login", icon: "🔑" },
-];
 
 const features = [
   {
@@ -169,9 +221,9 @@ const features = [
   },
   {
     icon: "📢",
-    title: "List Your Property",
+    title: "Create Your Property",
     description:
-      "Come and list your property so more businesses can discover it",
+      "Come and Create your property so more businesses/users can discover it",
     buttonText: "List It",
   },
 ];

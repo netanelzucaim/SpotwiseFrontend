@@ -8,19 +8,27 @@ import {
 import AIRecommendations from "./AIRecommendations/AIRecommendations";
 import SignupForm from "./Signup/SignupForm";
 import LoginForm from "./Login/LoginForm";
-import Home from "./Home/Home";
-
+import MapPage from './Map/MapPage';
+import DiscoverLocations from './DiscoverLocations/DiscoverLocations';
+import RealEstateProfile from './Profiles/RealEstateProfile';
+import BusinessProfile from './Profiles/BusinessProfile';
+import Home from './Home/Home';
 const AppRouter: React.FC = () => {
   return (
-    <Router>
+    // <Router>
       <Routes>
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/ai-recommendations" element={<AIRecommendations />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/signup" element={<SignupForm />} />
+        <Route path="/real-estate-profile" element={<RealEstateProfile />} />
+        <Route path="/business-profile" element={<BusinessProfile />} />
+        <Route path="/discover-locations" element={<DiscoverLocations />} />
+        <Route path="/map" element={<MapPage />} />
       </Routes>
-    </Router>
+    // </Router>
   );
 };
 
