@@ -15,7 +15,6 @@ import BusinessProfile from './Profiles/BusinessProfile';
 import Home from './Home/Home';
 const AppRouter: React.FC = () => {
   return (
-    // <Router>
       <Routes>
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/ai-recommendations" element={<AIRecommendations />} />
@@ -28,7 +27,6 @@ const AppRouter: React.FC = () => {
         <Route path="/discover-locations" element={<DiscoverLocations />} />
         <Route path="/map" element={<MapPage />} />
       </Routes>
-    // </Router>
   );
 };
 
