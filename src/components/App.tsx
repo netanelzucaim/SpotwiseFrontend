@@ -2,6 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, useLocation } from "react-router-dom";
 import AppMenu from "./menu/appMenu";
 import AppRoutes from "./Router";
+import "../styles/App.css";
+
 
 const App: React.FC = () => {
   const location = useLocation();
