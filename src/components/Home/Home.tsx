@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import userService from "../../services/user_service"; // Import user_service as default
-
+import "../../styles/Home.css";
 const HomePage: React.FC = () => {
   const navigate = useNavigate(); // Initialize useNavigate
   const isLoggedIn = Boolean(localStorage.getItem("id")); // Check if user is logged in

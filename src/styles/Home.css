@@ -1,0 +1,115 @@
+/* Home.css */
+
+.home-container {
+  min-height: 100vh;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.home-header {
+  width: 100%;
+  text-align: center;
+  padding: 1rem;
+}
+
+.home-header h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.home-header p {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.home-nav {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.home-nav button {
+  background-color: transparent;
+  border: 1px solid #4caf50;
+  border-radius: 20px;
+  padding: 0.5rem 1.5rem;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.home-nav button:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+.hero-section {
+  text-align: center;
+  padding: 2rem;
+}
+
+.hero-section h2 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.hero-section p {
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.features-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  width: 100%;
+}
+
+.feature-card {
+  background-color: white;
+  color: black;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.feature-card p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.feature-card button:hover {
+  background-color: #45a049;
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Brain, User,PlusCircle, LogOut, Menu, MessageSquare ,Map,BriefcaseBusiness,MapPinHouse} from "lucide-react";
+import { Brain, User, LogOut, Menu ,Map,BriefcaseBusiness,MapPinHouse} from "lucide-react";
 import "./../../styles/AppMenu.css";
 import user_service from "../../services/user_service";
 
