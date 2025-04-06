@@ -109,7 +109,15 @@ const SignupForm = () => {
   };
 
   return (
-    <ProfileWrapper>
+    <ProfileWrapper
+      className="signup-div"
+      style={{
+        height: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <GlassForm elevation={3}>
         <Typography variant="h5" sx={{ color: "#fff", textAlign: "center", textShadow: "0 0 10px rgba(255, 255, 255, 0.5)", marginBottom: "20px" }}>
           Sign up & Start your journey
