@@ -8,30 +8,33 @@ import {
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import userService from "../../services/user_service"; // Import user_service as default
+import userService from "../../services/user_service"; 
 import "../../styles/Home.css";
+import { navItems } from "../constants/navItems"; // Import navItems from constants
+
+
 const HomePage: React.FC = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
-  const isLoggedIn = Boolean(localStorage.getItem("id")); // Check if user is logged in
+  const navigate = useNavigate(); 
+  const isLoggedIn = Boolean(localStorage.getItem("id")); 
 
   const handleLogout = async () => {
     try {
-      await userService.logout(); // Call the logout method from user_service
-      navigate("/login"); // Redirect to login page
+      await userService.logout(); 
+      navigate("/login"); 
     } catch (error) {
       console.error("Failed to logout", error);
     }
   };
 
-  const navItems = [
-    { label: "Home", icon: "🏠", action: () => navigate("/home") },
-    { label: "Why SpotWise", icon: "❓", action: () => navigate("/home") },
-    { label: "Success Stories", icon: "🌟", action: () => navigate("/home") },
-    { label: "Contact", icon: "📞", action: () => navigate("/home") },
-    isLoggedIn
-      ? { label: "Logout", icon: "🚪", action: handleLogout }
-      : { label: "Login", icon: "🔑", action: () => navigate("/login") },
-  ];
+  // const navItems = [
+  //   { label: "Home", icon: "🏠", action: () => navigate("/home") },
+  //   { label: "Why SpotWise", icon: "❓", action: () => navigate("/home") },
+  //   { label: "Success Stories", icon: "🌟", action: () => navigate("/home") },
+  //   { label: "Contact", icon: "📞", action: () => navigate("/home") },
+  //   isLoggedIn
+  //     ? { label: "Logout", icon: "🚪", action: handleLogout }
+  //     : { label: "Login", icon: "🔑", action: () => navigate("/login") },
+  // ];
 
   return (
     <div
@@ -43,10 +46,8 @@ const HomePage: React.FC = () => {
         minHeight: "100vh",
       }}
     >
-      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-60"></div>
 
-      {/* Header */}
       <header className="relative w-full flex flex-col items-center text-center p-4 z-10">
         <h1 className="text-4xl font-bold text-green-400">SpotWise</h1>
         <p className="text-sm text-gray-200">
@@ -57,7 +58,7 @@ const HomePage: React.FC = () => {
             <Button
               key={index}
               startIcon={<span>{item.icon}</span>}
-              onClick={item.action} // Use the action for routing or logout
+              onClick={item.action} 
               sx={{
                 backgroundColor: "",
                 "&:hover": { backgroundColor: "#588C87" },
@@ -74,7 +75,6 @@ const HomePage: React.FC = () => {
         </nav>
       </header>
 
-      {/* Hero Section */}
       <section className="relative text-center py-8 px-4 max-w-90% z-10">
         <h2 className="text-3xl font-semibold leading-tight">
           Find the perfect spot <br /> for your business idea
@@ -85,7 +85,6 @@ const HomePage: React.FC = () => {
         </p>
       </section>
 
-      {/* Features Section */}
       {isLoggedIn && (
         <Box
           sx={{
