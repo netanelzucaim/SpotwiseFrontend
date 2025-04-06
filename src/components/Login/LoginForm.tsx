@@ -35,7 +35,7 @@ const LoginForm = () => {
       setError(null);
       try {
           await googleSignin(credentialResponse);
-          navigate("/posts");
+          navigate("/home");
       } catch (err: any) {
           setError(err.message || "Google login failed. Please try again.");
       }
