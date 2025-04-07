@@ -116,6 +116,7 @@ const SignupForm = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        overflow: 'hidden'
       }}
     >
       <GlassForm elevation={3}>

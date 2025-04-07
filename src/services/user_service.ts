@@ -39,7 +39,7 @@ export const login = async (user: IUser) => {
     const { accessToken, refreshToken, _id } = response.data;
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
-    localStorage.setItem('id', _id);
+    localStorage.setItem('userId', _id);
     return response.data;
   } catch (error: any) {
     console.error('Failed to login user -', error.response.data);
@@ -55,7 +55,7 @@ export const googleSignin = (credentialResponse: CredentialResponse) => {
         const { accessToken, refreshToken, _id } = response.data;
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
-        localStorage.setItem("id", _id);
+        localStorage.setItem("userId", _id);
         resolve({ status: response.status, message: response.data.message, accessToken, refreshToken });
       })
       .catch((error) => {

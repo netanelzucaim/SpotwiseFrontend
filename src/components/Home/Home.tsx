@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -9,11 +9,11 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import "../../styles/Home.css";
-import { navItems } from "../constants/navItems"; // Import navItems from constants
+import { navItems } from "../constants/navItems";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate(); 
-  const isLoggedIn = Boolean(localStorage.getItem("id")); 
+  const isLoggedIn = Boolean(localStorage.getItem("userId")); 
 
   return (
     <div
