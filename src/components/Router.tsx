@@ -20,7 +20,7 @@ const AppRouter: React.FC = () => {
         <Route path="/ai-recommendations" element={<AIRecommendations />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/real-estate-profile" element={<RealEstateProfile />} />
         <Route path="/business-profile" element={<BusinessProfile />} />

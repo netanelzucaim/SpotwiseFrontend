@@ -8,43 +8,22 @@ import {
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import userService from "../../services/user_service"; 
 import "../../styles/Home.css";
 import { navItems } from "../constants/navItems"; // Import navItems from constants
-
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate(); 
   const isLoggedIn = Boolean(localStorage.getItem("id")); 
 
-  const handleLogout = async () => {
-    try {
-      await userService.logout(); 
-      navigate("/login"); 
-    } catch (error) {
-      console.error("Failed to logout", error);
-    }
-  };
-
-  // const navItems = [
-  //   { label: "Home", icon: "🏠", action: () => navigate("/home") },
-  //   { label: "Why SpotWise", icon: "❓", action: () => navigate("/home") },
-  //   { label: "Success Stories", icon: "🌟", action: () => navigate("/home") },
-  //   { label: "Contact", icon: "📞", action: () => navigate("/home") },
-  //   isLoggedIn
-  //     ? { label: "Logout", icon: "🚪", action: handleLogout }
-  //     : { label: "Login", icon: "🔑", action: () => navigate("/login") },
-  // ];
-
   return (
     <div
-      className="min-h-screen bg-cover bg-center text-white flex flex-col items-center"
-      style={{
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-        minHeight: "100vh",
-      }}
+      className="min-h-screen 
+      bg-cover 
+      bg-center 
+      text-white 
+      flex flex-col 
+      items-center 
+      home-page"
     >
       <div className="absolute inset-0 bg-black bg-opacity-60"></div>
 

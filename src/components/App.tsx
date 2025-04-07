@@ -4,7 +4,6 @@ import AppMenu from "./menu/appMenu";
 import AppRoutes from "./Router";
 import "../styles/App.css";
 
-
 const App: React.FC = () => {
   const location = useLocation();
 
