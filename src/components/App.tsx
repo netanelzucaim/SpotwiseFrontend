@@ -1,29 +1,24 @@
-import AIRecommendations from './AIRecommendations/AIRecommendations';
-import SignupForm from './Signup/SignupForm';
-import LoginForm from './Login/LoginForm';
-import MapPage from './Map/MapPage';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import DiscoverLocations from './DiscoverLocations/DiscoverLocations';
-import RealEstateProfile from './Profiles/RealEstateProfile';
-import BusinessProfile from './Profiles/BusinessProfile';
+import React from "react";
+import { BrowserRouter as Router, useLocation } from "react-router-dom";
+import AppMenu from "./menu/appMenu";
+import AppRoutes from "./Router";
+import "../styles/App.css";
 
-const App = () => {
+const App: React.FC = () => {
+  const location = useLocation();
+
   return (
-    <Router>
-      <div className="app-container">
-        <Routes>
-          <Route path="/signup" element={<SignupForm />} />
-          <Route path="/ai-recommendations" element={<AIRecommendations />} />
-          <Route path="/real-estate-profile" element={<RealEstateProfile />} />
-          <Route path="/business-profile" element={<BusinessProfile />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/discover-locations" element={<DiscoverLocations />} />
-          <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/map" element={<MapPage />} />
-        </Routes>
-      </div>
-    </Router>
+    <div>
+      {location.pathname !== "/login" && location.pathname !== "/signup" && <AppMenu />}
+      <AppRoutes />
+    </div>
   );
 };
 
-export default App;
+const AppWrapper: React.FC = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default AppWrapper;

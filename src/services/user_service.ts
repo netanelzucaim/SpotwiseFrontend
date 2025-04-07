@@ -55,7 +55,7 @@ export const googleSignin = (credentialResponse: CredentialResponse) => {
         const { accessToken, refreshToken, _id } = response.data;
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
-        localStorage.setItem("id", _id);
+        localStorage.setItem("userId", _id);
         resolve({ status: response.status, message: response.data.message, accessToken, refreshToken });
       })
       .catch((error) => {
@@ -107,7 +107,7 @@ const logout = async () => {
         });
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        localStorage.removeItem('userId');
+        localStorage.removeItem('id');
     } catch (error) {
         console.error('Failed to logout', error);
         throw error;

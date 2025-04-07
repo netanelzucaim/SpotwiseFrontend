@@ -58,7 +58,7 @@ const RealEstateProfile: React.FC = () => {
       });
 
       setMessage("Real estate profile created successfully!");
-      navigate("/ai-recommensations");
+      navigate("/home");
     } catch (error) {
       setMessage("Failed to create real estate profile. Try again.");
     }
