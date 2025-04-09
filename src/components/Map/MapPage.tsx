@@ -109,7 +109,6 @@ const MapPage: FC = () => {
               {listing.address}
               <div className="listing-meta">
               Area: {listing.area} <br />
-              Owner: {listing.owner}
               </div>
             </>
             )}
