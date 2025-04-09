@@ -9,13 +9,12 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import "../../styles/Home.css";
-import userService from "../../services/user_service"; // Import userService
+import userService from "../../services/user_service"; 
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const isLoggedIn = Boolean(localStorage.getItem("userId"));
 
-  // Dynamically filter navItems based on login status
   const navItems = [
     { label: "Home", icon: "🏠", path: "/home" },
     { label: "Why SpotWise", icon: "❓", path: "/home" },
@@ -29,8 +28,8 @@ const HomePage: React.FC = () => {
             path: "/login",
             onClick: async () => {
               try {
-                await userService.logout(); // Call the logout function
-                navigate("/login"); // Navigate to the login page
+                await userService.logout();
+                navigate("/login"); 
               } catch (error) {
                 console.error("Failed to logout:", error);
               }
@@ -42,7 +41,7 @@ const HomePage: React.FC = () => {
             label: "Login",
             icon: "🔑",
             path: "/login",
-            onClick: () => navigate("/login"), // Navigate to the login page
+            onClick: () => navigate("/login"), 
           },
         ]),
   ];
@@ -69,7 +68,7 @@ const HomePage: React.FC = () => {
             <Button
               key={index}
               startIcon={<span>{item.icon}</span>}
-              onClick={item.onClick} // Use the onClick handler from navItems
+              onClick={item.onClick} 
               sx={{
                 backgroundColor: "",
                 "&:hover": { backgroundColor: "#588C87" },
