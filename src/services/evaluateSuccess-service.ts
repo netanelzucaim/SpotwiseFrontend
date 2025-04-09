@@ -54,7 +54,6 @@ Explanation: <Provide a detailed explanation of your reasoning, including any re
         ? data[0].generated_text
         : data.generated_text || '';
 
-    // Extract success rate and explanation
     const successRateMatch = generatedText.match(/Success Rate:\s*(\d{1,3})%/i);
     const explanationMatch = generatedText.match(/Explanation:\s*(.+)/i);
 
