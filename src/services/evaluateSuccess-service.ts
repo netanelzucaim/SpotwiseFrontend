@@ -60,11 +60,10 @@ Explanation: <Provide a detailed explanation of your reasoning, including any re
     const successRate = successRateMatch ? parseInt(successRateMatch[1], 10) : 0;
     let explanation = explanationMatch ? explanationMatch[1].trim() : "No explanation provided.";
 
-    // Handle cases where the explanation is still the placeholder
-    //if (explanation.includes("<Provide a detailed explanation")) {
-    //  explanation = "The AI model did not provide a detailed explanation.";
-   // }
-explanation = generatedText
+    if (explanation.includes("<Provide a detailed explanation")) {
+      explanation = "The AI model did not provide a detailed explanation.";
+    }
+
     return { successRate, explanation };
   } catch (error: any) {
     console.error('Error evaluating property:', error.response?.data || error.message);

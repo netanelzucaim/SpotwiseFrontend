@@ -137,7 +137,7 @@ const MapPage: FC = () => {
                     <br />
                   </div>
                   <button className="evaluate-button" onClick={() => handleEvaluate(index)}>
-              Evaluate Success
+              Evaluate your business success here
             </button>
                 </>
               )}
