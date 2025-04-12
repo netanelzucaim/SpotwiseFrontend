@@ -5,6 +5,8 @@ import '../../styles/MapPage.css';
 import { MAPTILER_API_KEY } from '../../config';
 import MapService from '../../services/map-service';
 import RealEstateService  from '../../services/realestate-service';
+import { useLocation } from "react-router-dom";
+
 
 interface iRealestate {
   city: string;
@@ -16,6 +18,7 @@ interface iRealestate {
 }
 
 const MapPage: FC = () => {
+  const location = useLocation();
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<maptilersdk.Map | null>(null);
   const markersRef = useRef<maptilersdk.Marker[]>([]);
@@ -71,6 +74,22 @@ const MapPage: FC = () => {
       console.error("Cannot fetch realEstate: ", err);
     });
   }, []);
+
+
+  useEffect(() => {
+    const waitForMarkers = () => {
+      if (location && map.current && markersRef.current.length > 0) {
+        console.log("Markers are ready, moving to location...");
+        setSelectedIndex(location.state.index);
+        handleListingClick(location.state.index);
+      } else {
+        console.log("Markers not ready yet, retrying...");
+        setTimeout(waitForMarkers, 100); // Retry after 100ms
+      }
+    };
+  
+    waitForMarkers();
+  }, [location]);
 
   const handleListingClick = (index: number) => {
     if (!map.current) return;

@@ -108,6 +108,7 @@ const DiscoverLocations: React.FC = () => {
         {selectedRealEstate && (
           <RealEstateModal
             realEstate={selectedRealEstate}
+            index={realEstates.findIndex((re) => re._id === selectedRealEstate._id)}
             onClose={closeModal}
           />
         )}
