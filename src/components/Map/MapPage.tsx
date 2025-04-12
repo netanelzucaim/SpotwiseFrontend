@@ -4,9 +4,9 @@ import "@maptiler/sdk/dist/maptiler-sdk.css";
 import '../../styles/MapPage.css';
 import { MAPTILER_API_KEY } from '../../config';
 import MapService from '../../services/map-service';
-import RealEstateService  from '../../services/realestate-service';
+import RealEstateService  from "../../services/realestate-service";
 import { useLocation } from "react-router-dom";
-
+import UserService from "../../services/user_service";
 
 interface iRealestate {
   city: string;
@@ -15,6 +15,7 @@ interface iRealestate {
   description: string;
   area: string;
   location: string;
+  ownerFullName?: string;
 }
 
 const MapPage: FC = () => {
@@ -50,31 +51,56 @@ const MapPage: FC = () => {
       center: [initialCenter.lng, initialCenter.lat],
       zoom: initialZoom
     });
+  
+    const fetchRealEstatesWithUserNames = async () => {
+      try {
+        const data = await RealEstateService.getAll();
+    
+        const realEstatesWithUserNames = await Promise.all(
+          data.map(async (realEstate) => {
+            const user = await UserService.getUser(realEstate.owner); // Fetch user by ID
+            return {
+              ...realEstate,
+              ownerFullName: user.fullName, // Add full name to the real estate object
+            };
+          })
+        );
+  
+        setRealEstates(realEstatesWithUserNames);
+  
 
-    RealEstateService.getAll().then((listings: iRealestate[]) => {
-      setRealEstates(listings);
-      listings.forEach((listing, index) => {
-        const fullAddress = `${listing.address}, ${listing.city}`;
-        const cachedCoords = localStorage.getItem(fullAddress);
-        if (cachedCoords) {
-          const coords = JSON.parse(cachedCoords);
-          addMarker({ lat: coords.lat, lon: coords.lon }, listing, index);
-        } else {
-          MapService.getLatLonForAddress(fullAddress).then(coords => {
-            if (coords) {
-              addMarker(coords, listing, index);
+        RealEstateService.getAll().then((listings: iRealestate[]) => {
+          listings.forEach((listing, index) => {
+            const fullAddress = `${listing.address}, ${listing.city}`;
+            const cachedCoords = localStorage.getItem(fullAddress);
+            if (cachedCoords) {
+              const coords = JSON.parse(cachedCoords);
+              addMarker({ lat: coords.lat, lon: coords.lon }, listing, index);
             } else {
-              setFailedIndexes(prev => new Set(prev).add(index));
+              MapService.getLatLonForAddress(fullAddress).then(coords => {
+                if (coords) {
+                  addMarker(coords, listing, index);
+                } else {
+                  setFailedIndexes(prev => new Set(prev).add(index));
+                }
+              }).catch(err => console.error("Geocoding API error: ", err));
             }
-          }).catch(err => console.error("Geocoding API error: ", err));
-        }
-      });
-    }).catch(err => {
-      setError("Akward... it seems like we can't see our locations... Please check your internet or try again later.");
-      console.error("Cannot fetch realEstate: ", err);
-    });
-  }, []);
-
+          });
+        }).catch(err => {
+          setError("Akward... it seems like we can't see our locations... Please check your internet or try again later.");
+          console.error("Cannot fetch realEstate: ", err);
+        });
+          } catch (error) {
+            setError(
+              "Awkward... it seems like we can't see our locations... Please check your internet or try again later."
+            );
+            console.error("Error fetching real estates:", error);
+          }
+        };
+    
+        fetchRealEstatesWithUserNames();
+      }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    
 
   useEffect(() => {
     const waitForMarkers = () => {
@@ -128,7 +154,7 @@ const MapPage: FC = () => {
               {listing.address}
               <div className="listing-meta">
               Area: {listing.area} <br />
-              Owner: {listing.owner}
+              Owner: {listing.ownerFullName || listing.owner} <br />
               </div>
             </>
             )}

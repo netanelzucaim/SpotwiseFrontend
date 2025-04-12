@@ -25,7 +25,6 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, index, on
   const navigate = useNavigate();
 
   const handleDiscoverLocation = () => {
-    console.log(realEstate.location)
     navigate("/map", {
       state: {
         index,
