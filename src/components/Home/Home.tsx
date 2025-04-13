@@ -10,6 +10,7 @@ import {
 import Box from "@mui/material/Box";
 import "../../styles/Home.css";
 import userService from "../../services/user_service"; 
+import BrandHeading from "../Logo/Logo";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -59,10 +60,7 @@ const HomePage: React.FC = () => {
       <div className="absolute inset-0 bg-black bg-opacity-60"></div>
 
       <header className="relative w-full flex flex-col items-center text-center p-4 z-10">
-        <h1 className="text-4xl font-bold text-green-400">SpotWise</h1>
-        <p className="text-sm text-gray-200">
-          Your Vision, The Perfect Location.
-        </p>
+      <BrandHeading></BrandHeading>
         <nav className="flex gap-2 justify-center items-center mt-2">
           {navItems.map((item, index) => (
             <Button

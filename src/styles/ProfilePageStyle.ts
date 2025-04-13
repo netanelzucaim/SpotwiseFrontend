@@ -8,6 +8,7 @@ export const ProfileWrapper = styled(Box)({
   justifyContent: "center",
   alignItems: "center",
   padding: "2rem",
+  fontFamily: 'Montserrat, sans-serif'
 });
 
 export const GlassForm = styled(Paper)({

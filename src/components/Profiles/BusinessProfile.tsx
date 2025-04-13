@@ -69,7 +69,7 @@ const BusinessProfile: React.FC = () => {
   return (
     <ProfileWrapper>
       <GlassForm elevation={3}>
-        <Typography variant="h5" sx={{ color: "#fff", textShadow: "0 0 10px rgba(255, 255, 255, 0.5)", textAlign: "center" }}>
+        <Typography sx={{ fontFamily: 'Montserrat, sans-serif', textAlign: 'center', fontWeight: 'bold' }}>
           Create your business profile & Make your dream come true⚡
         </Typography>
         <TextField fullWidth label="Business Name" variant="outlined" margin="normal" value={name} onChange={(e) => setName(e.target.value)} error={!!errors.name} helperText={errors.name} />
