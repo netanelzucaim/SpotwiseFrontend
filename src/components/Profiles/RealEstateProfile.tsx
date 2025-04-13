@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import userService from "../../services/user_service";
 import RealEstateService from "../../services/realestate-service";
+import MapService from "../../services/map-service";
 import { ProfileWrapper, GlassForm, StyledButton } from "../../styles/ProfilePageStyle";
-import { TextField, Typography } from "@mui/material";
+import { TextField, Typography, Autocomplete } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const RealEstateProfile: React.FC = () => {
@@ -15,7 +16,9 @@ const RealEstateProfile: React.FC = () => {
   const [ownerName, setOwnerName] = useState("");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
+  const [addressOptions, setAddressOptions] = useState<AddressSuggestion[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<AddressSuggestion | null>(null);
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,7 +53,7 @@ const RealEstateProfile: React.FC = () => {
     try {
       await RealEstateService.create({
         city,
-        address,
+        address: selectedAddress?.label || "",
         area,
         location,
         description,
@@ -64,6 +67,14 @@ const RealEstateProfile: React.FC = () => {
     }
   };
 
+  const handleAddressSearch = async (input: string) => {
+    setAddress(input);
+    if (input.length >= 3) {
+      const suggestions = await MapService.getAddressSuggestions(input);
+      setAddressOptions(suggestions);
+    }
+  };  
+  
   return (
     <ProfileWrapper>
       <GlassForm elevation={3}>
@@ -82,16 +93,28 @@ const RealEstateProfile: React.FC = () => {
           helperText={errors.city}
         />
 
-        <TextField
-          fullWidth
-          label="Address"
-          variant="outlined"
-          margin="normal"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          error={!!errors.address}
-          helperText={errors.address}
-        />
+<Autocomplete
+fullWidth
+  options={addressOptions}
+  getOptionLabel={(option) => option.label}
+  filterOptions={(x) => x}
+  onInputChange={(_, value) => handleAddressSearch(value)}
+  onChange={(_, value) => {
+    setSelectedAddress(value);
+    setAddress(value?.label || "");
+  }}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      fullWidth
+      label="Address"
+      variant="outlined"
+      margin="normal"
+      error={!!errors.address}
+      helperText={errors.address}
+    />
+  )}
+/>
 
         <TextField
           fullWidth
