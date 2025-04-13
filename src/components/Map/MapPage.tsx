@@ -12,6 +12,7 @@ interface iRealestate {
   owner: string;
   description: string;
   area: string;
+  price: number;
   location: string;
 }
 
@@ -109,6 +110,7 @@ const MapPage: FC = () => {
               {listing.address}
               <div className="listing-meta">
               Area: {listing.area} <br />
+              Price: {listing.price} <br />
               </div>
             </>
             )}
