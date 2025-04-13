@@ -11,6 +11,7 @@ const RealEstateProfile: React.FC = () => {
   const [area, setArea] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   const [ownerId, setOwnerId] = useState(localStorage.getItem("userId") || "");
   const [ownerName, setOwnerName] = useState("");
   const [message, setMessage] = useState("");
@@ -40,6 +41,8 @@ const RealEstateProfile: React.FC = () => {
     if (!area.trim()) newErrors.area = "Area is required";
     if (!location.trim()) newErrors.location = "Location is required";
     if (!description.trim()) newErrors.description = "Description is required";
+    if (!price) newErrors.price = "Price is required";
+    if (price <= 0) newErrors.price = "Price must be positive number";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -54,6 +57,7 @@ const RealEstateProfile: React.FC = () => {
         area,
         location,
         description,
+        price,
         owner: ownerId,
       });
 
@@ -124,6 +128,17 @@ const RealEstateProfile: React.FC = () => {
           onChange={(e) => setDescription(e.target.value)}
           error={!!errors.description}
           helperText={errors.description}
+        />
+
+<TextField
+          fullWidth
+          label="Price"
+          variant="outlined"
+          margin="normal"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          error={!!errors.price}
+          helperText={errors.price}
         />
 
         <StyledButton onClick={handleSubmit}>Publish Property</StyledButton>
