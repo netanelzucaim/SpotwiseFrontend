@@ -1,7 +1,11 @@
+import { Link } from 'react-router-dom';
+
 const BrandHeading = () => {
   return (
-    <header className="relative w-full flex flex-col items-center text-center p-4 z-10 text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-      <h1 className="fw-bold">SpotWise</h1>
+    <header className="flex flex-col items-center text-center p-4 text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+      <Link to="/home" className="text-white text-decoration-none">
+        <h1 className="fw-bold">SpotWise</h1>
+      </Link>
       <p className="text-sm text-gray-200">
         Your Vision, The Perfect Location.
       </p>
