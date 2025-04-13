@@ -107,7 +107,7 @@ const logout = async () => {
         });
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        localStorage.removeItem('id');
+        localStorage.removeItem('userId');
     } catch (error) {
         console.error('Failed to logout', error);
         throw error;
