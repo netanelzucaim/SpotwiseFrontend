@@ -6,11 +6,22 @@ export interface Coordinates {
     lon: number;
   }
 
+  const extractCoordinatesFromURL = (locationURL: string): { lat: number; lon: number } | null => {
+    const googleMapsRegex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+    const coordsInURL = locationURL.match(googleMapsRegex);
+  
+    if (coordsInURL) {
+      const lat = parseFloat(coordsInURL[1]);
+      const lon = parseFloat(coordsInURL[2]);
+      return { lat, lon };
+    }
+  
+    return null;
+  };
+
 const MapService = {
     async getLatLonForAddress(fullAddress: string, locationURL: string): Promise<Coordinates | null> {
         const cached = localStorage.getItem(fullAddress);
-        const googleMapsRegex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
-        const coordsInURL = locationURL.match(googleMapsRegex);
       
         if (cached) {
           console.log("Cached coordinates for address:", fullAddress, ":", cached);
@@ -22,14 +33,11 @@ const MapService = {
           return null;
         }
 
-        if (coordsInURL) {
-          // Extract latitude and longitude from the URL
-          const lat = parseFloat(coordsInURL[1]);
-          const lon = parseFloat(coordsInURL[2]);
-          const coords = { lat, lon };
-          localStorage.setItem(fullAddress, JSON.stringify(coords));
-          console.log("Coordinates extracted from URL:", coords);
-          return coords;
+        const coordsFromURL = extractCoordinatesFromURL(locationURL);
+        if (coordsFromURL) {
+          localStorage.setItem(fullAddress, JSON.stringify(coordsFromURL));
+          console.log("Coordinates extracted from URL:", coordsFromURL);
+          return coordsFromURL;
         }
        
         try {

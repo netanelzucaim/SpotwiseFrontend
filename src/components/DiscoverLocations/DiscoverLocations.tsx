@@ -7,7 +7,7 @@ import "../../styles/DiscoverLocations.css";
 
 
 interface RealEstateWithUser extends RealEstate {
-  userFullName?: string; // Optional full name of the owner
+  userFullName?: string; 
 }
 
 const DiscoverLocations: React.FC = () => {
@@ -15,7 +15,7 @@ const DiscoverLocations: React.FC = () => {
     const [visibleCount, setVisibleCount] = useState(6); // Number of cards to show initially
     const [selectedRealEstate, setSelectedRealEstate] = useState<RealEstateWithUser | null>(null);
     const [filteredRealEstates, setFilteredRealEstates] = useState<RealEstateWithUser[]>([]);
-    const [filterText, setFilterText] = useState(""); // State for the filter input
+    const [filterText, setFilterText] = useState(""); 
 
 
   
@@ -26,10 +26,10 @@ const DiscoverLocations: React.FC = () => {
       
           const realEstatesWithUserNames = await Promise.all(
             data.map(async (realEstate) => {
-              const user = await UserService.getUser(realEstate.owner); // Fetch user by ID
+              const user = await UserService.getUser(realEstate.owner); 
               return {
                 ...realEstate,
-                userFullName: user.fullName, // Add full name to the real estate object
+                userFullName: user.fullName, 
               };
             })
           );

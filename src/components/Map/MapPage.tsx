@@ -22,9 +22,9 @@ const MapPage: FC = () => {
   const location = useLocation();
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<maptilersdk.Map | null>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]); // Refs for each real estate item
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [realEstates, setRealEstates] = useState<iRealestate[]>([]);
-  const [markers, setMarkers] = useState<maptilersdk.Marker[]>([]); // Reactive state for markers
+  const [markers, setMarkers] = useState<maptilersdk.Marker[]>([]); 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [failedIndexes, setFailedIndexes] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +49,7 @@ const MapPage: FC = () => {
 
     marker.getElement().addEventListener("click", () => {
       setSelectedIndex(index);
-      scrollToItem(index); // Scroll to the clicked item
+      scrollToItem(index); 
     });
   };
 
@@ -74,17 +74,16 @@ const MapPage: FC = () => {
     });
 
     const fetchRealEstatesWithUserNames = async () => {
-      try {
         // Fetch all real estates
         const data = await RealEstateService.getAll();
 
         // Fetch user names for each real estate
         const realEstatesWithUserNames = await Promise.all(
           data.map(async (realEstate) => {
-            const user = await UserService.getUser(realEstate.owner); // Fetch user by ID
+            const user = await UserService.getUser(realEstate.owner); 
             return {
               ...realEstate,
-              ownerFullName: user.fullName, // Add full name to the real estate object
+              ownerFullName: user.fullName, 
             };
           })
         );
@@ -96,7 +95,7 @@ const MapPage: FC = () => {
           const fullAddress = `${listing.address}, ${listing.city}`;
 
             try {
-              const coords = await MapService.getLatLonForAddress(fullAddress, listing.location); // Use await here
+              const coords = await MapService.getLatLonForAddress(fullAddress, listing.location); 
               console.log("Fetched coordinates:", coords, fullAddress);
               if (coords) {
                 addMarker(coords, listing, index);
@@ -108,26 +107,20 @@ const MapPage: FC = () => {
               console.error(`Error fetching coordinates for ${fullAddress}:`, error);
             }
           }
-        }
-       catch (error) {
-        setError(
-          "Awkward... it seems like we can't see our locations... Please check your internet or try again later."
-        );
-        console.error("Error fetching real estates:", error);
-      }
+        
     };
 
     fetchRealEstatesWithUserNames();
-  }, []); // Run only once when the component mounts
+  }, []); 
 
   useEffect(() => {
     if (location.state && markers.length > 0 && markers[location.state.index]) {
       console.log("Markers are ready, moving to location...");
       setSelectedIndex(location.state.index);
       handleListingClick(location.state.index);
-      scrollToItem(location.state.index); // Scroll to the selected item
+      scrollToItem(location.state.index); 
     }
-  }, [location, markers]); // Reactively check when markers are ready
+  }, [location, markers]); 
 
   const handleListingClick = (index: number) => {
     if (!map.current) return;
@@ -137,7 +130,7 @@ const MapPage: FC = () => {
     map.current.flyTo({ center: [lng, lat], zoom: 16 });
     marker.togglePopup();
     setSelectedIndex(index);
-    scrollToItem(index); // Scroll to the clicked item
+    scrollToItem(index);
   };
 
   return (
@@ -195,13 +188,13 @@ const MapPage: FC = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            gap: 2, // Space between items
+            gap: 2, 
           }}
         >
           {realEstates.map((listing, index) => (
             <Box
               key={index}
-              ref={(el) => (itemRefs.current[index] = el as HTMLDivElement | null)} // Assign ref to each item
+              ref={(el) => (itemRefs.current[index] = el as HTMLDivElement | null)} 
               sx={{
                 backgroundColor: selectedIndex === index ? "#d0e8ff" : "#fff",
                 borderRadius: 1,

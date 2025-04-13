@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 
 interface RealEstateWithUser extends RealEstate {
-  userFullName?: string; // Optional full name of the owner
+  userFullName?: string; 
 }
 
 interface RealEstateModalProps {
@@ -89,7 +89,7 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, index, on
         backgroundColor: "rgba(0, 0, 0, 0.8)", 
       },
     }}
-    onClick={() => handleDiscoverLocation()} // Add click handler here
+    onClick={() => handleDiscoverLocation()} 
   >
     Discover This Location
   </Box>
