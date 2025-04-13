@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import userService from "../../services/user_service";
 import RealEstateService from "../../services/realestate-service";
 import MapService from "../../services/map-service";
-import { ProfileWrapper, GlassForm, StyledButton } from "../../styles/ProfilePageStyle";
+import {
+  ProfileWrapper,
+  GlassForm,
+  StyledButton,
+} from "../../styles/ProfilePageStyle";
 import { TextField, Typography, Autocomplete } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -17,8 +21,9 @@ const RealEstateProfile: React.FC = () => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [addressOptions, setAddressOptions] = useState<AddressSuggestion[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<AddressSuggestion | null>(null);
-  
+  const [selectedAddress, setSelectedAddress] =
+    useState<AddressSuggestion | null>(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -73,8 +78,8 @@ const RealEstateProfile: React.FC = () => {
       const suggestions = await MapService.getAddressSuggestions(input);
       setAddressOptions(suggestions);
     }
-  };  
-  
+  };
+
   return (
     <ProfileWrapper>
       <GlassForm elevation={3}>
@@ -93,28 +98,28 @@ const RealEstateProfile: React.FC = () => {
           helperText={errors.city}
         />
 
-<Autocomplete
-fullWidth
-  options={addressOptions}
-  getOptionLabel={(option) => option.label}
-  filterOptions={(x) => x}
-  onInputChange={(_, value) => handleAddressSearch(value)}
-  onChange={(_, value) => {
-    setSelectedAddress(value);
-    setAddress(value?.label || "");
-  }}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      fullWidth
-      label="Address"
-      variant="outlined"
-      margin="normal"
-      error={!!errors.address}
-      helperText={errors.address}
-    />
-  )}
-/>
+        <Autocomplete
+          fullWidth
+          options={addressOptions}
+          getOptionLabel={(option) => option.label}
+          filterOptions={(x) => x}
+          onInputChange={(_, value) => handleAddressSearch(value)}
+          onChange={(_, value) => {
+            setSelectedAddress(value);
+            setAddress(value?.label || "");
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              fullWidth
+              label="Address"
+              variant="outlined"
+              margin="normal"
+              error={!!errors.address}
+              helperText={errors.address}
+            />
+          )}
+        />
 
         <TextField
           fullWidth
@@ -151,7 +156,11 @@ fullWidth
 
         <StyledButton onClick={handleSubmit}>Publish Property</StyledButton>
 
-        {message && <Typography sx={{ color: "green", marginTop: "1rem" }}>{message}</Typography>}
+        {message && (
+          <Typography sx={{ color: "green", marginTop: "1rem" }}>
+            {message}
+          </Typography>
+        )}
       </GlassForm>
     </ProfileWrapper>
   );
