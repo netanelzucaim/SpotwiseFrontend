@@ -45,31 +45,8 @@ const EvaluationPopup: React.FC<Props> = ({
           <LinearProgress />
         ) : evaluationResult ? (
           <>
-            <Typography variant="h6" align="center">
-              Success Rate:
-            </Typography>
-            <Typography
-              variant="h4"
-              align="center"
-              color="primary"
-              sx={{ fontWeight: 'bold', mb: 2 }}
-            >
-              {evaluationResult.successRate}%
-            </Typography>
-
-            <Typography variant="subtitle1">Demographics:</Typography>
             <Typography variant="body2" gutterBottom>
-              {evaluationResult.demographicsExplanation}
-            </Typography>
-
-            <Typography variant="subtitle1">Competition:</Typography>
-            <Typography variant="body2" gutterBottom>
-              {evaluationResult.competitionExplanation}
-            </Typography>
-
-            <Typography variant="subtitle1">Location:</Typography>
-            <Typography variant="body2">
-              {evaluationResult.locationExplanation}
+              {evaluationResult.cleanText}
             </Typography>
           </>
         ) : (

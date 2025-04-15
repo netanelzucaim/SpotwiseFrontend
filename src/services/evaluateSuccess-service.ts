@@ -12,10 +12,7 @@ export interface EvaluationRequest {
 }
 
 export interface EvaluationResponse {
-  successRate: number;
-  demographicsExplanation: string;
-  competitionExplanation: string;
-  locationExplanation: string;
+  cleanText: string;
 }
 
 export async function evaluateProperty(
@@ -71,7 +68,6 @@ Explanation:
 1. Demographics: <One short sentence>
 2. Competition: <One short sentence>
 3. Location: <One short sentence>
----
 
 ### Business:
 ${JSON.stringify(businessDescription, null, 2)}
@@ -92,7 +88,7 @@ Please provide only the structured answer in the requested format.
 
 
 async function callHuggingFaceAPI(prompt: string): Promise<string> {
-  const modelId = "mistralai/Mistral-7B-Instruct-v0.1";
+  const modelId = "mistralai/Mixtral-8x7B-Instruct-v0.1";
   const apiUrl = `https://api-inference.huggingface.co/models/${modelId}`;
 
   try {
@@ -120,37 +116,10 @@ async function callHuggingFaceAPI(prompt: string): Promise<string> {
 function parseEvaluationResponse(generatedText: string): EvaluationResponse {
   console.log(generatedText);
 
-  const structuredStart = generatedText.indexOf("requested format");
+  const structuredStart = generatedText.lastIndexOf("Success Rate:");
   const cleanText = structuredStart !== -1
     ? generatedText.slice(structuredStart)
-    : generatedText;
+    : "Could't evaluate success";
 
-  const successRateMatch = cleanText.match(/Success Rate:\s*(\d{1,3})%?/i);
-  const successRate = successRateMatch ? parseInt(successRateMatch[1], 10) : 0;
-
-  const demographicsMatch = cleanText.match(/1\. Demographics:\s*(.+)/i);
-  const competitionMatch = cleanText.match(/2\. Competition:\s*(.+)/i);
-  const locationMatch = cleanText.match(/3\. Location:\s*(.+)/i);
-
-  const demographicsExplanation = demographicsMatch?.[1]?.trim() || "No demographic insight available.";
-  const competitionExplanation = competitionMatch?.[1]?.trim() || "No competition insight available.";
-  const locationExplanation = locationMatch?.[1]?.trim() || "No location insight available.";
-
-  if (successRateMatch === null && !demographicsMatch && !competitionMatch && !locationMatch) {
-    throw new Error("Failed to find a valid evaluation block in the generated text.");
-  }
-
-  console.log("Parsed Evaluation:", {
-    successRate,
-    demographicsExplanation,
-    competitionExplanation,
-    locationExplanation,
-  });
-
-  return {
-    successRate,
-    demographicsExplanation,
-    competitionExplanation,
-    locationExplanation,
-  };
+  return {cleanText};
 }
