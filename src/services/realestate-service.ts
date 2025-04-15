@@ -7,6 +7,7 @@ export interface RealEstate {
   description: string;
   area: string;
   location: string;
+  price: number;
   _id?: string;
 }
 
