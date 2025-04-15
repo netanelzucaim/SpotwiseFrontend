@@ -1,0 +1,28 @@
+.evaluation-loading {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  .evaluation-loading-text {
+    margin-left: 10px;
+  }
+  
+  .evaluation-content {
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .evaluation-progress {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .evaluation-percentage {
+    margin-top: 10px;
+  }
+  
+  .evaluation-explanation {
+    margin-top: 10px;
+  }
+  
