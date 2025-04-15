@@ -130,7 +130,7 @@ const RealEstateProfile: React.FC = () => {
           helperText={errors.description}
         />
 
-<TextField
+        <TextField
           fullWidth
           label="Price"
           variant="outlined"
@@ -139,6 +139,9 @@ const RealEstateProfile: React.FC = () => {
           onChange={(e) => setPrice(e.target.value)}
           error={!!errors.price}
           helperText={errors.price}
+          InputProps={{
+            endAdornment: <Typography sx={{ marginLeft: "8px" }}>ILS</Typography>,
+          }}
         />
 
         <StyledButton onClick={handleSubmit}>Publish Property</StyledButton>
