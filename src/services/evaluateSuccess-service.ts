@@ -120,13 +120,11 @@ async function callHuggingFaceAPI(prompt: string): Promise<string> {
 function parseEvaluationResponse(generatedText: string): EvaluationResponse {
   console.log(generatedText);
 
-  // Step 1: Trim unwanted preamble (like "Please provide..." or other leading content)
   const structuredStart = generatedText.indexOf("requested format");
   const cleanText = structuredStart !== -1
     ? generatedText.slice(structuredStart)
     : generatedText;
 
-  // Step 2: Proceed with parsing the cleaned text
   const successRateMatch = cleanText.match(/Success Rate:\s*(\d{1,3})%?/i);
   const successRate = successRateMatch ? parseInt(successRateMatch[1], 10) : 0;
 
