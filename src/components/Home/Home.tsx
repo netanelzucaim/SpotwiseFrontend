@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -10,8 +10,11 @@ import {
 import Box from "@mui/material/Box";
 import "../../styles/Home.css";
 import userService from "../../services/user_service"; 
+import PopupDialog from "../Chatbot/chatbotPopup";
+import ChatbotButton from "../Chatbot/chatbotPopup";
 
 const HomePage: React.FC = () => {
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const isLoggedIn = Boolean(localStorage.getItem("userId"));
 
@@ -202,6 +205,7 @@ const HomePage: React.FC = () => {
               </CardContent>
             </Card>
           ))}
+          <ChatbotButton />
         </Box>
       )}
     </div>
