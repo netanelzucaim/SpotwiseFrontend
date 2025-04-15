@@ -70,7 +70,7 @@ const MapPage: FC = () => {
       setError("Akward... it seems like we can't see our locations... Please check your internet or try again later.");
       console.error("Cannot fetch realEstate: ", err);
     });
-  }, []);
+  }, [initialCenter.lat, initialCenter.lng]);
 
   const handleListingClick = (index: number) => {
     if (!map.current) return;
