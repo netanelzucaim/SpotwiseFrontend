@@ -9,11 +9,12 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import "../../styles/Home.css";
-import userService from "../../services/user_service"; 
+import userService from "../../services/user_service";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const isLoggedIn = Boolean(localStorage.getItem("userId"));
+  const userMode = localStorage.getItem("mode"); // Get the mode from localStorage
 
   const navItems = [
     { label: "Home", icon: "🏠", path: "/home" },
@@ -29,7 +30,7 @@ const HomePage: React.FC = () => {
             onClick: async () => {
               try {
                 await userService.logout();
-                navigate("/login"); 
+                navigate("/login");
               } catch (error) {
                 console.error("Failed to logout:", error);
               }
@@ -41,7 +42,7 @@ const HomePage: React.FC = () => {
             label: "Login",
             icon: "🔑",
             path: "/login",
-            onClick: () => navigate("/login"), 
+            onClick: () => navigate("/login"),
           },
         ]),
   ];
@@ -68,7 +69,7 @@ const HomePage: React.FC = () => {
             <Button
               key={index}
               startIcon={<span>{item.icon}</span>}
-              onClick={item.onClick} 
+              onClick={item.onClick}
               sx={{
                 backgroundColor: "",
                 "&:hover": { backgroundColor: "#588C87" },
@@ -161,22 +162,26 @@ const HomePage: React.FC = () => {
                 </Typography>
                 {feature.title === "Create Your Property" ? (
                   <Box sx={{ display: "flex", gap: 2, marginTop: "1rem" }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      onClick={() => navigate("/real-estate-profile")}
-                    >
-                      Real Estate
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      fullWidth
-                      onClick={() => navigate("/business-profile")}
-                    >
-                      Business
-                    </Button>
+                    {userMode === "Real Estate" && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        onClick={() => navigate("/real-estate-profile")}
+                      >
+                        Real Estate
+                      </Button>
+                    )}
+                    {userMode === "Business" && (
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        fullWidth
+                        onClick={() => navigate("/business-profile")}
+                      >
+                        Business
+                      </Button>
+                    )}
                   </Box>
                 ) : (
                   <Button

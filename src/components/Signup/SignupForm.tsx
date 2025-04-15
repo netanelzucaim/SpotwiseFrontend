@@ -2,8 +2,18 @@ import { useState, useRef, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { register, IUser } from "../../services/user_service";
 import { uploadPhoto } from "../../services/file-service";
-import { TextField, Avatar, Typography } from "@mui/material";
-import { ProfileWrapper, GlassForm, StyledButton } from "../../styles/ProfilePageStyle";
+import {
+  TextField,
+  Avatar,
+  Typography,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material";
+import {
+  ProfileWrapper,
+  GlassForm,
+  StyledButton,
+} from "../../styles/ProfilePageStyle";
 import logo from "../../../public/logo.png";
 
 const SignupForm = () => {
@@ -14,6 +24,7 @@ const SignupForm = () => {
     phoneNumber: "",
     password: "",
     confirmPassword: "",
+    mode: "Real Estate", // Default mode
   });
 
   const [errors, setErrors] = useState({
@@ -39,6 +50,15 @@ const SignupForm = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
+  };
+
+  const handleModeChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newMode: string
+  ) => {
+    if (newMode) {
+      setFormData({ ...formData, mode: newMode });
+    }
   };
 
   const imgSelected = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -84,19 +104,23 @@ const SignupForm = () => {
       const url = imgSrc ? await uploadPhoto(imgSrc) : "";
       setImgUrl(url);
       const user: IUser = {
-        username: formData.username,
-        fullName: formData.fullName,
-        email: formData.email,
-        password: formData.password,
+        ...formData,
         imgUrl: url,
-        phoneNumber: formData.phoneNumber,
       };
       const response = await register(user);
 
       if (response.status === 201) {
         setSuccess("Registration successful! You can now sign in.");
         setError(null);
-        setFormData({ username: "", fullName: "", email: "", phoneNumber: "", password: "", confirmPassword: "" });
+        setFormData({
+          username: "",
+          fullName: "",
+          email: "",
+          phoneNumber: "",
+          password: "",
+          confirmPassword: "",
+          mode: "Real Estate",
+        });
         setImgSrc(null);
         setImgUrl("");
         navigate("/home");
@@ -116,36 +140,127 @@ const SignupForm = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        overflow: 'hidden'
+        overflow: "hidden",
       }}
     >
       <GlassForm elevation={3}>
-        <Typography variant="h5" sx={{ color: "#fff", textAlign: "center", textShadow: "0 0 10px rgba(255, 255, 255, 0.5)", marginBottom: "20px" }}>
+        <Typography
+          variant="h5"
+          sx={{
+            color: "#fff",
+            textAlign: "center",
+            textShadow: "0 0 10px rgba(255, 255, 255, 0.5)",
+            marginBottom: "20px",
+          }}
+        >
           Sign up & Start your journey
         </Typography>
 
         <div className="form-rows" style={{ marginBottom: "30px" }}>
           <Avatar
             src={imgSrc ? URL.createObjectURL(imgSrc) : logo}
-            sx={{ height: 100, width: 100, cursor: "pointer", boxShadow: "0 0 15px rgba(0, 225, 255, 0.6)" }}
+            sx={{
+              height: 100,
+              width: 100,
+              cursor: "pointer",
+              boxShadow: "0 0 15px rgba(0, 225, 255, 0.6)",
+            }}
             onClick={selectImg}
           />
-          <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
+          <input
+            style={{ display: "none" }}
+            ref={fileInputRef}
+            type="file"
+            onChange={imgSelected}
+          ></input>
         </div>
 
-        <TextField fullWidth label="Username" name="username" value={formData.username} onChange={handleChange} required sx={{ marginBottom: "20px" }} />
-        <TextField fullWidth label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} sx={{ marginBottom: "20px" }} />
+        <ToggleButtonGroup
+          value={formData.mode}
+          exclusive
+          onChange={handleModeChange}
+          sx={{ marginBottom: "20px" }}
+        >
+          <ToggleButton value="Real Estate">Real Estate</ToggleButton>
+          <ToggleButton value="Business">Business</ToggleButton>
+        </ToggleButtonGroup>
 
-        <TextField fullWidth label="Email" name="email" type="email" value={formData.email} onChange={handleChange} required error={!!errors.email} helperText={errors.email} sx={{ marginBottom: "20px" }} />
-        <TextField fullWidth label="Phone Number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} sx={{ marginBottom: "20px" }} />
+        <TextField
+          fullWidth
+          label="Username"
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+          sx={{ marginBottom: "20px" }}
+        />
+        <TextField
+          fullWidth
+          label="Full Name"
+          name="fullName"
+          value={formData.fullName}
+          onChange={handleChange}
+          sx={{ marginBottom: "20px" }}
+        />
 
-        <TextField fullWidth label="Password" name="password" type="password" value={formData.password} onChange={handleChange} required error={!!errors.password} helperText={errors.password} sx={{ marginBottom: "20px" }} />
-        <TextField fullWidth label="Confirm Password" name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} required error={!!errors.confirmPassword} helperText={errors.confirmPassword} sx={{ marginBottom: "30px" }} />
+        <TextField
+          fullWidth
+          label="Email"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          error={!!errors.email}
+          helperText={errors.email}
+          sx={{ marginBottom: "20px" }}
+        />
+        <TextField
+          fullWidth
+          label="Phone Number"
+          name="phoneNumber"
+          value={formData.phoneNumber}
+          onChange={handleChange}
+          sx={{ marginBottom: "20px" }}
+        />
 
-        <StyledButton type="submit" onClick={handleSubmit} sx={{ marginBottom: "20px" }}>Sign up</StyledButton>
+        <TextField
+          fullWidth
+          label="Password"
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          error={!!errors.password}
+          helperText={errors.password}
+          sx={{ marginBottom: "20px" }}
+        />
+        <TextField
+          fullWidth
+          label="Confirm Password"
+          name="confirmPassword"
+          type="password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          required
+          error={!!errors.confirmPassword}
+          helperText={errors.confirmPassword}
+          sx={{ marginBottom: "30px" }}
+        />
+
+        <StyledButton
+          type="submit"
+          onClick={handleSubmit}
+          sx={{ marginBottom: "20px" }}
+        >
+          Sign up
+        </StyledButton>
 
         <div className="error-messages">
-          {errors.imgSrc && <Typography color="error">{errors.imgSrc}</Typography>}
+          {errors.imgSrc && (
+            <Typography color="error">{errors.imgSrc}</Typography>
+          )}
           {error && <Typography color="error">{error}</Typography>}
           {success && <Typography color="success.main">{success}</Typography>}
         </div>
