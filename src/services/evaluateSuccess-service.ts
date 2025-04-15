@@ -1,6 +1,9 @@
 import { Business } from "./business_service";
 import { RealEstate } from "./realestate-service";
 import { HUGGING_API_KEY } from "../config";
+import MapService from "./map-service";
+import BusinessService from "./business_service";
+import DemographicsService from "./demographics-service";
 import axios from "axios";
 
 export interface EvaluationRequest {
@@ -15,122 +18,84 @@ export interface EvaluationResponse {
   locationExplanation: string;
 }
 
-async function getCoordinates(address: string): Promise<{ lat: number; lon: number; zip?: string }> {
-  const response = await axios.get("https://nominatim.openstreetmap.org/search", {
-    params: {
-      q: address,
-      format: "json",
-      addressdetails: 1,
-      limit: 1,
-    },
-  });
-
-  if (response.data && response.data.length > 0) {
-    const loc = response.data[0];
-    const zip = loc.address?.postcode;
-    return {
-      lat: parseFloat(loc.lat),
-      lon: parseFloat(loc.lon),
-      zip,
-    };
-  }
-
-  throw new Error("Could not get coordinates for address");
-}
-
-async function getNearbyBusinesses(lat: number, lon: number): Promise<string[]> {
-  const radius = 500;
-  const query = `
-    [out:json];
-    (
-      node["shop"](around:${radius},${lat},${lon});
-      node["amenity"](around:${radius},${lat},${lon});
-    );
-    out body;
-  `;
-
-  const response = await axios.post(
-    "https://overpass-api.de/api/interpreter",
-    query,
-    { headers: { "Content-Type": "text/plain" } }
-  );
-
-  const elements = response.data?.elements || [];
-  const businessNames = elements
-    .map((el: any) => el.tags?.name)
-    .filter((name: string) => name);
-
-  return businessNames;
-}
-
-async function getCensusDemographics(zip: string): Promise<{ population?: string; income?: string }> {
-  try {
-    const response = await axios.get("https://api.census.gov/data/2019/acs/acs5", {
-      params: {
-        get: "B01003_001E,B19013_001E",
-        for: `zip code tabulation area:${zip}`,
-      },
-    });
-
-    const data = response.data;
-    if (data && data.length > 1) {
-      const [population, income] = data[1];
-      return { population, income };
-    }
-  } catch (error) {
-    console.warn("Census data not available:", error.message);
-  }
-
-  return {};
-}
-
 export async function evaluateProperty(
   requestData: EvaluationRequest
 ): Promise<EvaluationResponse> {
   const { businessDescription, realEstateDetails } = requestData;
 
   try {
-    const coords = await getCoordinates(realEstateDetails.address);
-    const nearbyBusinesses = await getNearbyBusinesses(coords.lat, coords.lon);
-    const demographics = coords.zip ? await getCensusDemographics(coords.zip) : {};
+    const coords = await MapService.getLatLonForAddress(realEstateDetails.address);
+    if (!coords.lat || !coords.lon) {
+      throw new Error("Unable to retrieve coordinates for the given address.");
+    }
 
-    const prompt = `
-    You are a senior business consultant evaluating a business's potential success at a specific real estate location.
-    
-    Base your evaluation on:
-    - The business model
-    - Nearby competition and existing businesses
-    - Local demographics (population, income)
-    
-    Return your response using this exact format:
-    
-    Success Rate: XX%
-    Explanation:
-    1. Demographics: <One short sentence>
-    2. Competition: <One short sentence>
-    3. Location: <One short sentence>
-    
-    Avoid long responses or disclaimers. Be concise and use only one line per explanation point.
-    
-    ---
-    
-    Business Description:
-    ${JSON.stringify(businessDescription, null, 2)}
-    
-    Real Estate Details:
-    ${JSON.stringify(realEstateDetails, null, 2)}
-    
-    Nearby Businesses (500m radius):
-    ${nearbyBusinesses.slice(0, 10).join(", ") || "None found"}
-    
-    Demographic Info:
-    Population: ${demographics.population || "N/A"}
-    Median Household Income: $${demographics.income || "N/A"}
-    `;
+    const nearbyBusinesses = await BusinessService.getNearbyBusinesses(coords.lat, coords.lon);
+    if (!nearbyBusinesses || nearbyBusinesses.length === 0) {
+      console.warn("No nearby businesses found.");
+    }
 
-    const modelId = "mistralai/Mistral-7B-Instruct-v0.1";
-    const apiUrl = `https://api-inference.huggingface.co/models/${modelId}`;
+    const demographics = coords.zip
+      ? await DemographicsService.getCensusDemographics(coords.zip)
+      : {};
+    if (!demographics.population || !demographics.income) {
+      console.warn("Demographic data is incomplete or unavailable.");
+    }
 
+    const prompt = buildPrompt(businessDescription, realEstateDetails, nearbyBusinesses, demographics);
+
+    const response = await callHuggingFaceAPI(prompt);
+
+    return parseEvaluationResponse(response);
+  } catch (error: any) {
+    console.error("Evaluation failed:", error.message);
+    throw new Error(`Evaluation failed: ${error.message}`);
+  }
+}
+
+function buildPrompt(
+  businessDescription: Business,
+  realEstateDetails: RealEstate,
+  nearbyBusinesses: string[],
+  demographics: { population?: string; income?: string }
+): string {
+  return `
+You are a senior business consultant. You will evaluate the potential success of a business at a given location.
+
+### Instructions:
+Use the business info, real estate data, nearby businesses, and demographics to assess viability.
+
+Respond ONLY using the following exact format:
+---
+Success Rate: <a number between 0 and 100>%
+Explanation:
+1. Demographics: <One short sentence>
+2. Competition: <One short sentence>
+3. Location: <One short sentence>
+---
+
+### Business:
+${JSON.stringify(businessDescription, null, 2)}
+
+### Real Estate:
+${JSON.stringify(realEstateDetails, null, 2)}
+
+### Nearby Businesses:
+${nearbyBusinesses.slice(0, 10).join(", ") || "None"}
+
+### Demographics:
+Population: ${demographics.population || "N/A"}
+Median Income: $${demographics.income || "N/A"}
+
+Please provide only the structured answer in the requested format.
+`;
+}
+
+
+async function callHuggingFaceAPI(prompt: string): Promise<string> {
+  const modelId = "mistralai/Mistral-7B-Instruct-v0.1";
+  const apiUrl = `https://api-inference.huggingface.co/models/${modelId}`;
+
+  try {
     const response = await axios.post(
       apiUrl,
       { inputs: prompt },
@@ -143,46 +108,51 @@ export async function evaluateProperty(
     );
 
     const data = response.data;
-    const generatedText: string =
-      Array.isArray(data) && data[0]?.generated_text
-        ? data[0].generated_text
-        : data.generated_text || "";
-
-    const successRateMatch = generatedText.match(/Success Rate:\s*(\d{1,3})%/i);
-    const explanationMatch = generatedText.match(/Explanation:\s*(.+)/is);
-
-    const successRate = successRateMatch ? parseInt(successRateMatch[1], 10) : 0;
-    const explanation = explanationMatch ? explanationMatch[1].trim() : "";
-
-    let demographicsExplanation = "";
-    let competitionExplanation = "";
-    let locationExplanation = "";
-
-    const lines = explanation
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => !!line);
-
-    lines.forEach((line) => {
-      if (line.toLowerCase().startsWith("1. demographics:")) {
-        demographicsExplanation = line.replace(/^1\. Demographics:\s*/i, "");
-      }
-      if (line.toLowerCase().startsWith("2. competition:")) {
-        competitionExplanation = line.replace(/^2\. Competition:\s*/i, "");
-      }
-      if (line.toLowerCase().startsWith("3. location:")) {
-        locationExplanation = line.replace(/^3\. Location:\s*/i, "");
-      }
-    });
-
-    return {
-      successRate,
-      demographicsExplanation,
-      competitionExplanation,
-      locationExplanation,
-    };
+    return Array.isArray(data) && data[0]?.generated_text
+      ? data[0].generated_text
+      : data.generated_text || "";
   } catch (error: any) {
-    console.error("Evaluation failed:", error.message);
-    throw new Error(`Evaluation failed: ${error.message}`);
+    console.error("Error calling Hugging Face API:", error.message);
+    throw new Error("Failed to retrieve response from Hugging Face API.");
   }
+}
+
+function parseEvaluationResponse(generatedText: string): EvaluationResponse {
+  console.log(generatedText);
+
+  // Step 1: Trim unwanted preamble (like "Please provide..." or other leading content)
+  const structuredStart = generatedText.indexOf("requested format");
+  const cleanText = structuredStart !== -1
+    ? generatedText.slice(structuredStart)
+    : generatedText;
+
+  // Step 2: Proceed with parsing the cleaned text
+  const successRateMatch = cleanText.match(/Success Rate:\s*(\d{1,3})%?/i);
+  const successRate = successRateMatch ? parseInt(successRateMatch[1], 10) : 0;
+
+  const demographicsMatch = cleanText.match(/1\. Demographics:\s*(.+)/i);
+  const competitionMatch = cleanText.match(/2\. Competition:\s*(.+)/i);
+  const locationMatch = cleanText.match(/3\. Location:\s*(.+)/i);
+
+  const demographicsExplanation = demographicsMatch?.[1]?.trim() || "No demographic insight available.";
+  const competitionExplanation = competitionMatch?.[1]?.trim() || "No competition insight available.";
+  const locationExplanation = locationMatch?.[1]?.trim() || "No location insight available.";
+
+  if (successRateMatch === null && !demographicsMatch && !competitionMatch && !locationMatch) {
+    throw new Error("Failed to find a valid evaluation block in the generated text.");
+  }
+
+  console.log("Parsed Evaluation:", {
+    successRate,
+    demographicsExplanation,
+    competitionExplanation,
+    locationExplanation,
+  });
+
+  return {
+    successRate,
+    demographicsExplanation,
+    competitionExplanation,
+    locationExplanation,
+  };
 }
