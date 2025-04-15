@@ -18,6 +18,7 @@ interface iRealestate {
   owner: string;
   description: string;
   area: string;
+  price: number;
   location: string;
 }
 
@@ -149,6 +150,7 @@ const MapPage: FC = () => {
                   <div className="listing-meta">
                     Area: {listing.area}
                     <br />
+                    Price: {listing.price} ₪
                   </div>
                   <button className="evaluate-button" onClick={() => handleEvaluate(index)}>
                     Evaluate your business success here

@@ -11,7 +11,7 @@ import { RealEstate } from "../../services/realestate-service";
 
 
 interface RealEstateWithUser extends RealEstate {
-  userFullName?: string; // Optional full name of the owner
+  userFullName?: string; 
 }
 
 interface RealEstateModalProps {
@@ -55,7 +55,6 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }
             position: "relative",
           }}
         >
-          {/* Button Overlay */}
   <Box
     sx={{
       position: "absolute",
@@ -77,7 +76,7 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }
         backgroundColor: "rgba(0, 0, 0, 0.8)", 
       },
     }}
-    onClick={() => console.log("Discover This Location clicked!")} // Add click handler here
+    onClick={() => console.log("Discover This Location clicked!")}
   >
     Discover This Location
   </Box>
@@ -95,6 +94,9 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }
           </Typography>
           <Typography variant="body1" color="text.secondary" gutterBottom>
             <strong>Description:</strong> {realEstate.description}
+          </Typography>
+          <Typography variant="body1" color="text.secondary" gutterBottom>
+            <strong>Price:</strong> {realEstate.price}
           </Typography>
           <Typography variant="body1" color="text.secondary" gutterBottom>
             <strong>Area:</strong> {realEstate.area}
