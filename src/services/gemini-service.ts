@@ -13,7 +13,7 @@ const GeminiService = {
     }
 
     try {
-      const prompt = buildPrompt(dream, realEstateData)
+      const prompt = await buildPrompt(dream, realEstateData)
       const response = await axios.post(
         `${API_URL}?key=${GEMINI_API_KEY}`,
         {
