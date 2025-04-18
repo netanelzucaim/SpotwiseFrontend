@@ -1,12 +1,17 @@
 import { FC, useRef, useEffect, useState } from "react";
 import * as maptilersdk from "@maptiler/sdk";
 import "@maptiler/sdk/dist/maptiler-sdk.css";
-import { Box, Typography, Button, Paper } from "@mui/material";
+import { Box, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import { MAPTILER_API_KEY } from "../../config";
 import MapService from "../../services/map-service";
 import RealEstateService from "../../services/realestate-service";
 import { useLocation } from "react-router-dom";
 import UserService from "../../services/user_service";
+import BusinessService, { Business } from "../../services/business_service";
+import { evaluateProperty, EvaluationResponse } from '../../services/evaluateSuccess-service';
+import EvaluationPopup from '../../components/EvaluateSuccess/EvaluationPopup';
+import { useNavigate } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 interface iRealestate {
@@ -31,6 +36,13 @@ const MapPage: FC = () => {
   const [failedIndexes, setFailedIndexes] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
 
+  const [evaluationModalOpen, setEvaluationModalOpen] = useState(false);
+  const [evaluationResult, setEvaluationResult] = useState<EvaluationResponse | null>(null);
+  const [evaluationLoading, setEvaluationLoading] = useState(false);
+
+  const [noBusinessPopupOpen, setNoBusinessPopupOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const initialCenter = { lng: 34.792501, lat: 31.973001 };
   const initialZoom = 14;
@@ -55,6 +67,35 @@ const MapPage: FC = () => {
       scrollToItem(index); 
     });
   };
+
+  const handleEvaluate = async (index: number) => {
+    console.log(index)
+    setEvaluationModalOpen(true);
+    setEvaluationResult(null);
+    setEvaluationLoading(true);
+    try {
+      const property = realEstates[index];
+      const businessDescription: Business | null = await BusinessService.getCurrentUserBusiness();
+
+      if (!businessDescription) {
+        setEvaluationModalOpen(false);
+        setNoBusinessPopupOpen(true);
+        return;
+      }
+
+      const realEstateDetails = property;
+      const result = await evaluateProperty({
+        businessDescription,
+        realEstateDetails
+      });
+      setEvaluationResult(result);
+    } catch (err) {
+      console.error("Error during evaluation:", err);
+    } finally {
+      setEvaluationLoading(false);
+    }
+  };
+
 
   const scrollToItem = (index: number) => {
     if (itemRefs.current[index]) {
@@ -121,6 +162,7 @@ const MapPage: FC = () => {
   }, [location, markers]); 
 
   const handleListingClick = (index: number) => {
+    console.log(index)
     if (!map.current) return;
     const marker = markers[index];
     if (!marker) return;
@@ -215,8 +257,32 @@ const MapPage: FC = () => {
                     Area: {listing.area}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
+                    Price: {listing.price} ₪
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
                     Owner: {listing.ownerFullName || listing.owner}
                   </Typography>
+                  <Button
+  variant="contained"
+  sx={{
+    marginTop: '12px',
+    width: '100%',
+    padding: '10px',
+    fontSize: '0.9rem',
+    backgroundColor: 'white',
+    color: 'black',
+    borderRadius: '8px',
+    fontWeight: 500,
+    letterSpacing: '0.5px',
+    transition: 'background-color 0.3s ease',
+    '&:hover': {
+      backgroundColor: '#115293',
+    },
+  }}
+  onClick={() => handleEvaluate(index)}
+>
+Evaluate your business success here
+</Button>
                 </>
             </Box>
           ))}
@@ -227,6 +293,35 @@ const MapPage: FC = () => {
       <Box flex={1} position="relative">
         <Box ref={mapContainer} sx={{ width: "100%", height: "100%" }} />
       </Box>
+      <EvaluationPopup
+        open={evaluationModalOpen}
+        onClose={() => setEvaluationModalOpen(false)}
+        evaluationResult={evaluationResult}
+        evaluationLoading={evaluationLoading}
+      />
+      <Dialog open={noBusinessPopupOpen} onClose={() => setNoBusinessPopupOpen(false)}>
+        <DialogTitle>
+          Business Profile Required
+          <IconButton
+            aria-label="close"
+            onClick={() => setNoBusinessPopupOpen(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <p>It seems like you don't own a business. Create your business profile now!</p>
+          <Button variant="contained" color="primary" onClick={() => navigate('/business-profile')}>
+            Go to Business Profile
+          </Button>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };

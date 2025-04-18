@@ -7,6 +7,11 @@ export interface Coordinates {
   }
 
   const extractCoordinatesFromURL = (locationURL: string): { lat: number; lon: number } | null => {
+    if (!locationURL) {
+      console.error("locationURL is undefined or null");
+      return null;
+    }
+    
     const googleMapsRegex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
     const coordsInURL = locationURL.match(googleMapsRegex);
   
