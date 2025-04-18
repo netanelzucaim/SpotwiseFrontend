@@ -6,8 +6,9 @@ import {
   TextField,
   Avatar,
   Typography,
-  ToggleButton,
-  ToggleButtonGroup,
+  Modal,
+  Button,
+  Box,
 } from "@mui/material";
 import {
   ProfileWrapper,
@@ -24,7 +25,6 @@ const SignupForm = () => {
     phoneNumber: "",
     password: "",
     confirmPassword: "",
-    mode: "Real Estate", // Default mode
   });
 
   const [errors, setErrors] = useState({
@@ -38,6 +38,10 @@ const SignupForm = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [imgSrc, setImgSrc] = useState<File | null>(null);
   const [imgUrl, setImgUrl] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedMode, setSelectedMode] = useState<
+    "Real Estate" | "Business" | null
+  >(null);
 
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -50,15 +54,6 @@ const SignupForm = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
-  };
-
-  const handleModeChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newMode: string
-  ) => {
-    if (newMode) {
-      setFormData({ ...formData, mode: newMode });
-    }
   };
 
   const imgSelected = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -100,29 +95,26 @@ const SignupForm = () => {
     setErrors(newErrors);
     if (hasErrors) return;
 
+    setModalOpen(true); // Open the modal for mode selection
+  };
+
+  const handleModeSelection = async (mode: "Real Estate" | "Business") => {
+    setSelectedMode(mode);
+    setModalOpen(false); // Close the modal
+
     try {
       const url = imgSrc ? await uploadPhoto(imgSrc) : "";
       setImgUrl(url);
       const user: IUser = {
         ...formData,
         imgUrl: url,
+        mode, // Pass the selected mode
       };
       const response = await register(user);
 
       if (response.status === 201) {
         setSuccess("Registration successful! You can now sign in.");
         setError(null);
-        setFormData({
-          username: "",
-          fullName: "",
-          email: "",
-          phoneNumber: "",
-          password: "",
-          confirmPassword: "",
-          mode: "Real Estate",
-        });
-        setImgSrc(null);
-        setImgUrl("");
         navigate("/home");
       } else {
         setError(response.message || "Registration failed. Please try again.");
@@ -174,16 +166,6 @@ const SignupForm = () => {
             onChange={imgSelected}
           ></input>
         </div>
-
-        <ToggleButtonGroup
-          value={formData.mode}
-          exclusive
-          onChange={handleModeChange}
-          sx={{ marginBottom: "20px" }}
-        >
-          <ToggleButton value="Real Estate">Real Estate</ToggleButton>
-          <ToggleButton value="Business">Business</ToggleButton>
-        </ToggleButtonGroup>
 
         <TextField
           fullWidth
@@ -265,6 +247,50 @@ const SignupForm = () => {
           {success && <Typography color="success.main">{success}</Typography>}
         </div>
       </GlassForm>
+
+      {/* Modal for selecting mode */}
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        aria-labelledby="mode-selection-modal"
+        aria-describedby="select-real-estate-or-business"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+            textAlign: "center",
+          }}
+        >
+          <Typography id="mode-selection-modal" variant="h6" component="h2">
+            Select Your Mode
+          </Typography>
+          <Box
+            sx={{ display: "flex", gap: 2, justifyContent: "center", mt: 2 }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleModeSelection("Real Estate")}
+            >
+              Real Estate
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => handleModeSelection("Business")}
+            >
+              Business
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </ProfileWrapper>
   );
 };
