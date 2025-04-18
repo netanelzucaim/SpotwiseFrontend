@@ -67,7 +67,6 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, index, on
             position: "relative",
           }}
         >
-          {/* Button Overlay */}
   <Box
     sx={{
       position: "absolute",
@@ -107,6 +106,9 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, index, on
           </Typography>
           <Typography variant="body1" color="text.secondary" gutterBottom>
             <strong>Description:</strong> {realEstate.description}
+          </Typography>
+          <Typography variant="body1" color="text.secondary" gutterBottom>
+            <strong>Price:</strong> {realEstate.price}
           </Typography>
           <Typography variant="body1" color="text.secondary" gutterBottom>
             <strong>Area:</strong> {realEstate.area}
