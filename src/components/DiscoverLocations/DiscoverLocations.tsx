@@ -12,7 +12,7 @@ interface RealEstateWithUser extends RealEstate {
 
 const DiscoverLocations: React.FC = () => {
     const [realEstates, setRealEstates] = useState<RealEstateWithUser[]>([]);
-    const [visibleCount, setVisibleCount] = useState(6); // Number of cards to show initially
+    const [visibleCount, setVisibleCount] = useState(6); 
     const [selectedRealEstate, setSelectedRealEstate] = useState<RealEstateWithUser | null>(null);
     const [filteredRealEstates, setFilteredRealEstates] = useState<RealEstateWithUser[]>([]);
     const [filterText, setFilterText] = useState(""); 
@@ -35,7 +35,7 @@ const DiscoverLocations: React.FC = () => {
           );
       
           setRealEstates(realEstatesWithUserNames);
-          setFilteredRealEstates(realEstatesWithUserNames); // Initialize filtered list
+          setFilteredRealEstates(realEstatesWithUserNames); 
         } catch (error) {
           console.error("Error fetching real estates:", error);
         }
@@ -53,7 +53,7 @@ const DiscoverLocations: React.FC = () => {
     };
 
     const showMoreCards = () => {
-        setVisibleCount((prevCount) => prevCount + 6); // Show 6 more cards on each click
+        setVisibleCount((prevCount) => prevCount + 6); 
       };
 
       const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {

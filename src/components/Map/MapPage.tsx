@@ -7,12 +7,7 @@ import MapService from "../../services/map-service";
 import RealEstateService from "../../services/realestate-service";
 import { useLocation } from "react-router-dom";
 import UserService from "../../services/user_service";
-import BusinessService, { Business } from "../../services/business_service";
-import { evaluateProperty, EvaluationResponse } from '../../services/evaluateSuccess-service';
-import EvaluationPopup from '../../components/EvaluateSuccess/EvaluationPopup';
-import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogTitle, DialogContent, IconButton, Button } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+
 
 interface iRealestate {
   city: string;
@@ -36,13 +31,6 @@ const MapPage: FC = () => {
   const [failedIndexes, setFailedIndexes] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
 
-  const [evaluationModalOpen, setEvaluationModalOpen] = useState(false);
-  const [evaluationResult, setEvaluationResult] = useState<EvaluationResponse | null>(null);
-  const [evaluationLoading, setEvaluationLoading] = useState(false);
-
-  const [noBusinessPopupOpen, setNoBusinessPopupOpen] = useState(false);
-
-  const navigate = useNavigate();
 
   const initialCenter = { lng: 34.792501, lat: 31.973001 };
   const initialZoom = 14;
@@ -80,7 +68,6 @@ const MapPage: FC = () => {
   useEffect(() => {
     if (map.current) return;
 
-    // Initialize the map
     map.current = new maptilersdk.Map({
       container: mapContainer.current!,
       style: maptilersdk.MapStyle.STREETS,
@@ -89,10 +76,8 @@ const MapPage: FC = () => {
     });
 
     const fetchRealEstatesWithUserNames = async () => {
-        // Fetch all real estates
         const data = await RealEstateService.getAll();
 
-        // Fetch user names for each real estate
         const realEstatesWithUserNames = await Promise.all(
           data.map(async (realEstate) => {
             const user = await UserService.getUser(realEstate.owner); 
@@ -105,7 +90,6 @@ const MapPage: FC = () => {
 
         setRealEstates(realEstatesWithUserNames);
 
-        // Add markers for each real estate
         for (const [index, listing] of realEstatesWithUserNames.entries()) {
           const fullAddress = `${listing.address}, ${listing.city}`;
 
@@ -122,7 +106,6 @@ const MapPage: FC = () => {
               console.error(`Error fetching coordinates for ${fullAddress}:`, error);
             }
           }
-        
     };
 
     fetchRealEstatesWithUserNames();
@@ -148,32 +131,6 @@ const MapPage: FC = () => {
     scrollToItem(index);
   };
 
-  const handleEvaluate = async (index: number) => {
-    setEvaluationModalOpen(true);
-    setEvaluationResult(null);
-    setEvaluationLoading(true);
-    try {
-      const property = realEstates[index];
-      const businessDescription: Business | null = await BusinessService.getCurrentUserBusiness();
-
-      if (!businessDescription) {
-        setEvaluationModalOpen(false);
-        setNoBusinessPopupOpen(true);
-        return;
-      }
-
-      const realEstateDetails = property;
-      const result = await evaluateProperty({
-        businessDescription,
-        realEstateDetails
-      });
-      setEvaluationResult(result);
-    } catch (err) {
-      console.error("Error during evaluation:", err);
-    } finally {
-      setEvaluationLoading(false);
-    }
-  };
 
   return (
     <Box display="flex" width="100%" height="100vh">
@@ -250,11 +207,6 @@ const MapPage: FC = () => {
               }}
               onClick={() => handleListingClick(index)}
             >
-              {failedIndexes.has(index) ? (
-                <Typography color="error" variant="body2">
-                  Seems like we can't pinpoint this one...
-                </Typography>
-              ) : (
                 <>
                   <Typography variant="h6" gutterBottom>
                     {listing.city}, {listing.address}
@@ -266,7 +218,6 @@ const MapPage: FC = () => {
                     Owner: {listing.ownerFullName || listing.owner}
                   </Typography>
                 </>
-              )}
             </Box>
           ))}
         </Box>
@@ -277,71 +228,6 @@ const MapPage: FC = () => {
         <Box ref={mapContainer} sx={{ width: "100%", height: "100%" }} />
       </Box>
     </Box>
-          <div className="error-popup">
-            {error}
-            <button onClick={() => setError(null)}>X</button>
-          </div>
-        )}
-        {realEstates.map((listing, index) => (
-          <div key={index} className="listing-card">
-            <button 
-              className={`listing-button ${selectedIndex === index ? 'selected' : ''}`}
-              onClick={() => handleListingClick(index)}
-            >
-              {failedIndexes.has(index) ? (
-                <>Seems like we can't pinpoint this one...</>
-              ) : (
-                <>
-                  <strong>{listing.city}</strong>
-                  <br />
-                  {listing.address}
-                  <div className="listing-meta">
-                    Area: {listing.area}
-                    <br />
-                    Price: {listing.price} ₪
-                  </div>
-                  <button className="evaluate-button" onClick={() => handleEvaluate(index)}>
-                    Evaluate your business success here
-                  </button>
-                </>
-              )}
-            </button>
-          </div>
-        ))}
-      </div>
-      <div className="map-wrap">
-        <div ref={mapContainer} className="map" />
-      </div>
-      <EvaluationPopup
-        open={evaluationModalOpen}
-        onClose={() => setEvaluationModalOpen(false)}
-        evaluationResult={evaluationResult}
-        evaluationLoading={evaluationLoading}
-      />
-      <Dialog open={noBusinessPopupOpen} onClose={() => setNoBusinessPopupOpen(false)}>
-        <DialogTitle>
-          Business Profile Required
-          <IconButton
-            aria-label="close"
-            onClick={() => setNoBusinessPopupOpen(false)}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <p>It seems like you don't own a business. Create your business profile now!</p>
-          <Button variant="contained" color="primary" onClick={() => navigate('/business-profile')}>
-            Go to Business Profile
-          </Button>
-        </DialogContent>
-      </Dialog>
-    </div>
   );
 };
 
