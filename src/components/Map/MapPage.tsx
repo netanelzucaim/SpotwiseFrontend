@@ -1,16 +1,19 @@
-import { FC, useRef, useEffect, useState } from 'react';
-import * as maptilersdk from '@maptiler/sdk';
+import { FC, useRef, useEffect, useState } from "react";
+import * as maptilersdk from "@maptiler/sdk";
 import "@maptiler/sdk/dist/maptiler-sdk.css";
-import '../../styles/MapPage.css';
-import { MAPTILER_API_KEY } from '../../config';
-import MapService from '../../services/map-service';
-import RealEstateService from '../../services/realestate-service';
+import { Box, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import { MAPTILER_API_KEY } from "../../config";
+import MapService from "../../services/map-service";
+import RealEstateService from "../../services/realestate-service";
+import { useLocation } from "react-router-dom";
+import UserService from "../../services/user_service";
 import BusinessService, { Business } from "../../services/business_service";
 import { evaluateProperty, EvaluationResponse } from '../../services/evaluateSuccess-service';
 import EvaluationPopup from '../../components/EvaluateSuccess/EvaluationPopup';
 import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogTitle, DialogContent, IconButton, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import "./../../styles/MapPage.css";
+
 
 interface iRealestate {
   city: string;
@@ -20,13 +23,16 @@ interface iRealestate {
   area: string;
   price: number;
   location: string;
+  ownerFullName?: string;
 }
 
 const MapPage: FC = () => {
+  const location = useLocation();
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<maptilersdk.Map | null>(null);
-  const markersRef = useRef<maptilersdk.Marker[]>([]);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [realEstates, setRealEstates] = useState<iRealestate[]>([]);
+  const [markers, setMarkers] = useState<maptilersdk.Marker[]>([]); 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [failedIndexes, setFailedIndexes] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -48,53 +54,17 @@ const MapPage: FC = () => {
     const popupContent = `<strong>${listing.address}, ${listing.city}</strong><p>${listing.description}</p>`;
     const popup = new maptilersdk.Popup().setHTML(popupContent);
     const marker = new maptilersdk.Marker().setLngLat([coords.lon, coords.lat]).setPopup(popup).addTo(map.current);
-    markersRef.current[index] = marker;
-    marker.getElement().addEventListener('click', () => {
+
+    setMarkers((prevMarkers) => {
+      const updatedMarkers = [...prevMarkers];
+      updatedMarkers[index] = marker;
+      return updatedMarkers;
+    });
+
+    marker.getElement().addEventListener("click", () => {
       setSelectedIndex(index);
+      scrollToItem(index); 
     });
-  };
-
-  useEffect(() => {
-    if (map.current) return;
-    map.current = new maptilersdk.Map({
-      container: mapContainer.current!,
-      style: maptilersdk.MapStyle.STREETS,
-      center: [initialCenter.lng, initialCenter.lat],
-      zoom: initialZoom
-    });
-
-    RealEstateService.getAll().then((listings: iRealestate[]) => {
-      setRealEstates(listings);
-      listings.forEach((listing, index) => {
-        const fullAddress = `${listing.address}, ${listing.city}`;
-        const cachedCoords = localStorage.getItem(fullAddress);
-        if (cachedCoords) {
-          const coords = JSON.parse(cachedCoords);
-          addMarker({ lat: coords.lat, lon: coords.lon }, listing, index);
-        } else {
-          MapService.getLatLonForAddress(fullAddress).then(coords => {
-            if (coords) {
-              addMarker(coords, listing, index);
-            } else {
-              setFailedIndexes(prev => new Set(prev).add(index));
-            }
-          }).catch(err => console.error("Geocoding API error: ", err));
-        }
-      });
-    }).catch(err => {
-      setError("Awkward... it seems like we can't see our locations... Please check your internet or try again later.");
-      console.error("Cannot fetch realEstate: ", err);
-    });
-  }, []);
-
-  const handleListingClick = (index: number) => {
-    if (!map.current) return;
-    const marker = markersRef.current[index];
-    if (!marker) return;
-    const { lng, lat } = marker.getLngLat();
-    map.current.flyTo({ center: [lng, lat], zoom: 16 });
-    marker.togglePopup();
-    setSelectedIndex(index);
   };
 
   const handleEvaluate = async (index: number) => {
@@ -124,46 +94,157 @@ const MapPage: FC = () => {
     }
   };
 
+
+  const scrollToItem = (index: number) => {
+    if (itemRefs.current[index]) {
+      itemRefs.current[index]?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (map.current) return;
+
+    map.current = new maptilersdk.Map({
+      container: mapContainer.current!,
+      style: maptilersdk.MapStyle.STREETS,
+      center: [initialCenter.lng, initialCenter.lat],
+      zoom: initialZoom,
+    });
+
+    const fetchRealEstatesWithUserNames = async () => {
+        const data = await RealEstateService.getAll();
+
+        const realEstatesWithUserNames = await Promise.all(
+          data.map(async (realEstate) => {
+            const user = await UserService.getUser(realEstate.owner); 
+            return {
+              ...realEstate,
+              ownerFullName: user.fullName, 
+            };
+          })
+        );
+
+        setRealEstates(realEstatesWithUserNames);
+
+        for (const [index, listing] of realEstatesWithUserNames.entries()) {
+          const fullAddress = `${listing.address}, ${listing.city}`;
+
+            try {
+              const coords = await MapService.getLatLonForAddress(fullAddress, listing.location); 
+              if (coords) {
+                addMarker(coords, listing, index);
+              } else {
+                setFailedIndexes((prev) => new Set(prev).add(index));
+              }
+            } catch (error) {
+              console.error(`Error fetching coordinates for ${fullAddress}:`, error);
+            }
+          }
+    };
+
+    fetchRealEstatesWithUserNames();
+  }, []); 
+
+  useEffect(() => {
+    if (location.state && markers.length > 0 && markers[location.state.index]) {
+      setSelectedIndex(location.state.index);
+      handleListingClick(location.state.index);
+      scrollToItem(location.state.index); 
+    }
+  }, [location, markers]); 
+
+  const handleListingClick = (index: number) => {
+    if (!map.current) return;
+    const marker = markers[index];
+    if (!marker) return;
+    const { lng, lat } = marker.getLngLat();
+    map.current.flyTo({ center: [lng, lat], zoom: 16 });
+    marker.togglePopup();
+    setSelectedIndex(index);
+    scrollToItem(index);
+  };
+
+
   return (
-    <div className="map-page-container">
-      <div className="info-panel">
-        <h2>Properties For You</h2>
+    <Box display="flex" width="100%" height="100vh">
+      {/* Info Panel */}
+      <Box
+        sx={{
+          width: 350,
+          backgroundColor: "#f0f0f0",
+          padding: 2,
+          overflowY: "auto",
+          borderRight: "1px solid #de9292",
+        }}
+      >
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{
+            marginTop: 4,
+            textAlign: "center",
+          }}
+        >
+          Properties For You
+        </Typography>
         {error && (
-          <div className="error-popup">
+          <Paper className="error-popup">
             {error}
-            <button onClick={() => setError(null)}>X</button>
-          </div>
+            <Button
+              onClick={() => setError(null)}
+              className="error-popup button"
+            >
+              X
+            </Button>
+          </Paper>
         )}
-        {realEstates.map((listing, index) => (
-          <div key={index} className="listing-card">
-            <button 
-              className={`listing-button ${selectedIndex === index ? 'selected' : ''}`}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2, 
+          }}
+        >
+          {realEstates.map((listing, index) => (
+            <Box
+              key={index}
+              ref={(el) => (itemRefs.current[index] = el as HTMLDivElement | null)} 
+              className={`listing-box ${selectedIndex === index ? "selected" : ""}`}
               onClick={() => handleListingClick(index)}
             >
-              {failedIndexes.has(index) ? (
-                <>Seems like we can't pinpoint this one...</>
-              ) : (
                 <>
-                  <strong>{listing.city}</strong>
-                  <br />
-                  {listing.address}
-                  <div className="listing-meta">
+                  <Typography variant="h6" gutterBottom>
+                    {listing.city}, {listing.address}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
                     Area: {listing.area}
-                    <br />
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
                     Price: {listing.price} ₪
-                  </div>
-                  <button className="evaluate-button" onClick={() => handleEvaluate(index)}>
-                    Evaluate your business success here
-                  </button>
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Owner: {listing.ownerFullName || listing.owner}
+                  </Typography>
+                  <Button
+  variant="contained"
+  className="evaluate-button"
+  onClick={() => handleEvaluate(index)}
+>
+Evaluate your business success here
+</Button>
                 </>
-              )}
-            </button>
-          </div>
-        ))}
-      </div>
-      <div className="map-wrap">
-        <div ref={mapContainer} className="map" />
-      </div>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+
+      {/* Map */}
+      <Box flex={1} position="relative">
+        <Box ref={mapContainer} sx={{ width: "100%", height: "100%" }} />
+      </Box>
       <EvaluationPopup
         open={evaluationModalOpen}
         onClose={() => setEvaluationModalOpen(false)}
@@ -193,7 +274,7 @@ const MapPage: FC = () => {
           </Button>
         </DialogContent>
       </Dialog>
-    </div>
+    </Box>
   );
 };
 

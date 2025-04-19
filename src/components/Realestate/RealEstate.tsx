@@ -8,6 +8,7 @@ import {
   Box,
 } from "@mui/material";
 import { RealEstate } from "../../services/realestate-service";
+import { useNavigate } from "react-router-dom";
 
 
 interface RealEstateWithUser extends RealEstate {
@@ -16,10 +17,21 @@ interface RealEstateWithUser extends RealEstate {
 
 interface RealEstateModalProps {
   realEstate: RealEstateWithUser;
+  index: number;
   onClose: () => void;
 }
 
-const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }) => {
+const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, index, onClose }) => {
+  const navigate = useNavigate();
+
+  const handleDiscoverLocation = () => {
+    navigate("/map", {
+      state: {
+        index,
+      },
+    });
+  };
+  
   return (
     <Box
       sx={{
@@ -76,7 +88,7 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }
         backgroundColor: "rgba(0, 0, 0, 0.8)", 
       },
     }}
-    onClick={() => console.log("Discover This Location clicked!")}
+    onClick={() => handleDiscoverLocation()} 
   >
     Discover This Location
   </Box>
