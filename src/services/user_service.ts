@@ -15,7 +15,7 @@ export interface IUser {
   _id?: string;
   accessToken?: string;
   refreshToken?: string;
-  mode?: "Real Estate" | "Business" | "none"; // Added mode field
+  mode?: "Real Estate" | "Business" | "none"; 
 }
 
 export const register = (user: IUser) => {

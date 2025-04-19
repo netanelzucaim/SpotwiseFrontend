@@ -16,6 +16,7 @@ import {
   StyledButton,
 } from "../../styles/ProfilePageStyle";
 import logo from "../../../public/logo.png";
+import "../../styles/signup.css";
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -95,12 +96,12 @@ const SignupForm = () => {
     setErrors(newErrors);
     if (hasErrors) return;
 
-    setModalOpen(true); // Open the modal for mode selection
+    setModalOpen(true);
   };
 
   const handleModeSelection = async (mode: "Real Estate" | "Business") => {
     setSelectedMode(mode);
-    setModalOpen(false); // Close the modal
+    setModalOpen(false);
 
     try {
       const url = imgSrc ? await uploadPhoto(imgSrc) : "";
@@ -108,7 +109,7 @@ const SignupForm = () => {
       const user: IUser = {
         ...formData,
         imgUrl: url,
-        mode, // Pass the selected mode
+        mode,
       };
       const response = await register(user);
 
@@ -136,15 +137,7 @@ const SignupForm = () => {
       }}
     >
       <GlassForm elevation={3}>
-        <Typography
-          variant="h5"
-          sx={{
-            color: "#fff",
-            textAlign: "center",
-            textShadow: "0 0 10px rgba(255, 255, 255, 0.5)",
-            marginBottom: "20px",
-          }}
-        >
+        <Typography variant="h5" className="signup-title">
           Sign up & Start your journey
         </Typography>
 
@@ -248,7 +241,6 @@ const SignupForm = () => {
         </div>
       </GlassForm>
 
-      {/* Modal for selecting mode */}
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}

@@ -34,7 +34,7 @@ const LoginForm = () => {
     if (usernameInputRef.current?.value && passwordInputRef.current?.value) {
       const user: IUser = {
         username: usernameInputRef.current?.value,
-        password: usernameInputRef.current?.value,
+        password: passwordInputRef.current?.value,
       };
       try {
         await login({ username: user.username!, password: user.password! });
@@ -56,13 +56,12 @@ const LoginForm = () => {
 
       const userId = localStorage.getItem("userId");
       if (userId) {
-        const user = await getUser(userId); // Fetch user data
+        const user = await getUser(userId);
         console.log("user mode is", user.mode);
         if (user.mode == "none") {
-          setModalOpen(true); // Open the modal if mode is not set
+          setModalOpen(true); 
         } else {
-          navigate("/home"); // Navigate directly if mode is already set
-        }
+          navigate("/home");        }
       } else {
         setError("User ID not found. Please try again.");
       }
@@ -77,14 +76,14 @@ const LoginForm = () => {
 
   const handleModeSelection = async (selectedMode: string) => {
     setMode(selectedMode);
-    setModalOpen(false); // Close the modal
+    setModalOpen(false); 
 
     const userId = localStorage.getItem("userId");
     if (userId) {
       try {
-        await updateUser(userId, { mode: selectedMode }); // Update the user's mode
-        localStorage.setItem("mode", selectedMode); // Save the mode locally
-        navigate("/home"); // Navigate to home after selection
+        await updateUser(userId, { mode: selectedMode });
+        localStorage.setItem("mode", selectedMode);
+        navigate("/home");
       } catch (err) {
         setError("Failed to update user mode. Please try again.");
         console.error("Error updating user mode:", err);
@@ -176,7 +175,6 @@ const LoginForm = () => {
         </GlassForm>
       </Box>
 
-      {/* Modal for selecting mode */}
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}

@@ -14,7 +14,7 @@ import userService from "../../services/user_service";
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const isLoggedIn = Boolean(localStorage.getItem("userId"));
-  const userMode = localStorage.getItem("mode"); // Get the mode from localStorage
+  const userMode = localStorage.getItem("mode"); 
 
   const navItems = [
     { label: "Home", icon: "🏠", path: "/home" },
