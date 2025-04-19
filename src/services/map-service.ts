@@ -33,7 +33,6 @@ const MapService = {
         const cached = localStorage.getItem(fullAddress);
       
         if (cached) {
-          console.log("Cached coordinates for address:", fullAddress, ":", cached);
           return JSON.parse(cached);
         }
         
@@ -45,7 +44,6 @@ const MapService = {
         const coordsFromURL = extractCoordinatesFromURL(locationURL);
         if (coordsFromURL) {
           localStorage.setItem(fullAddress, JSON.stringify(coordsFromURL));
-          console.log("Coordinates extracted from URL:", coordsFromURL);
           return coordsFromURL;
         }
        

@@ -12,6 +12,7 @@ import { evaluateProperty, EvaluationResponse } from '../../services/evaluateSuc
 import EvaluationPopup from '../../components/EvaluateSuccess/EvaluationPopup';
 import { useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
+import "./../../styles/MapPage.css";
 
 
 interface iRealestate {
@@ -60,8 +61,6 @@ const MapPage: FC = () => {
       return updatedMarkers;
     });
 
-    console.log(`Marker added for index ${index}:`, coords);
-
     marker.getElement().addEventListener("click", () => {
       setSelectedIndex(index);
       scrollToItem(index); 
@@ -69,7 +68,6 @@ const MapPage: FC = () => {
   };
 
   const handleEvaluate = async (index: number) => {
-    console.log(index)
     setEvaluationModalOpen(true);
     setEvaluationResult(null);
     setEvaluationLoading(true);
@@ -136,11 +134,9 @@ const MapPage: FC = () => {
 
             try {
               const coords = await MapService.getLatLonForAddress(fullAddress, listing.location); 
-              console.log("Fetched coordinates:", coords, fullAddress);
               if (coords) {
                 addMarker(coords, listing, index);
               } else {
-                console.log(`Failed to fetch coordinates for ${fullAddress}`);
                 setFailedIndexes((prev) => new Set(prev).add(index));
               }
             } catch (error) {
@@ -154,7 +150,6 @@ const MapPage: FC = () => {
 
   useEffect(() => {
     if (location.state && markers.length > 0 && markers[location.state.index]) {
-      console.log("Markers are ready, moving to location...");
       setSelectedIndex(location.state.index);
       handleListingClick(location.state.index);
       scrollToItem(location.state.index); 
@@ -162,7 +157,6 @@ const MapPage: FC = () => {
   }, [location, markers]); 
 
   const handleListingClick = (index: number) => {
-    console.log(index)
     if (!map.current) return;
     const marker = markers[index];
     if (!marker) return;
@@ -197,29 +191,11 @@ const MapPage: FC = () => {
           Properties For You
         </Typography>
         {error && (
-          <Paper
-            sx={{
-              backgroundColor: "#eb8686",
-              color: "#a00",
-              padding: 2,
-              marginBottom: 2,
-              border: "1px solid #a00",
-              borderRadius: 2,
-              position: "relative",
-            }}
-          >
+          <Paper className="error-popup">
             {error}
             <Button
               onClick={() => setError(null)}
-              sx={{
-                position: "absolute",
-                top: 4,
-                right: 6,
-                background: "transparent",
-                color: "#a00",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
+              className="error-popup button"
             >
               X
             </Button>
@@ -236,17 +212,7 @@ const MapPage: FC = () => {
             <Box
               key={index}
               ref={(el) => (itemRefs.current[index] = el as HTMLDivElement | null)} 
-              sx={{
-                backgroundColor: selectedIndex === index ? "#d0e8ff" : "#fff",
-                borderRadius: 1,
-                padding: 2,
-                boxShadow: selectedIndex === index ? "0px 4px 10px rgba(0, 0, 0, 0.2)" : "none",
-                transition: "background-color 0.3s ease, box-shadow 0.3s ease",
-                "&:hover": {
-                  backgroundColor: "#f0f0f0",
-                  cursor: "pointer",
-                },
-              }}
+              className={`listing-box ${selectedIndex === index ? "selected" : ""}`}
               onClick={() => handleListingClick(index)}
             >
                 <>
@@ -264,21 +230,7 @@ const MapPage: FC = () => {
                   </Typography>
                   <Button
   variant="contained"
-  sx={{
-    marginTop: '12px',
-    width: '100%',
-    padding: '10px',
-    fontSize: '0.9rem',
-    backgroundColor: 'white',
-    color: 'black',
-    borderRadius: '8px',
-    fontWeight: 500,
-    letterSpacing: '0.5px',
-    transition: 'background-color 0.3s ease',
-    '&:hover': {
-      backgroundColor: '#115293',
-    },
-  }}
+  className="evaluate-button"
   onClick={() => handleEvaluate(index)}
 >
 Evaluate your business success here
