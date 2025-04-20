@@ -142,14 +142,6 @@ const MapPage: FC = () => {
             } catch (error) {
               console.error(`Error fetching coordinates for ${fullAddress}:`, error);
             }
-          }).catch(err => console.error("Geocoding API error: ", err));
-        }
-      });
-    }).catch(err => {
-      setError("Akward... it seems like we can't see our locations... Please check your internet or try again later.");
-      console.error("Cannot fetch realEstate: ", err);
-    });
-  }, [initialCenter.lat, initialCenter.lng]);
           }
     };
 
