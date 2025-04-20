@@ -3,7 +3,6 @@ import { BrowserRouter as Router, useLocation } from "react-router-dom";
 import AppMenu from "./menu/appMenu";
 import AppRoutes from "./Router";
 import "../styles/App.css";
-import BotpressChat from "./Chatbot/ChatbotButton";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -19,7 +18,6 @@ const App: React.FC = () => {
 const AppWrapper: React.FC = () => (
   <Router>
     <App />
-    <BotpressChat />
   </Router>
 );
 
