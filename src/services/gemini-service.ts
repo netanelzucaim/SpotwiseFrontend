@@ -1,4 +1,6 @@
 import axios from 'axios';
+import fetchNearbyAmenities from './location-analytics-service';
+import MapService from './map-service';
 import { GEMINI_API_KEY } from '../config';
 
 const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
@@ -11,10 +13,7 @@ const GeminiService = {
     }
 
     try {
-      const prompt = `Given the user dream: "${dream}" and the following real estate data: ${JSON.stringify(
-        realEstateData
-      )}, return the best realestate according to the user's wishes and the reasons in a friendly paragraph as if you are a realestate agent`;
-
+      const prompt = await buildPrompt(dream, realEstateData)
       const response = await axios.post(
         `${API_URL}?key=${GEMINI_API_KEY}`,
         {
@@ -43,6 +42,35 @@ const GeminiService = {
     }
   },
 };
+
+const buildPrompt = async (userDream: string, realEstateData: any[]) =>{
+  const enrichedListings = await Promise.all(
+    realEstateData.map(async (listing) => {
+      const coords = await MapService.getLatLonForAddress(`${listing.address}, ${listing.city}`);
+      const amenities = coords ? await fetchNearbyAmenities(coords.lat, coords.lon) : [];
+      return {
+        ...listing,
+        nearby: amenities,
+        score: amenities.length,
+      };
+    })
+  );
+
+  const prompt = `
+Given the user dream: "${userDream}"
+And the following real estate data (including nearby points of interest and a score):
+${JSON.stringify(enrichedListings, null, 2)}
+
+Return the best real estate match and explain why in a friendly paragraph like a real estate agent.
+Take into account that the answer you give need to be clean and beautiful so i can show it to the user
+without mentioning the id and without ant confusing JSON formatting.
+The answer should give the most information about why the place got the score it got and also
+give another 2 best options under the option you give
+  `;
+
+
+  return prompt;
+}
 
 const handleGeminiApiError = (error: any): string => {
   console.error('Gemini API Error:', error);

@@ -62,8 +62,8 @@ const AppMenu: React.FC = () => {
                 }
               }}
             >
-              {page.icon}
-              {hoveredPage === page.name && <span className="menu-text">{page.name}</span>}
+              <div className="menu-item-icon">{page.icon}</div> 
+              {hoveredPage === page.name && <span className="menu-item-text">{page.name}</span>} 
             </div>
           ))}
         </div>
