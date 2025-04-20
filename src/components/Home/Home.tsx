@@ -9,7 +9,8 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import "../../styles/Home.css";
-import userService from "../../services/user_service";
+import userService from "../../services/user_service"; 
+import BotpressChat from "../Chatbot/ChatbotButton";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -207,6 +208,7 @@ const HomePage: React.FC = () => {
               </CardContent>
             </Card>
           ))}
+          <BotpressChat />
         </Box>
       )}
     </div>
