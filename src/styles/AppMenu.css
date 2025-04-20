@@ -42,4 +42,23 @@
     margin-left: 10px;
     color: white;
   }
+
+  /* Set icon color to black */
+.menu-item-icon {
+  color: #000000; /* Black icon color */
+  transition: color 0.3s ease;
+}
+
+/* Set text color to black */
+.menu-item-text {
+  color: #000000; /* Black text color */
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+/* Optional: Add hover effect */
+.menu-item:hover .menu-item-icon,
+.menu-item:hover .menu-item-text {
+  color: #333333; /* Slightly lighter black on hover */
+}
   
