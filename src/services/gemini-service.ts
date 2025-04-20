@@ -62,7 +62,12 @@ And the following real estate data (including nearby points of interest and a sc
 ${JSON.stringify(enrichedListings, null, 2)}
 
 Return the best real estate match and explain why in a friendly paragraph like a real estate agent.
+Take into account that the answer you give need to be clean and beautiful so i can show it to the user
+without mentioning the id and without ant confusing JSON formatting.
+The answer should give the most information about why the place got the score it got and also
+give another 2 best options under the option you give
   `;
+
 
   return prompt;
 }
