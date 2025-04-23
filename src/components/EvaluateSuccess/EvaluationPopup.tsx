@@ -17,6 +17,7 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 import { EvaluationResponse } from '../../services/evaluateSuccess-service';
+import "../../styles/EvaluationPopup.css";
 
 interface Props {
   open: boolean;
@@ -27,6 +28,7 @@ interface Props {
 
 interface ParsedEvaluation {
   successRate: string;
+  reason: string;
   demographics: string;
   competition: string;
   location: string;
@@ -41,6 +43,7 @@ const formatCleanText = (text: string): ParsedEvaluation => {
   let competition = '';
   let location = '';
   let successRate = 'N/A';
+  let reason = '';
 
   for (const sentence of sentences) {
     const lower = sentence.toLowerCase();
@@ -50,17 +53,24 @@ const formatCleanText = (text: string): ParsedEvaluation => {
       if (match) successRate = match[1];
     }
 
-    if (lower.includes('demographic') && !demographics) {
-      demographics = cleanUpSentence(sentence);
+    if (lower.includes('- reason:') && !reason) {
+      const match = sentence.match(/- Reason:\s*(.+)/i);
+      if (match) reason = cleanUpSentence(match[1]);
+    } else if (lower.includes('demographic') && !demographics) {
+      const match = sentence.match(/- Demographics:\s*(.+)/i);
+      demographics = match ? cleanUpSentence(match[1]) : cleanUpSentence(sentence);
     } else if (lower.includes('competition') && !competition) {
-      competition = cleanUpSentence(sentence);
+      const match = sentence.match(/- Competition:\s*(.+)/i);
+      competition = match ? cleanUpSentence(match[1]) : cleanUpSentence(sentence);
     } else if (lower.includes('location') && !location) {
-      location = cleanUpSentence(sentence);
+      const match = sentence.match(/- Location:\s*(.+)/i);
+      location = match ? cleanUpSentence(match[1]) : cleanUpSentence(sentence);
     }
   }
 
   return {
     successRate,
+    reason: reason || 'No reasoning provided.',
     demographics: demographics || 'No demographic insight available.',
     competition: competition || 'No competition insight available.',
     location: location || 'No location insight available.',
@@ -77,55 +87,57 @@ const EvaluationPopup: React.FC<Props> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
+      <DialogTitle className="popup-title">
         Business Success Evaluation
         <IconButton
           aria-label="close"
           onClick={onClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500]
-          }}
+          className="popup-close-btn"
         >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
-      <DialogContent dividers>
+      <DialogContent dividers className="popup-content">
         {evaluationLoading ? (
-          <LinearProgress />
+          <Box className="popup-loading">
+            <LinearProgress className="popup-progress" />
+            <Typography variant="body2">Loading...</Typography>
+          </Box>
         ) : parsed ? (
           <Stack spacing={3}>
-            <Box display="flex" alignItems="center" gap={1}>
+            <Box className="popup-success-rate">
               <BarChartIcon color="primary" />
               <Typography variant="h6">
                 Success Rate:{' '}
-                <Box component="span" fontWeight="bold" color="primary.main">
+                <Box component="span" className="popup-rate-value">
                   {parsed.successRate}%
                 </Box>
               </Typography>
             </Box>
 
-            <Paper elevation={1} sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
-              <Box display="flex" alignItems="center" gap={1} mb={1}>
+            <Typography variant="body2" className="popup-reason">
+              <strong>Reason:</strong> {parsed.reason}
+            </Typography>
+
+            <Paper elevation={1} className="popup-section">
+              <Box className="popup-section-header">
                 <PeopleIcon color="action" />
                 <Typography variant="subtitle1" fontWeight="bold">Demographics</Typography>
               </Box>
               <Typography variant="body2">{parsed.demographics}</Typography>
             </Paper>
 
-            <Paper elevation={1} sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
-              <Box display="flex" alignItems="center" gap={1} mb={1}>
+            <Paper elevation={1} className="popup-section">
+              <Box className="popup-section-header">
                 <StorefrontIcon color="action" />
                 <Typography variant="subtitle1" fontWeight="bold">Competition</Typography>
               </Box>
               <Typography variant="body2">{parsed.competition}</Typography>
             </Paper>
 
-            <Paper elevation={1} sx={{ p: 2, backgroundColor: '#f9f9f9' }}>
-              <Box display="flex" alignItems="center" gap={1} mb={1}>
+            <Paper elevation={1} className="popup-section">
+              <Box className="popup-section-header">
                 <LocationOnIcon color="action" />
                 <Typography variant="subtitle1" fontWeight="bold">Location</Typography>
               </Box>
@@ -133,7 +145,9 @@ const EvaluationPopup: React.FC<Props> = ({
             </Paper>
           </Stack>
         ) : (
-          <Typography align="center">No result available</Typography>
+          <Typography align="center" sx={{ mt: 3 }}>
+            No result available
+          </Typography>
         )}
       </DialogContent>
     </Dialog>
