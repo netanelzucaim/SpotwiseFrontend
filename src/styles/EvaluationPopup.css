@@ -4,6 +4,7 @@
     border-bottom: 1px solid #ddd;
     position: relative;
     padding: 16px;
+    color: black; 
   }
   
   .popup-close-btn {
@@ -15,31 +16,8 @@
   
   .popup-content {
     padding: 24px !important;
-  }
-  
-  .popup-loading {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  
-  .popup-progress {
-    flex: 1;
-  }
-  
-  .popup-success-rate {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .popup-rate-value {
-    font-weight: bold;
-    color: #1976d2;
-  }
-  
-  .popup-reason {
-    margin-left: 32px;
+    background-color: #ffffff; 
+    color: black;
   }
   
   .popup-section {
@@ -55,3 +33,43 @@
     margin-bottom: 8px;
   }
   
+  .popup-icon {
+    color: #1976d2; 
+  }
+  
+  .dark-mode .popup-title {
+    background-color: #2b2b2b;
+    color: #ffffff; 
+    border-bottom: 1px solid #444;
+  }
+  
+  .dark-mode .popup-close-btn {
+    color: #ffffff !important;
+  }
+  
+  .dark-mode .popup-content {
+    background-color: #1e1e1e;
+    color: #ffffff; 
+  }
+  
+  .dark-mode .popup-section {
+    background-color: #2a2a2a;
+    border-left: 4px solid #7a6fc2; 
+    color: #ffffff; 
+  }
+  
+  .dark-mode .popup-section-header {
+    color: #ffffff; 
+  }
+  
+  .dark-mode .popup-icon {
+    color: #7a6fc2;
+  }
+  
+  .dark-mode .popup-rate-value {
+    color: #7a6fc2; 
+  }
+  
+  .dark-mode .popup-reason {
+    color: #ffffff; 
+  }

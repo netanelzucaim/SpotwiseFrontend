@@ -1,7 +1,7 @@
 import { FC, useRef, useEffect, useState } from "react";
 import * as maptilersdk from "@maptiler/sdk";
 import "@maptiler/sdk/dist/maptiler-sdk.css";
-import { Box, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import { Box, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, IconButton, Switch } from "@mui/material";
 import { MAPTILER_API_KEY } from "../../config";
 import MapService from "../../services/map-service";
 import RealEstateService from "../../services/realestate-service";
@@ -13,7 +13,6 @@ import EvaluationPopup from '../../components/EvaluateSuccess/EvaluationPopup';
 import { useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import "./../../styles/MapPage.css";
-
 
 interface iRealestate {
   city: string;
@@ -32,7 +31,7 @@ const MapPage: FC = () => {
   const map = useRef<maptilersdk.Map | null>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [realEstates, setRealEstates] = useState<iRealestate[]>([]);
-  const [markers, setMarkers] = useState<maptilersdk.Marker[]>([]); 
+  const [markers, setMarkers] = useState<maptilersdk.Marker[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [failedIndexes, setFailedIndexes] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +41,7 @@ const MapPage: FC = () => {
   const [evaluationLoading, setEvaluationLoading] = useState(false);
 
   const [noBusinessPopupOpen, setNoBusinessPopupOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   const navigate = useNavigate();
 
@@ -63,7 +63,7 @@ const MapPage: FC = () => {
 
     marker.getElement().addEventListener("click", () => {
       setSelectedIndex(index);
-      scrollToItem(index); 
+      scrollToItem(index);
     });
   };
 
@@ -94,7 +94,6 @@ const MapPage: FC = () => {
     }
   };
 
-
   const scrollToItem = (index: number) => {
     if (itemRefs.current[index]) {
       itemRefs.current[index]?.scrollIntoView({
@@ -115,46 +114,46 @@ const MapPage: FC = () => {
     });
 
     const fetchRealEstatesWithUserNames = async () => {
-        const data = await RealEstateService.getAll();
+      const data = await RealEstateService.getAll();
 
-        const realEstatesWithUserNames = await Promise.all(
-          data.map(async (realEstate) => {
-            const user = await UserService.getUser(realEstate.owner); 
-            return {
-              ...realEstate,
-              ownerFullName: user.fullName, 
-            };
-          })
-        );
+      const realEstatesWithUserNames = await Promise.all(
+        data.map(async (realEstate) => {
+          const user = await UserService.getUser(realEstate.owner);
+          return {
+            ...realEstate,
+            ownerFullName: user.fullName,
+          };
+        })
+      );
 
-        setRealEstates(realEstatesWithUserNames);
+      setRealEstates(realEstatesWithUserNames);
 
-        for (const [index, listing] of realEstatesWithUserNames.entries()) {
-          const fullAddress = `${listing.address}, ${listing.city}`;
+      for (const [index, listing] of realEstatesWithUserNames.entries()) {
+        const fullAddress = `${listing.address}, ${listing.city}`;
 
-            try {
-              const coords = await MapService.getLatLonForAddress(fullAddress, listing.location); 
-              if (coords) {
-                addMarker(coords, listing, index);
-              } else {
-                setFailedIndexes((prev) => new Set(prev).add(index));
-              }
-            } catch (error) {
-              console.error(`Error fetching coordinates for ${fullAddress}:`, error);
-            }
+        try {
+          const coords = await MapService.getLatLonForAddress(fullAddress, listing.location);
+          if (coords) {
+            addMarker(coords, listing, index);
+          } else {
+            setFailedIndexes((prev) => new Set(prev).add(index));
           }
+        } catch (error) {
+          console.error(`Error fetching coordinates for ${fullAddress}:`, error);
+        }
+      }
     };
 
     fetchRealEstatesWithUserNames();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     if (location.state && markers.length > 0 && markers[location.state.index]) {
       setSelectedIndex(location.state.index);
       handleListingClick(location.state.index);
-      scrollToItem(location.state.index); 
+      scrollToItem(location.state.index);
     }
-  }, [location, markers]); 
+  }, [location, markers]);
 
   const handleListingClick = (index: number) => {
     if (!map.current) return;
@@ -167,109 +166,60 @@ const MapPage: FC = () => {
     scrollToItem(index);
   };
 
-
   return (
-    <Box display="flex" width="100%" height="100vh">
-      {/* Info Panel */}
-      <Box
-        sx={{
-          width: 350,
-          backgroundColor: "#f0f0f0",
-          padding: 2,
-          overflowY: "auto",
-          borderRight: "1px solid #de9292",
-        }}
-      >
-        <Typography
-          variant="h5"
-          gutterBottom
-          sx={{
-            marginTop: 4,
-            textAlign: "center",
-          }}
-        >
-          Properties For You
-        </Typography>
+    <Box className={`map-page-container ${darkMode ? "dark-mode" : ""}`}>
+      <Box className="info-panel">
+        <Box display="flex" alignItems="center" justifyContent="right" gap={1}>
+          <Typography variant="h5" className="info-panel-title" textAlign={"center"}>
+            Properties For You
+          </Typography>
+          <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
+        </Box>
         {error && (
           <Paper className="error-popup">
             {error}
-            <Button
-              onClick={() => setError(null)}
-              className="error-popup button"
-            >
-              X
-            </Button>
+            <Button onClick={() => setError(null)}>X</Button>
           </Paper>
         )}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2, 
-          }}
-        >
+        <Box className="listings-container">
           {realEstates.map((listing, index) => (
             <Box
               key={index}
-              ref={(el) => (itemRefs.current[index] = el as HTMLDivElement | null)} 
+              ref={(el) => (itemRefs.current[index] = el as HTMLDivElement | null)}
               className={`listing-box ${selectedIndex === index ? "selected" : ""}`}
               onClick={() => handleListingClick(index)}
             >
-                <>
-                  <Typography variant="h6" gutterBottom>
-                    {listing.city}, {listing.address}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Area: {listing.area}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Price: {listing.price} ₪
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Owner: {listing.ownerFullName || listing.owner}
-                  </Typography>
-                  <Button
-  variant="contained"
-  className="evaluate-button"
-  onClick={() => handleEvaluate(index)}
->
-Evaluate your business success here
-</Button>
-                </>
+              <Typography variant="h6">{listing.city}, {listing.address}</Typography>
+              <Typography variant="body2">Area: {listing.area}</Typography>
+              <Typography variant="body2">Price: {listing.price} ₪</Typography>
+              <Typography variant="body2">Owner: {listing.ownerFullName || listing.owner}</Typography>
+              <Button className="evaluate-button" onClick={() => handleEvaluate(index)}>
+                Evaluate your business success here✨
+              </Button>
             </Box>
           ))}
         </Box>
       </Box>
-
-      {/* Map */}
-      <Box flex={1} position="relative">
-        <Box ref={mapContainer} sx={{ width: "100%", height: "100%" }} />
+      <Box className="map-wrap">
+        <Box ref={mapContainer} className="map" />
       </Box>
       <EvaluationPopup
         open={evaluationModalOpen}
         onClose={() => setEvaluationModalOpen(false)}
         evaluationResult={evaluationResult}
         evaluationLoading={evaluationLoading}
+        darkMode={darkMode}
       />
       <Dialog open={noBusinessPopupOpen} onClose={() => setNoBusinessPopupOpen(false)}>
         <DialogTitle>
           Business Profile Required
-          <IconButton
-            aria-label="close"
-            onClick={() => setNoBusinessPopupOpen(false)}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
+          <IconButton onClick={() => setNoBusinessPopupOpen(false)}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>
           <p>It seems like you don't own a business. Create your business profile now!</p>
-          <Button variant="contained" color="primary" onClick={() => navigate('/business-profile')}>
+          <Button variant="contained" onClick={() => navigate('/business-profile')}>
             Go to Business Profile
           </Button>
         </DialogContent>

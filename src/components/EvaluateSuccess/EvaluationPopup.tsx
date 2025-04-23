@@ -24,6 +24,7 @@ interface Props {
   onClose: () => void;
   evaluationResult: EvaluationResponse | null;
   evaluationLoading: boolean;
+  darkMode: boolean;
 }
 
 interface ParsedEvaluation {
@@ -81,24 +82,36 @@ const EvaluationPopup: React.FC<Props> = ({
   open,
   onClose,
   evaluationResult,
-  evaluationLoading
+  evaluationLoading,
+  darkMode
 }) => {
   const parsed = evaluationResult ? formatCleanText(evaluationResult.cleanText) : null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle className="popup-title">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      className={darkMode ? "dark-mode" : ""}
+    >
+      <DialogTitle
+        className={`popup-title ${darkMode ? "dark-mode-title" : ""}`}
+      >
         Business Success Evaluation
         <IconButton
           aria-label="close"
           onClick={onClose}
-          className="popup-close-btn"
+          className={`popup-close-btn ${darkMode ? "dark-mode-close-btn" : ""}`}
         >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
-      <DialogContent dividers className="popup-content">
+      <DialogContent
+        dividers
+        className={`popup-content ${darkMode ? "dark-mode-content" : ""}`}
+      >
         {evaluationLoading ? (
           <Box className="popup-loading">
             <LinearProgress className="popup-progress" />
@@ -106,9 +119,9 @@ const EvaluationPopup: React.FC<Props> = ({
           </Box>
         ) : parsed ? (
           <Stack spacing={3}>
-            <Box className="popup-success-rate">
-              <BarChartIcon color="primary" />
-              <Typography variant="h6">
+            <Box className="popup-success-rate" display="flex" alignItems="center" gap={1}>
+              <BarChartIcon className={`popup-icon ${darkMode ? "dark-mode-icon" : ""}`} />
+              <Typography variant="h6" className="popup-rate-text">
                 Success Rate:{' '}
                 <Box component="span" className="popup-rate-value">
                   {parsed.successRate}%
@@ -120,26 +133,41 @@ const EvaluationPopup: React.FC<Props> = ({
               <strong>Reason:</strong> {parsed.reason}
             </Typography>
 
-            <Paper elevation={1} className="popup-section">
+            <Paper
+              elevation={1}
+              className={`popup-section ${darkMode ? "dark-mode-section" : ""}`}
+            >
               <Box className="popup-section-header">
-                <PeopleIcon color="action" />
-                <Typography variant="subtitle1" fontWeight="bold">Demographics</Typography>
+                <PeopleIcon className={`popup-icon ${darkMode ? "dark-mode-icon" : ""}`} />
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Demographics
+                </Typography>
               </Box>
               <Typography variant="body2">{parsed.demographics}</Typography>
             </Paper>
 
-            <Paper elevation={1} className="popup-section">
+            <Paper
+              elevation={1}
+              className={`popup-section ${darkMode ? "dark-mode-section" : ""}`}
+            >
               <Box className="popup-section-header">
-                <StorefrontIcon color="action" />
-                <Typography variant="subtitle1" fontWeight="bold">Competition</Typography>
+                <StorefrontIcon className={`popup-icon ${darkMode ? "dark-mode-icon" : ""}`} />
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Competition
+                </Typography>
               </Box>
               <Typography variant="body2">{parsed.competition}</Typography>
             </Paper>
 
-            <Paper elevation={1} className="popup-section">
+            <Paper
+              elevation={1}
+              className={`popup-section ${darkMode ? "dark-mode-section" : ""}`}
+            >
               <Box className="popup-section-header">
-                <LocationOnIcon color="action" />
-                <Typography variant="subtitle1" fontWeight="bold">Location</Typography>
+                <LocationOnIcon className={`popup-icon ${darkMode ? "dark-mode-icon" : ""}`} />
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Location
+                </Typography>
               </Box>
               <Typography variant="body2">{parsed.location}</Typography>
             </Paper>
