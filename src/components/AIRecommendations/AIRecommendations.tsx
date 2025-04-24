@@ -39,7 +39,7 @@ const AIRecommendations: React.FC = () => {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="ai-recommendations-container">
       <div className="header">
@@ -48,15 +48,15 @@ const AIRecommendations: React.FC = () => {
       </div>
       <div className="content">
         <p>Please write up everything that comes to your mind to explain and describe your business idea so we can match the perfect location for your business</p>
-        <div className="textarea-container">
-          <textarea
-            value={dream}
-            onChange={(e) => setDream(e.target.value)}
-            placeholder="Write here your dream as best as you can..."
-            rows={10}
-            cols={50}
-          />
-        </div>
+  <div className="textarea-container">
+  <textarea
+    value={dream}
+    onChange={(e) => setDream(e.target.value)}
+    placeholder="Write here your dream as best as you can..."
+    rows={10}
+    cols={50}
+  />
+</div>
         <button className="button-next" onClick={handleNext} disabled={loading}>
           {loading ? 'Loading...' : 'Next'}
         </button>
