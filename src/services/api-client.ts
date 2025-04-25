@@ -1,9 +1,11 @@
 import axios, { CanceledError, AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 export { CanceledError };
+import { BASE_URL } from "../config";
 
 const apiClient = axios.create({
-    baseURL: process.env.DOMAIN_BASE,
+    baseURL: `${BASE_URL}`
 });
+
 
 apiClient.interceptors.request.use(
     (config: AxiosRequestConfig) => {
@@ -29,7 +31,7 @@ apiClient.interceptors.response.use(
             const refreshToken = localStorage.getItem('refreshToken');
             if (refreshToken) {
                 try {
-                    const response = await axios.post(`${process.env.DOMAIN_BASE}/auth/refresh`, { refreshToken });
+                    const response = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken });
                     const { accessToken, refreshToken: newRefreshToken,_id } = response.data;
                     localStorage.setItem('accessToken', accessToken);
                     localStorage.setItem('refreshToken', newRefreshToken);
