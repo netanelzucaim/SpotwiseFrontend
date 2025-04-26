@@ -6,7 +6,6 @@ export interface RealEstate {
   owner: string;
   description: string;
   area: string;
-  location: string;
   price: number;
   _id?: string;
 }

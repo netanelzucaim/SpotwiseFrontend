@@ -6,30 +6,13 @@ export interface Coordinates {
     lon: number;
   }
 
-  const extractCoordinatesFromURL = (locationURL: string): { lat: number; lon: number } | null => {
-    if (!locationURL) {
-      console.error("locationURL is undefined or null");
-      return null;
-    }
-    
-    const googleMapsRegex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
-    const coordsInURL = locationURL.match(googleMapsRegex);
-  
-    if (coordsInURL) {
-      const lat = parseFloat(coordsInURL[1]);
-      const lon = parseFloat(coordsInURL[2]);
-      return { lat, lon };
-    }
-  
-    return null;
-  };
   export interface AddressSuggestion {
     label: string;
     coordinates: Coordinates;
   }
 
 const MapService = {
-    async getLatLonForAddress(fullAddress: string, locationURL: string): Promise<Coordinates | null> {
+    async getLatLonForAddress(fullAddress: string): Promise<Coordinates | null> {
         const cached = localStorage.getItem(fullAddress);
       
         if (cached) {
@@ -39,12 +22,6 @@ const MapService = {
         if (!MAPTILER_API_KEY) {
           console.error("MATPILER_API_KEY is undefined");
           return null;
-        }
-
-        const coordsFromURL = extractCoordinatesFromURL(locationURL);
-        if (coordsFromURL) {
-          localStorage.setItem(fullAddress, JSON.stringify(coordsFromURL));
-          return coordsFromURL;
         }
        
         try {

@@ -66,8 +66,7 @@ const DiscoverLocations: React.FC = () => {
               realEstate.address.toLowerCase().includes(value) ||
               realEstate.userFullName?.toLowerCase().includes(value) ||
               realEstate.description.toLowerCase().includes(value) ||
-              realEstate.area.toLowerCase().includes(value) ||
-              realEstate.location.toLowerCase().includes(value)
+              realEstate.area.toLowerCase().includes(value)
           )
         );
       };
