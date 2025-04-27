@@ -74,12 +74,12 @@ ${JSON.stringify(enrichedListings, null, 2)}
 
 Your task:
 - Pick the best matching real estate and return its ID.
-- Provide a short friendly description for the top match (max 3 sentences).
-- Also include another option in 1–2 sentences each.
+- Provide a short friendly description for the top match (max 4 sentences).
+- Also include another option in 2–3 sentences each.
 - Output should have only two sections:
   1. description: <the formatted user-friendly content>
   2. id: <the _id of the top recommended real estate>
-- Keep formatting clean and minimal, write the full address and do not write the ID in the description.
+- Keep formatting clean and minimal, write the full address and do not write the ID in the description, also do not include the word score.
 
 Format:
 
