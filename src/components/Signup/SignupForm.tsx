@@ -29,7 +29,10 @@ const SignupForm = () => {
   });
 
   const [errors, setErrors] = useState({
+    username: "",
+    fullName: "",
     email: "",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
     imgSrc: "",
@@ -49,6 +52,11 @@ const SignupForm = () => {
 
   const validateEmail = (email: string): boolean => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePhoneNum = (phoneNumber: string): boolean => { 
+      const regex = /^[0-9\b]+$/;
+      return (regex.test(phoneNumber) && phoneNumber.length === 10)
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -73,8 +81,23 @@ const SignupForm = () => {
     let hasErrors = false;
     const newErrors = { ...errors };
 
+    if(formData.username === '') {
+      newErrors.username = "Username is required";
+      hasErrors = true;
+    }
+
+    if(formData.fullName === '') {
+      newErrors.fullName = "Full name is required";
+      hasErrors = true;
+    }
+
     if (!validateEmail(formData.email)) {
       newErrors.email = "Invalid email format";
+      hasErrors = true;
+    }
+
+    if (!validatePhoneNum(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Invalid phone number";
       hasErrors = true;
     }
 
@@ -166,13 +189,18 @@ const SignupForm = () => {
           name="username"
           value={formData.username}
           onChange={handleChange}
+          error={!!errors.username}
+          helperText={errors.username}
           required
           sx={{ marginBottom: "20px" }}
         />
         <TextField
           fullWidth
+          required
           label="Full Name"
           name="fullName"
+          error={!!errors.fullName}
+          helperText={errors.fullName}
           value={formData.fullName}
           onChange={handleChange}
           sx={{ marginBottom: "20px" }}
@@ -196,6 +224,9 @@ const SignupForm = () => {
           name="phoneNumber"
           value={formData.phoneNumber}
           onChange={handleChange}
+          required
+          error={!!errors.phoneNumber}
+          helperText={errors.phoneNumber}
           sx={{ marginBottom: "20px" }}
         />
 
