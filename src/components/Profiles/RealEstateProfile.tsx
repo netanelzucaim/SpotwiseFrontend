@@ -127,7 +127,8 @@ const RealEstateProfile: React.FC = () => {
 
         <TextField
           fullWidth
-          label="Area (e.g. 120 sqm)"
+          label="Area (in sqm)"
+          type="number"
           variant="outlined"
           margin="normal"
           value={area}
@@ -163,6 +164,7 @@ const RealEstateProfile: React.FC = () => {
           label="Price"
           variant="outlined"
           margin="normal"
+          type="number"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           error={!!errors.price}
