@@ -65,9 +65,10 @@ Respond ONLY using the following exact format:
 ---
 Success Rate: <a number between 0 and 100>%
 Explanation:
-1. Demographics: <One short sentence>
-2. Competition: <One short sentence>
-3. Location: <One short sentence>
+- Reason: <One Short sentence explaining the reason behind the chosen success rate, write it in a professional tone>
+- Demographics: <One short sentence>
+- Competition: <One short sentence>
+- Location: <One short sentence>
 
 ### Business:
 ${JSON.stringify(businessDescription, null, 2)}
@@ -85,6 +86,7 @@ Median Income: $${demographics.income || "N/A"}
 Please provide only the structured answer in the requested format.
 `;
 }
+
 
 
 async function callHuggingFaceAPI(prompt: string): Promise<string> {

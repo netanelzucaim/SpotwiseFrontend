@@ -6,13 +6,13 @@
 
 .info-panel {
   width: 350px;                      
-  background-color: #4deeea;           
+  background-color: white;           
   padding: 10px;
   overflow-y: auto;
   font-size: 2rem;
   font-weight: bold;   
   color: black;
-  text-align:center;             
+  text-align: center;             
 }
 .info-panel h2 {
   margin-top: 0;                       
@@ -30,15 +30,20 @@
   height: 100%;
 }
 
+.listings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .listing-box {
-  background-color: #fff;
+  background-color: #f5f2f2;
   border-radius: 8px; 
   padding: 16px; 
   box-shadow: none;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
 }
-
 
 .listing-box:hover {
   background-color: #f0f0f0;
@@ -76,6 +81,7 @@
   border: none; 
   padding: 0; 
 }
+
 .evaluate-button {
   margin-top: 15px !important;
   width: 100%;
@@ -93,4 +99,50 @@
 
 .evaluate-button:hover {
   background-color: #115293 !important;
+}
+
+.dark-mode .info-panel {
+  background-color: #2b2b2b;
+  color: #dcdcdc;
+}
+
+.dark-mode .listings-container {
+  gap: 16px; 
+}
+
+.dark-mode .listing-box {
+  background-color: #3a3a3a; 
+  color: #dcdcdc; 
+}
+
+.dark-mode .listing-box:hover {
+  background-color: #4a4a4a;
+}
+
+.dark-mode .listing-box.selected {
+  background-color: #7a6fc2; 
+  box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.15);
+}
+
+.dark-mode .listing-meta {
+  color: #b0b0b0; 
+}
+
+.dark-mode .error-popup {
+  background-color: #c96b6b;
+  color: #f5f5f5; 
+  border-color: #f5f5f5;
+}
+
+.dark-mode .error-popup button {
+  color: #f5f5f5; 
+}
+
+.dark-mode .evaluate-button {
+  background-color: #3a3a3a !important; 
+  color: #dcdcdc !important; 
+}
+
+.dark-mode .evaluate-button:hover {
+  background-color: #7a6fc2 !important;
 }
