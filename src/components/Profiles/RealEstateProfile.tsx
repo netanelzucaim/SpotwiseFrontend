@@ -47,7 +47,6 @@ const RealEstateProfile: React.FC = () => {
     if (!city.trim()) newErrors.city = "City is required";
     if (!address.trim()) newErrors.address = "Address is required";
     if (!area.trim()) newErrors.area = "Area is required";
-    if (!location.trim()) newErrors.location = "Location is required";
     if (!description.trim()) newErrors.description = "Description is required";
     if (!price) newErrors.price = "Price is required";
     if (price <= 0) newErrors.price = "Price must be positive number";
@@ -63,7 +62,6 @@ const RealEstateProfile: React.FC = () => {
         city,
         address: selectedAddress?.label || "",
         area,
-        location,
         description,
         price,
         owner: ownerId,
@@ -134,17 +132,6 @@ const RealEstateProfile: React.FC = () => {
           onChange={(e) => setArea(e.target.value)}
           error={!!errors.area}
           helperText={errors.area}
-        />
-
-        <TextField
-          fullWidth
-          label="Location Link (e.g. Google Maps URL)"
-          variant="outlined"
-          margin="normal"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          error={!!errors.location}
-          helperText={errors.location}
         />
 
         <TextField

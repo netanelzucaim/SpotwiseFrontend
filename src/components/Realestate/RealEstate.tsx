@@ -121,7 +121,6 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, index, on
             overflowWrap: "break-word",
   }}
 >
-  <strong>Location:</strong> {realEstate.location}
 </Typography>
         </CardContent>
         <Box

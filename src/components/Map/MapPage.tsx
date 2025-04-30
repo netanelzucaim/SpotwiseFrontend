@@ -21,7 +21,6 @@ interface iRealestate {
   description: string;
   area: string;
   price: number;
-  location: string;
   ownerFullName?: string;
 }
 
@@ -132,7 +131,7 @@ const MapPage: FC = () => {
         const fullAddress = `${listing.address}, ${listing.city}`;
 
         try {
-          const coords = await MapService.getLatLonForAddress(fullAddress, listing.location);
+          const coords = await MapService.getLatLonForAddress(fullAddress);
           if (coords) {
             addMarker(coords, listing, index);
           } else {
