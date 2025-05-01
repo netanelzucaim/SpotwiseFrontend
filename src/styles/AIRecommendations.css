@@ -51,18 +51,36 @@
 textarea {
   width: 100%;
   min-height: 400px;
-  padding: 15px;
+  padding: 20px;
   border: 1px solid #457b9d;
   border-radius: 10px;
-  font-size: 18px; 
-  resize: vertical;
+  font-size: 20px;  
+  line-height: 1.6; 
   background-color: #bce2e2; 
   color: #212529;
+  font-family: 'Roboto', sans-serif; 
+  resize: vertical;
+  white-space: pre-wrap;  
+  word-wrap: break-word;
 }
 
 textarea::placeholder {
   color: #031f1a; 
   font-weight: 600;
+  font-style: italic; 
+}
+
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background-color: #457b9d;
+  border-radius: 10px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background-color: #f0f0f0; 
 }
 
 .button-next {
