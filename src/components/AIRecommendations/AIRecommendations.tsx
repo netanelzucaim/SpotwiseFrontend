@@ -28,9 +28,10 @@ const AIRecommendations: React.FC = () => {
 
     try {
       const allRealEstate: RealEstate[] = await RealEstateService.getAll();
-      const response = await GeminiService.analyzeDream(dream, allRealEstate);
+      const { recommendationText, listingId } = await GeminiService.analyzeDream(dream, allRealEstate);
+      localStorage.setItem('geminiResult', JSON.stringify({ recommendationText, listingId }));
 
-      if (!response) {
+      if (!listingId) {
         setError("Could not get recommendations from AI.");
         setLoading(false);
         return;
@@ -47,11 +48,11 @@ const AIRecommendations: React.FC = () => {
         return;
       }
 
-      const idMatch = response.match(/id:\s*(.*)/);
-      const descMatch = response.match(/description:\s*([\s\S]*?)\nid:/);
+      const idMatch = listingId
+      const descMatch = recommendationText
 
       const extractedId = idMatch ? idMatch[1].trim() : null;
-      const descriptionText = descMatch ? descMatch[1].trim() : response;
+      const descriptionText = descMatch ? descMatch[1].trim() : "";
 
       if (!extractedId) {
         setError("Couldn't find real estate ID in AI response.");

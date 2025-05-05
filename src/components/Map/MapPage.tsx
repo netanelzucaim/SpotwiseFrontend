@@ -42,6 +42,9 @@ const MapPage: FC = () => {
   const [noBusinessPopupOpen, setNoBusinessPopupOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
+  const [recPopupOpen, setRecPopupOpen] = useState(true);
+  const [recommendationText, setRecommendationText] = useState("");
+
   const navigate = useNavigate();
 
   const initialCenter = { lng: 34.792501, lat: 31.973001 };
@@ -105,6 +108,17 @@ const MapPage: FC = () => {
   useEffect(() => {
     if (map.current) return;
 
+    const geminiResultStr = localStorage.getItem("geminiResult");
+    let recommendedId = null;
+    let recommendationText = "";
+
+    if (geminiResultStr) {
+      const parsed = JSON.parse(geminiResultStr);
+      recommendedId = parsed.listingId;
+      recommendationText = parsed.recommendationText;
+      setRecommendationText(recommendationText);
+    }
+
     map.current = new maptilersdk.Map({
       container: mapContainer.current!,
       style: maptilersdk.MapStyle.STREETS,
@@ -124,6 +138,24 @@ const MapPage: FC = () => {
           };
         })
       );
+
+      const recommendedIndex = realEstatesWithUserNames.findIndex(re => re._id === recommendedId);
+
+      if (recommendedIndex !== -1) {
+        setSelectedIndex(recommendedIndex);
+        scrollToItem(recommendedIndex);
+
+        const fullAddress = `${realEstatesWithUserNames[recommendedIndex].address}, ${realEstatesWithUserNames[recommendedIndex].city}`;
+        try {
+          const coords = await MapService.getLatLonForAddress(fullAddress);
+          if (coords && map.current) {
+            map.current.flyTo({ center: [coords.lon, coords.lat], zoom: 18 });
+          }
+        } catch (err) {
+          console.error("Couldn't fetch coordinates for recommended listing:", err);
+        }
+      }
+      
 
       setRealEstates(realEstatesWithUserNames);
 
@@ -202,6 +234,17 @@ const MapPage: FC = () => {
       <Box className="map-wrap">
         <Box ref={mapContainer} className="map" />
       </Box>
+      {recPopupOpen && recommendationText && (
+        <Paper className="recommendation-popup">
+          <Typography variant="body1">{recommendationText}</Typography>
+          <Button onClick={() => setRecPopupOpen(false)}>Close</Button>
+        </Paper>
+      )}
+      {!recPopupOpen && (
+        <button className="floating-ai-btn" onClick={() => setRecPopupOpen(true)}>
+          💬 AI Tip
+        </button>
+      )}
       <EvaluationPopup
         open={evaluationModalOpen}
         onClose={() => setEvaluationModalOpen(false)}

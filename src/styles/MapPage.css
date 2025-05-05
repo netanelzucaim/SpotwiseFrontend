@@ -146,3 +146,54 @@
 .dark-mode .evaluate-button:hover {
   background-color: #7a6fc2 !important;
 }
+
+.recommendation-popup {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  z-index: 10;
+  padding: 16px;
+  background-color: white;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.reopen-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+  background-color: #2196f3;
+  color: white;
+  font-weight: bold;
+  padding: 12px 16px;
+  border-radius: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.reopen-button:hover {
+  background-color: #1976d2;
+  transform: scale(1.05);
+}
+
+.floating-ai-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  padding: 12px 20px;
+  font-size: 14px;
+  background-color: #0d99ff;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.floating-ai-btn:hover {
+  background-color: #0077cc;
+  transform: scale(1.05);
+}
