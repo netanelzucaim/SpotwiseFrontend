@@ -7,7 +7,7 @@ const API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
 const GeminiService = {
-  async analyzeDream(dream: string, realEstateData: any[]): Promise<{ recommendationText: string; listingId: string | null }> {
+  async analyzeDream(dream: string, realEstateData: any[]): Promise<{ recommendationText: string; listingId: string | null; prompt: string | null }> {
     if (!GEMINI_API_KEY) {
       console.error("GEMINI_API_KEY is undefined");
       return { recommendationText: "API key missing.", listingId: null };
@@ -48,15 +48,16 @@ const GeminiService = {
       const extractedId = idMatch ? idMatch[1].trim() : null;
       const descriptionText = descMatch ? descMatch[1].trim() : response;
 
-      //const text = response.data.candidates[0].content.parts[0].text;
       return {
         recommendationText: descriptionText,
         listingId: extractedId,
+        prompt: prompt
       };
     } catch (error: any) {
       return {
         recommendationText: handleGeminiApiError(error),
         listingId: null,
+        prompt: null
       };
     }
   },

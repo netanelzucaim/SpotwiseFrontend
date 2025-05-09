@@ -186,6 +186,13 @@ const MapPage: FC = () => {
     }
   }, [location, markers]);
 
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("geminiResult");
+      console.log("🧹 Gemini result cleared on unmount");
+    };
+  }, []);
+
   const handleListingClick = (index: number) => {
     if (!map.current) return;
     const marker = markers[index];

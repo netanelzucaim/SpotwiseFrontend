@@ -49,10 +49,10 @@ const AIRecommendations: React.FC = () => {
       }
 
       const idMatch = listingId
-      const descMatch = recommendationText
+      //const descMatch = recommendationText
 
       const extractedId = idMatch ? idMatch[1].trim() : null;
-      const descriptionText = descMatch ? descMatch[1].trim() : "";
+      //const descriptionText = descMatch ? descMatch[1].trim() : "";
 
       if (!extractedId) {
         setError("Couldn't find real estate ID in AI response.");
@@ -60,7 +60,7 @@ const AIRecommendations: React.FC = () => {
         return;
       }
 
-      setDream(descriptionText);
+      //setDream(descriptionText);
       setRealEstateId(extractedId);
       setButtonText("The Best Option on the Map");
     } catch (err: any) {
