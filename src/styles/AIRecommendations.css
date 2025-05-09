@@ -118,3 +118,41 @@ button:disabled {
 .search-results li {
   margin-bottom: 5px;
 }
+
+.loading-gemini-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(to bottom right, #e3f2fd, #bbdefb);
+  text-align: center;
+  padding: 20px;
+}
+
+.loading-message {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #0d47a1;
+  margin-top: 20px;
+}
+
+.wizo-searching {
+  width: 200px;
+  animation: fly 2s ease-in-out infinite alternate;
+}
+
+.wizo-matched {
+  width: 200px;
+  animation: pop-in 0.4s ease-in-out;
+}
+
+@keyframes fly {
+  from { transform: translateY(0); }
+  to { transform: translateY(-20px); }
+}
+
+@keyframes pop-in {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

@@ -3,6 +3,7 @@ import RealEstateService from "../../services/realestate-service";
 import GeminiService from "../../services/gemini-service";
 import "../../styles/AIRecommendations.css";
 import { useNavigate } from "react-router-dom";
+import LoadingGemini from "./LoadingGemini";
 
 interface RealEstate {
   city: string;
@@ -20,6 +21,7 @@ const AIRecommendations: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [buttonText, setButtonText] = useState<string>("Next");
   const [realEstateId, setRealEstateId] = useState<string | null>(null);
+  const [phase, setPhase] = useState<"idle" | "searching" | "matched">("idle");
   const navigate = useNavigate();
 
   const handleNext = async () => {
@@ -27,6 +29,8 @@ const AIRecommendations: React.FC = () => {
     setError(null);
 
     try {
+      setPhase("searching");
+
       const allRealEstate: RealEstate[] = await RealEstateService.getAll();
       const { recommendationText, listingId } = await GeminiService.analyzeDream(dream, allRealEstate);
       localStorage.setItem('geminiResult', JSON.stringify({ recommendationText, listingId }));
@@ -37,16 +41,16 @@ const AIRecommendations: React.FC = () => {
         return;
       }
 
-      if (buttonText === "The Best Option on the Map" && realEstateId) {
-        const index = allRealEstate.findIndex((re) => re._id === realEstateId);
+      // if (buttonText === "The Best Option on the Map" && realEstateId) {
+      //   const index = allRealEstate.findIndex((re) => re._id === realEstateId);
 
-        navigate("/map", {
-          state: {
-            index,
-          },
-        });
-        return;
-      }
+      //   navigate("/map", {
+      //     state: {
+      //       index,
+      //     },
+      //   });
+      //   return;
+      // }
 
       const idMatch = listingId
       //const descMatch = recommendationText
@@ -63,6 +67,17 @@ const AIRecommendations: React.FC = () => {
       //setDream(descriptionText);
       setRealEstateId(extractedId);
       setButtonText("The Best Option on the Map");
+
+      const index = allRealEstate.findIndex((re) => re._id === realEstateId);
+
+      setPhase("matched");
+      setTimeout(() => {
+        navigate("/map",{
+          state: {
+            index,
+          },
+        });
+      }, 3500); // wait 3.5s on the matched screen
     } catch (err: any) {
       setError(err.message || "An error occurred.");
       console.error("Error:", err);
@@ -70,6 +85,10 @@ const AIRecommendations: React.FC = () => {
       setLoading(false);
     }
   };
+
+  if (phase !== "idle") {
+    return <LoadingGemini phase={phase} />;
+  }
 
   return (
     <div className="ai-recommendations-container">
