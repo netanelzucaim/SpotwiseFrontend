@@ -15,6 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import "./../../styles/MapPage.css";
 import wizoAsset from "../../../public/assets/thumbs-up-wizo.png";
 import wizoStanding from '../../../public/assets/standing-wizo.png';
+import PolygonOverlayService from '../../services/polygon-overlay-service';
 
 interface iRealestate {
   city: string;
@@ -156,9 +157,12 @@ const MapPage: FC = () => {
         } catch (err) {
           console.error("Couldn't fetch coordinates for recommended listing:", err);
         }
+
+        if (map.current && recommendationText) {
+          PolygonOverlayService.drawAIReasoningPolygons(map.current, recommendationText, fullAddress);
+        }
       }
       
-
       setRealEstates(realEstatesWithUserNames);
 
       for (const [index, listing] of realEstatesWithUserNames.entries()) {

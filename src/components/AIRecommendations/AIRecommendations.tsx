@@ -34,23 +34,13 @@ const AIRecommendations: React.FC = () => {
       const allRealEstate: RealEstate[] = await RealEstateService.getAll();
       const { recommendationText, listingId } = await GeminiService.analyzeDream(dream, allRealEstate);
       localStorage.setItem('geminiResult', JSON.stringify({ recommendationText, listingId }));
+      console.log(recommendationText, listingId);
 
       if (!listingId) {
         setError("Could not get recommendations from AI.");
         setLoading(false);
         return;
       }
-
-      // if (buttonText === "The Best Option on the Map" && realEstateId) {
-      //   const index = allRealEstate.findIndex((re) => re._id === realEstateId);
-
-      //   navigate("/map", {
-      //     state: {
-      //       index,
-      //     },
-      //   });
-      //   return;
-      // }
 
       const idMatch = listingId
       //const descMatch = recommendationText

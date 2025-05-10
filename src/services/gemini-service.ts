@@ -74,7 +74,7 @@ const buildPrompt = async (userDream: string, realEstateData: any[]) => {
         : [];
       return {
         ...listing,
-        nearby: amenities,
+        nearby: amenities.map(a => a.name).join(', '),
         score: amenities.length,
       };
     })
@@ -90,6 +90,7 @@ Your task:
 - Pick the best matching real estate and return its ID.
 - Provide a short friendly description for the top match (max 4 sentences).
 - Also include another option in 2–3 sentences each.
+- When explaining why a location is good, include the specific names of any streets, buildings, stations, or landmarks (in both Hebrew and English if available).
 - Output should have only two sections:
   1. description: <the formatted user-friendly content>
   2. id: <the _id of the top recommended real estate>
