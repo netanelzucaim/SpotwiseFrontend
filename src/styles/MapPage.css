@@ -148,14 +148,21 @@
 }
 
 .recommendation-popup {
+  position: relative;
+  padding: 16px;
+  background-color: white;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  z-index: 1;
+  padding-bottom: 60px; /* space for the button + Wizo */
+}
+
+.popup-container {
   position: absolute;
   top: 80px;
   right: 20px;
   z-index: 10;
-  padding: 16px;
-  background-color: white;
-  max-width: 400px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
 .reopen-button {
@@ -179,11 +186,15 @@
 
 .floating-ai-btn {
   position: fixed;
-  bottom: 24px;
+  bottom: 100px;
   right: 24px;
   z-index: 1000;
-  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
   font-size: 14px;
+  font-weight: bold;
   background-color: #0d99ff;
   color: white;
   border: none;
@@ -196,4 +207,27 @@
 .floating-ai-btn:hover {
   background-color: #0077cc;
   transform: scale(1.05);
+}
+
+.wizo-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.popup-wizo-overlay {
+  position: absolute;
+  bottom: -20px;
+  left: -20px;
+  width: 80px;
+  height: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.popup-close-button {
+  position: absolute;
+  bottom: 10px;
+  right: 16px;
+  z-index: 3;
 }

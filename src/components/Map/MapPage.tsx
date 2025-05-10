@@ -13,6 +13,8 @@ import EvaluationPopup from '../../components/EvaluateSuccess/EvaluationPopup';
 import { useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import "./../../styles/MapPage.css";
+import wizoAsset from "../../../public/assets/thumbs-up-wizo.png";
+import wizoStanding from '../../../public/assets/standing-wizo.png';
 
 interface iRealestate {
   city: string;
@@ -242,14 +244,23 @@ const MapPage: FC = () => {
         <Box ref={mapContainer} className="map" />
       </Box>
       {recPopupOpen && recommendationText && (
-        <Paper className="recommendation-popup">
-          <Typography variant="body1">{recommendationText}</Typography>
-          <Button onClick={() => setRecPopupOpen(false)}>Close</Button>
-        </Paper>
+        <div className="popup-container">
+          <Paper className="recommendation-popup">
+            <Typography variant="body1">{recommendationText}</Typography>
+            <Button
+              onClick={() => setRecPopupOpen(false)}
+              className="popup-close-button"
+            >
+              Close
+            </Button>
+          </Paper>
+          <img src={wizoStanding} alt="Wizo" className="popup-wizo-overlay" />
+        </div>
       )}
       {!recPopupOpen && (
         <button className="floating-ai-btn" onClick={() => setRecPopupOpen(true)}>
-          💬 AI Tip
+          <img src={wizoAsset} alt="Wizo" className="wizo-icon" />
+          Wizo’s Advice
         </button>
       )}
       <EvaluationPopup
