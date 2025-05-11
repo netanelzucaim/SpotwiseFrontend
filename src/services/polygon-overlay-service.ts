@@ -1,6 +1,4 @@
 import maplibregl from 'maplibre-gl';
-import axios from 'axios';
-import { MAPTILER_API_KEY } from '../config';
 import MapService from '../services/map-service'
 import OverpassService from '../services/overpass-service';
 
@@ -33,7 +31,6 @@ const locationKeywords = [
 const PolygonOverlayService = {
 async drawAIReasoningPolygons(map: maplibregl.Map, geminiText: string, listingAddress: string): Promise<void> {
     const mentions = extractLocationMentions(geminiText);
-    console.log("🧠 Parsed mentions:", mentions);
     const features = [];
 
     for (const mention of mentions) {
@@ -47,7 +44,6 @@ async drawAIReasoningPolygons(map: maplibregl.Map, geminiText: string, listingAd
         );
       
         if (overpassResults.length === 0) {
-          console.warn(`❌ No ${mention.type} found near listing.`);
           continue;
         }
       
@@ -60,7 +56,6 @@ async drawAIReasoningPolygons(map: maplibregl.Map, geminiText: string, listingAd
           });
       
           if (feature) {
-            console.log("🟠 Drawing polygon at:", coords, "for", amenity.name);
             features.push(feature);
           }
         }
@@ -118,23 +113,6 @@ async drawAIReasoningPolygons(map: maplibregl.Map, geminiText: string, listingAd
   }
 };
 
-function extractCityFromText(text: string): string {
-    const match = text.match(/(?:ב|at)\s(?:[^,]+),\s([^,]+),\sישראל/); // Hebrew or English format
-    if (match && match[1]) {
-      console.log("🏙️ Extracted city:", match[1]);
-      return match[1].trim();
-    }
-  
-    // fallback: look for the first occurrence of a Hebrew city name
-    const fallback = text.match(/(?:[^,]+),\s([^,]+),\sישראל/);
-    if (fallback && fallback[1]) {
-      console.log("🏙️ Extracted fallback city:", fallback[1]);
-      return fallback[1].trim();
-    }
-  
-    return "Israel"; // default fallback
-  }
-
 function extractLocationMentions(text: string): ParsedLocation[] {
   const lower = text.toLowerCase();
   const found: ParsedLocation[] = [];
@@ -153,35 +131,6 @@ function extractLocationMentions(text: string): ParsedLocation[] {
 
   return found;
 }
-
-async function geocodeLocation(placeName: string): Promise<Coordinates | null> {
-  try {
-    const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(placeName)}.json?key=${MAPTILER_API_KEY}&language=he&country=IL`;
-    const { data } = await axios.get(url);
-
-    if (data?.features?.[0]?.center) {
-      const [lon, lat] = data.features[0].center;
-      return { lat, lon };
-    }
-    return null;
-  } catch (error) {
-    console.error("Geocoding error:", error);
-    return null;
-  }
-}
-
-function getDistanceBetweenCoords(a: Coordinates, b: Coordinates): number {
-    const R = 6371000; // Earth radius in meters
-    const toRad = (deg: number) => deg * Math.PI / 180;
-    const dLat = toRad(b.lat - a.lat);
-    const dLon = toRad(b.lon - a.lon);
-    const lat1 = toRad(a.lat);
-    const lat2 = toRad(b.lat);
-  
-    const x = dLon * Math.cos((lat1 + lat2) / 2);
-    const y = dLat;
-    return Math.sqrt(x * x + y * y) * R;
-  }
 
 function buildPolygonForType(coords: Coordinates, mention: ParsedLocation): GeoJSON.Feature | null {
   const { lat, lon } = coords;

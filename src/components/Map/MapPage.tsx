@@ -195,7 +195,6 @@ const MapPage: FC = () => {
   useEffect(() => {
     return () => {
       localStorage.removeItem("geminiResult");
-      console.log("🧹 Gemini result cleared on unmount");
     };
   }, []);
 

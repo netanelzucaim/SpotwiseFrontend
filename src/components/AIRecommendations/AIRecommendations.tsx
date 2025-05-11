@@ -34,7 +34,6 @@ const AIRecommendations: React.FC = () => {
       const allRealEstate: RealEstate[] = await RealEstateService.getAll();
       const { recommendationText, listingId } = await GeminiService.analyzeDream(dream, allRealEstate);
       localStorage.setItem('geminiResult', JSON.stringify({ recommendationText, listingId }));
-      console.log(recommendationText, listingId);
 
       if (!listingId) {
         setError("Could not get recommendations from AI.");
@@ -43,10 +42,8 @@ const AIRecommendations: React.FC = () => {
       }
 
       const idMatch = listingId
-      //const descMatch = recommendationText
 
       const extractedId = idMatch ? idMatch[1].trim() : null;
-      //const descriptionText = descMatch ? descMatch[1].trim() : "";
 
       if (!extractedId) {
         setError("Couldn't find real estate ID in AI response.");
@@ -54,7 +51,6 @@ const AIRecommendations: React.FC = () => {
         return;
       }
 
-      //setDream(descriptionText);
       setRealEstateId(extractedId);
       setButtonText("The Best Option on the Map");
 
@@ -67,7 +63,7 @@ const AIRecommendations: React.FC = () => {
             index,
           },
         });
-      }, 3500); // wait 3.5s on the matched screen
+      }, 3500);
     } catch (err: any) {
       setError(err.message || "An error occurred.");
       console.error("Error:", err);

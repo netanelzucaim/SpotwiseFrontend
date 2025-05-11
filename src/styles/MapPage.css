@@ -155,7 +155,16 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   z-index: 1;
-  padding-bottom: 60px; /* space for the button + Wizo */
+  padding-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: background-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.dark-mode .recommendation-popup {
+  background-color: #2b2b2b;
+  color: #f5f5f5;
 }
 
 .popup-container {
@@ -201,7 +210,7 @@
   border-radius: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .floating-ai-btn:hover {
@@ -226,8 +235,29 @@
 }
 
 .popup-close-button {
-  position: absolute;
+  position: static;
+  align-self: flex-end;
+  margin-top: 20px;
   bottom: 10px;
   right: 16px;
   z-index: 3;
+  background-color: #f44336;
+  color: white;
+  font-weight: bold;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.popup-close-button:hover {
+  background-color: #d32f2f;
+  transform: scale(1.05);
+}
+
+.dark-mode .popup-close-button {
+  color: #f5f5f5;
+  background-color: transparent;
 }

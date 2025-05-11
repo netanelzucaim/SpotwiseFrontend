@@ -116,7 +116,6 @@ async function callHuggingFaceAPI(prompt: string): Promise<string> {
 }
 
 function parseEvaluationResponse(generatedText: string): EvaluationResponse {
-  console.log(generatedText);
 
   const structuredStart = generatedText.lastIndexOf("Success Rate:");
   const cleanText = structuredStart !== -1
