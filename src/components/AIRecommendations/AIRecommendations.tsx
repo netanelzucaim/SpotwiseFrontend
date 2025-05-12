@@ -3,6 +3,7 @@ import RealEstateService from "../../services/realestate-service";
 import GeminiService from "../../services/gemini-service";
 import "../../styles/AIRecommendations.css";
 import { useNavigate } from "react-router-dom";
+import LoadingGemini from "./LoadingGemini";
 
 interface RealEstate {
   city: string;
@@ -20,6 +21,7 @@ const AIRecommendations: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [buttonText, setButtonText] = useState<string>("Next");
   const [realEstateId, setRealEstateId] = useState<string | null>(null);
+  const [phase, setPhase] = useState<"idle" | "searching" | "matched">("idle");
   const navigate = useNavigate();
 
   const handleNext = async () => {
@@ -27,31 +29,21 @@ const AIRecommendations: React.FC = () => {
     setError(null);
 
     try {
-      const allRealEstate: RealEstate[] = await RealEstateService.getAll();
-      const response = await GeminiService.analyzeDream(dream, allRealEstate);
+      setPhase("searching");
 
-      if (!response) {
+      const allRealEstate: RealEstate[] = await RealEstateService.getAll();
+      const { recommendationText, listingId } = await GeminiService.analyzeDream(dream, allRealEstate);
+      localStorage.setItem('geminiResult', JSON.stringify({ recommendationText, listingId }));
+
+      if (!listingId) {
         setError("Could not get recommendations from AI.");
         setLoading(false);
         return;
       }
 
-      if (buttonText === "The Best Option on the Map" && realEstateId) {
-        const index = allRealEstate.findIndex((re) => re._id === realEstateId);
-
-        navigate("/map", {
-          state: {
-            index,
-          },
-        });
-        return;
-      }
-
-      const idMatch = response.match(/id:\s*(.*)/);
-      const descMatch = response.match(/description:\s*([\s\S]*?)\nid:/);
+      const idMatch = listingId
 
       const extractedId = idMatch ? idMatch[1].trim() : null;
-      const descriptionText = descMatch ? descMatch[1].trim() : response;
 
       if (!extractedId) {
         setError("Couldn't find real estate ID in AI response.");
@@ -59,9 +51,19 @@ const AIRecommendations: React.FC = () => {
         return;
       }
 
-      setDream(descriptionText);
       setRealEstateId(extractedId);
       setButtonText("The Best Option on the Map");
+
+      const index = allRealEstate.findIndex((re) => re._id === realEstateId);
+
+      setPhase("matched");
+      setTimeout(() => {
+        navigate("/map",{
+          state: {
+            index,
+          },
+        });
+      }, 3500);
     } catch (err: any) {
       setError(err.message || "An error occurred.");
       console.error("Error:", err);
@@ -69,6 +71,10 @@ const AIRecommendations: React.FC = () => {
       setLoading(false);
     }
   };
+
+  if (phase !== "idle") {
+    return <LoadingGemini phase={phase} />;
+  }
 
   return (
     <div className="ai-recommendations-container">

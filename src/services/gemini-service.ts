@@ -7,10 +7,10 @@ const API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
 const GeminiService = {
-  async analyzeDream(dream: string, realEstateData: any[]): Promise<string> {
+  async analyzeDream(dream: string, realEstateData: any[]): Promise<{ recommendationText: string; listingId: string | null; prompt: string | null }> {
     if (!GEMINI_API_KEY) {
       console.error("GEMINI_API_KEY is undefined");
-      return "API key is missing. Please check your configuration.";
+      return { recommendationText: "API key missing.", listingId: null };
     }
 
     try {
@@ -41,10 +41,24 @@ const GeminiService = {
         throw new Error("Unexpected response structure from Gemini API");
       }
 
-      const text = response.data.candidates[0].content.parts[0].text;
-      return text;
+      const rawText = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const idMatch = rawText.match(/id:\s*(.*)/);
+      const descMatch = rawText.match(/description:\s*([\s\S]*?)\nid:/);
+
+      const extractedId = idMatch ? idMatch[1].trim() : null;
+      const descriptionText = descMatch ? descMatch[1].trim() : response;
+
+      return {
+        recommendationText: descriptionText,
+        listingId: extractedId,
+        prompt: prompt
+      };
     } catch (error: any) {
-      return handleGeminiApiError(error);
+      return {
+        recommendationText: handleGeminiApiError(error),
+        listingId: null,
+        prompt: null
+      };
     }
   },
 };
@@ -60,7 +74,7 @@ const buildPrompt = async (userDream: string, realEstateData: any[]) => {
         : [];
       return {
         ...listing,
-        nearby: amenities,
+        nearby: amenities.map(a => a.name).join(', '),
         score: amenities.length,
       };
     })
@@ -76,6 +90,7 @@ Your task:
 - Pick the best matching real estate and return its ID.
 - Provide a short friendly description for the top match (max 4 sentences).
 - Also include another option in 2–3 sentences each.
+- When explaining why a location is good, include the specific names of any streets, buildings, stations, or landmarks (in both Hebrew and English if available).
 - Output should have only two sections:
   1. description: <the formatted user-friendly content>
   2. id: <the _id of the top recommended real estate>

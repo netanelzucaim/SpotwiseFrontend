@@ -13,6 +13,9 @@ import EvaluationPopup from '../../components/EvaluateSuccess/EvaluationPopup';
 import { useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import "./../../styles/MapPage.css";
+import wizoAsset from "../../../public/assets/thumbs-up-wizo.png";
+import wizoStanding from '../../../public/assets/standing-wizo.png';
+import PolygonOverlayService from '../../services/polygon-overlay-service';
 
 interface iRealestate {
   city: string;
@@ -41,6 +44,9 @@ const MapPage: FC = () => {
 
   const [noBusinessPopupOpen, setNoBusinessPopupOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+
+  const [recPopupOpen, setRecPopupOpen] = useState(true);
+  const [recommendationText, setRecommendationText] = useState("");
 
   const navigate = useNavigate();
 
@@ -105,6 +111,17 @@ const MapPage: FC = () => {
   useEffect(() => {
     if (map.current) return;
 
+    const geminiResultStr = localStorage.getItem("geminiResult");
+    let recommendedId = null;
+    let recommendationText = "";
+
+    if (geminiResultStr) {
+      const parsed = JSON.parse(geminiResultStr);
+      recommendedId = parsed.listingId;
+      recommendationText = parsed.recommendationText;
+      setRecommendationText(recommendationText);
+    }
+
     map.current = new maptilersdk.Map({
       container: mapContainer.current!,
       style: maptilersdk.MapStyle.STREETS,
@@ -125,6 +142,27 @@ const MapPage: FC = () => {
         })
       );
 
+      const recommendedIndex = realEstatesWithUserNames.findIndex(re => re._id === recommendedId);
+
+      if (recommendedIndex !== -1) {
+        setSelectedIndex(recommendedIndex);
+        scrollToItem(recommendedIndex);
+
+        const fullAddress = `${realEstatesWithUserNames[recommendedIndex].address}, ${realEstatesWithUserNames[recommendedIndex].city}`;
+        try {
+          const coords = await MapService.getLatLonForAddress(fullAddress);
+          if (coords && map.current) {
+            map.current.flyTo({ center: [coords.lon, coords.lat], zoom: 18 });
+          }
+        } catch (err) {
+          console.error("Couldn't fetch coordinates for recommended listing:", err);
+        }
+
+        if (map.current && recommendationText) {
+          PolygonOverlayService.drawAIReasoningPolygons(map.current, recommendationText, fullAddress);
+        }
+      }
+      
       setRealEstates(realEstatesWithUserNames);
 
       for (const [index, listing] of realEstatesWithUserNames.entries()) {
@@ -153,6 +191,12 @@ const MapPage: FC = () => {
       scrollToItem(location.state.index);
     }
   }, [location, markers]);
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("geminiResult");
+    };
+  }, []);
 
   const handleListingClick = (index: number) => {
     if (!map.current) return;
@@ -202,6 +246,26 @@ const MapPage: FC = () => {
       <Box className="map-wrap">
         <Box ref={mapContainer} className="map" />
       </Box>
+      {recPopupOpen && recommendationText && (
+        <div className="popup-container">
+          <Paper className="recommendation-popup">
+            <Typography variant="body1">{recommendationText}</Typography>
+            <Button
+              onClick={() => setRecPopupOpen(false)}
+              className="popup-close-button"
+            >
+              Close
+            </Button>
+          </Paper>
+          <img src={wizoStanding} alt="Wizo" className="popup-wizo-overlay" />
+        </div>
+      )}
+      {!recPopupOpen && (
+        <button className="floating-ai-btn" onClick={() => setRecPopupOpen(true)}>
+          <img src={wizoAsset} alt="Wizo" className="wizo-icon" />
+          Wizo’s Advice
+        </button>
+      )}
       <EvaluationPopup
         open={evaluationModalOpen}
         onClose={() => setEvaluationModalOpen(false)}
