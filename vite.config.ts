@@ -7,4 +7,8 @@ export default defineConfig({
   define: {
     'process.env': process.env,
   },
+  server: {
+    allowedHosts: ['spotwise.cs.colman.ac.il'], // 👈 allows external access
+    host: '0.0.0.0', // 👈 allows external access
+  }
 })

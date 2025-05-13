@@ -1,0 +1,25 @@
+# for running the docker compose create two directories named SpotwiseBackend and SpotwiseFrontend and move the docker compose file 
+# to the parent directory of these two directories and run the command docker-compose up --build
+version: '3.8'
+
+services:
+  spotwise-frontend:
+    build: ./SpotwiseFrontend
+    ports:
+      - "5173:5173"  # Only exposing frontend to your laptop
+    depends_on:
+      - spotwise-backend
+
+  spotwise-backend:
+    build: ./SpotwiseBackend
+    ports:
+      - "3060:3060"  # Exposed only inside Docker network
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:4.4
+    expose:
+      - "27017"  # Only accessible inside Docker network
+    environment:
+      MONGO_INITDB_DATABASE: users
