@@ -6,20 +6,20 @@ services:
   spotwise-frontend:
     build: ./SpotwiseFrontend
     ports:
-      - "443:443"  # Only exposing frontend to your laptop
+      - "443:443"  
     depends_on:
       - spotwise-backend
 
   spotwise-backend:
     build: ./SpotwiseBackend
     ports:
-      - "3000:3000"  # Exposed only inside Docker network
+      - "3000:3000" 
     depends_on:
       - mongodb
 
   mongodb:
     image: mongo:4.4
     expose:
-      - "27017"  # Only accessible inside Docker network
+      - "27017"  
     environment:
       MONGO_INITDB_DATABASE: users
