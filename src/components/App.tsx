@@ -9,7 +9,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      {location.pathname !== "/login" && location.pathname !== "/signup" && <AppMenu />}
+      {location.pathname !== "/login" && location.pathname !== "/signup"}
       <AppRoutes />
     </div>
   );
@@ -17,6 +17,7 @@ const App: React.FC = () => {
 
 const AppWrapper: React.FC = () => (
   <Router>
+    <AppMenu />
     <App />
   </Router>
 );
