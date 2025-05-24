@@ -1,9 +1,7 @@
 import axios from "axios";
-import apiClient, { CanceledError } from "./api-client";
+import {apiClient} from "./api-client";
 import { CredentialResponse } from "@react-oauth/google";
 import { BASE_URL } from "../config.ts";
-
-export { CanceledError }
 
 export interface IUser {
   email?: string;
@@ -21,7 +19,7 @@ export interface IUser {
 export const register = (user: IUser) => {
   return new Promise<{ status: number; message: string }>((resolve, reject) => {
     apiClient
-      .post("/auth/register", user)
+      .noauth.post("/auth/register", user)
       .then(async (response) => {
         await login(user);
         resolve({ status: response.status, message: response.data.message });
@@ -36,7 +34,7 @@ export const login = async (user: IUser) => {
   try {
     const abortController = new AbortController();
     const credentials = { username: user.username, password: user.password }
-    const response = await apiClient.post('/auth/login', credentials, { signal: abortController.signal });
+    const response = await apiClient.noauth.post('/auth/login', credentials, { signal: abortController.signal });
     const { accessToken, refreshToken, _id, mode } = response.data;
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
@@ -51,7 +49,7 @@ export const login = async (user: IUser) => {
 }
 
 export const googleSignin = (
-  
+
   credentialResponse: CredentialResponse) => {
   return new Promise<{ status: number; message: string; accessToken?: string; refreshToken?: string }>((resolve, reject) => {
     axios
@@ -75,7 +73,7 @@ export const googleSignin = (
 
 export const getUser = async (userId: string): Promise<IUser> => {
   // const token = localStorage.getItem('accessToken');
-  const response = await apiClient.get<IUser>(`/users/${userId}`);
+  const response = await apiClient.noauth.get<IUser>(`/users/${userId}`);
   return response.data;
 };
 
@@ -83,7 +81,7 @@ export const updateUser = async (userId: string, updatedUser: Partial<IUser>) =>
   const abortController = new AbortController();
   const token = localStorage.getItem('accessToken');
   try {
-    const response = await apiClient.put(`/users/${userId}`, updatedUser, {
+    const response = await apiClient.auth.put(`/users/${userId}`, updatedUser, {
       signal: abortController.signal,
       headers: {
         Authorization: `Bearer ${token}`
@@ -103,7 +101,7 @@ const logout = async () => {
     throw new Error("No refresh token found");
   }
   try {
-    await apiClient.post('/auth/logout', { refreshToken }, {
+    await apiClient.noauth.post('/auth/logout', { refreshToken }, {
       signal: abortController.signal,
       headers: {
         Authorization: `Bearer ${refreshToken}`
