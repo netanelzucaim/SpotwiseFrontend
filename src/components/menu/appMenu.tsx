@@ -8,14 +8,8 @@ import Box from "@mui/material/Box";
 import "../../styles/AppMenu.css";
 import { LogOut, User } from "lucide-react";
 
-// const pages = [
-//   { name: "AI Help", path: "/ai-recommendations", icon: <Brain size={24} /> },
-//   { name: "Discover Location", path: "/discover-locations", icon: <MapPinHouse size={24} /> },
-//   { name: "Map", path: "/map", icon: <Map size={24} /> },
-//   { name: "Business Profile", path: "/business-profile", icon: <BriefcaseBusiness size={24} /> },
-//   { name: "Real Estate Profile", path: "/real-estate-profile", icon: <User size={24} /> },
-//   { name: "Logout", path: "/login", icon: <LogOut size={24} /> }
-// ];
+const userMode = localStorage.getItem("mode");
+const destination = userMode === "Real Estate" ? "/real-estate-profile" : "/business-profile";
 
 const AppMenu: React.FC = () => {
   return (
@@ -39,7 +33,7 @@ const AppMenu: React.FC = () => {
           <Link to="/map">
             Map
           </Link>
-          <Link to="/profile">
+          <Link to={destination}>
             <User fontSize="small" />
           </Link>
           <Link
