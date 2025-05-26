@@ -20,7 +20,7 @@ const BusinessService = {
     if (!ownerId) {
       throw new Error("User ID not found in local storage.");
     }
-    const response = await apiClient.noauth.get<Business[]>(`/business?owner=${ownerId}`);
+    const response = await apiClient.auth.get<Business[]>(`/business?owner=${ownerId}`);
     return response.data[0];
   },
 

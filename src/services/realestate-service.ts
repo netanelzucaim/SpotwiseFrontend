@@ -12,7 +12,7 @@ export interface RealEstate {
 
 const RealEstateService = {
   async getAll(): Promise<RealEstate[]> {
-    const response = await apiClient.noauth.get<RealEstate[]>('/realestate');
+    const response = await apiClient.auth.get<RealEstate[]>('/realestate');
     return response.data;
   },
   async create(realEstateData: RealEstate): Promise<RealEstate> {

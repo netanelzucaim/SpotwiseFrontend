@@ -19,7 +19,7 @@ export interface IUser {
 export const register = (user: IUser) => {
   return new Promise<{ status: number; message: string }>((resolve, reject) => {
     apiClient
-      .noauth.post("/auth/register", user)
+      .auth.post("/auth/register", user)
       .then(async (response) => {
         await login(user);
         resolve({ status: response.status, message: response.data.message });
@@ -72,8 +72,7 @@ export const googleSignin = (
 };
 
 export const getUser = async (userId: string): Promise<IUser> => {
-  // const token = localStorage.getItem('accessToken');
-  const response = await apiClient.noauth.get<IUser>(`/users/${userId}`);
+  const response = await apiClient.auth.get<IUser>(`/users/${userId}`);
   return response.data;
 };
 
