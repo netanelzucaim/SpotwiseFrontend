@@ -19,7 +19,7 @@ export interface IUser {
 export const register = (user: IUser) => {
   return new Promise<{ status: number; message: string }>((resolve, reject) => {
     apiClient
-      .auth.post("/auth/register", user)
+      .noauth.post("/auth/register", user)
       .then(async (response) => {
         await login(user);
         resolve({ status: response.status, message: response.data.message });
