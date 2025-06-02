@@ -9,7 +9,7 @@ export const uploadPhoto = async (photo: File): Promise<string> => {
         const formData = new FormData();
         if (photo) {
             formData.append("file", photo);
-            apiClient.auth.post<IUploadResponse>('file', formData, {
+            apiClient.noauth.post<IUploadResponse>('file', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
