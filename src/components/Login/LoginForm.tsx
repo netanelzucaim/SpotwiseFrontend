@@ -38,6 +38,7 @@ const LoginForm = () => {
       };
       try {
         await login({ username: user.username!, password: user.password! });
+        window.dispatchEvent(new Event("loginStatusChanged"));
         navigate("/home");
       } catch (err: any) {
         setError("Failed to login user - " + err);
@@ -65,6 +66,8 @@ const LoginForm = () => {
       } else {
         setError("User ID not found. Please try again.");
       }
+
+      window.dispatchEvent(new Event("loginStatusChanged"));
     } catch (err: any) {
       setError(err.message || "Google login failed. Please try again.");
     }

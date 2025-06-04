@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Typography,
 } from "@mui/material";
 import "../../styles/Home.css";
+import DiscoverLocations from "../DiscoverLocations/DiscoverLocations";
 
 const HomePage: React.FC = () => {
   const isLoggedIn = Boolean(localStorage.getItem("userId"));

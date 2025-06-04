@@ -18,6 +18,7 @@ const App: React.FC = () => {
 const AppWrapper: React.FC = () => (
   <Router>
     <AppMenu />
+    <div className="space-div"></div>
     <App />
   </Router>
 );

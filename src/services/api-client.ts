@@ -36,6 +36,7 @@ apiClient.interceptors.response.use(
                     localStorage.setItem('accessToken', accessToken);
                     localStorage.setItem('refreshToken', newRefreshToken);
                     localStorage.setItem('userId',_id );
+                    window.dispatchEvent(new Event("loginStatusChanged"));
 
                     originalRequest.headers.Authorization = `Bearer ${accessToken}`;
                     return apiClient(originalRequest);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   AppBar, 
@@ -8,12 +8,43 @@ import Box from "@mui/material/Box";
 import "../../styles/AppMenu.css";
 import { LogOut, User } from "lucide-react";
 
-const userMode = localStorage.getItem("mode");
-const destination = userMode === "Real Estate" ? "/real-estate-profile" : "/business-profile";
+// const userMode = localStorage.getItem("mode");
+// const destination = userMode === "Real Estate" ? "/real-estate-profile" : "/business-profile";
 
 const AppMenu: React.FC = () => {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("userId")
+  );
+
+  useEffect(() => {
+    const handleStatusChange = () => {
+      setIsLoggedIn(!!localStorage.getItem("userId"));
+    };
+
+    // Listen for login/logout changes
+    window.addEventListener("loginStatusChanged", handleStatusChange);
+
+    return () => {
+      window.removeEventListener("loginStatusChanged", handleStatusChange);
+    };
+  }, []);
+
+  const userMode = localStorage.getItem("mode");
+  const destination =
+    userMode === "Real Estate" ? "/real-estate-profile" : "/business-profile";
+
+  const handleLogout = () => {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("mode");
+    setIsLoggedIn(false);
+
+    // Also trigger event to update other components if needed
+    window.dispatchEvent(new Event("loginStatusChanged"));
+  };
+
   return (
-    <AppBar position="static" color="default" elevation={1}>
+    <AppBar position="fixed" color="default" elevation={1}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Box display="flex" alignItems="center">
           <img
@@ -36,15 +67,11 @@ const AppMenu: React.FC = () => {
           <Link to={destination}>
             <User fontSize="small" />
           </Link>
-          <Link
-            to="/login"
-            onClick={() => {
-              localStorage.removeItem("userId");
-              localStorage.removeItem("mode");
-            }}
-          >
-            <LogOut fontSize="small" />
-          </Link>
+          {isLoggedIn && (
+            <Link to="/login" onClick={handleLogout}>
+              <LogOut fontSize="small" />
+            </Link>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
