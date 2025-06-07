@@ -9,6 +9,7 @@ import {
 } from "../../styles/ProfilePageStyle";
 import { TextField, Typography, Autocomplete } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import "../../styles/ProfilePages.css";
 
 const RealEstateProfile: React.FC = () => {
   const [city, setCity] = useState("");
@@ -85,8 +86,8 @@ const RealEstateProfile: React.FC = () => {
   return (
     <ProfileWrapper>
       <GlassForm elevation={3}>
-        <Typography variant="h5" sx={{ color: "#fff", textAlign: "center" }}>
-          Create your real estate profile & Make your dream come true⚡
+        <Typography variant="h5" className="profile-title">
+          Create your real estate profile <br></br> & Make your dream <br></br> come true ⚡
         </Typography>
 
         <TextField
@@ -161,7 +162,7 @@ const RealEstateProfile: React.FC = () => {
           }}
         />
 
-        <StyledButton onClick={handleSubmit}>Publish Property</StyledButton>
+        <StyledButton className="create-profile-button" onClick={handleSubmit}>Publish Property</StyledButton>
 
         {message && (
           <Typography sx={{ color: "green", marginTop: "1rem" }}>

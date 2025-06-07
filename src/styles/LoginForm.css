@@ -56,23 +56,21 @@
 }
 
 .signin-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #00bfff;
-  border: none;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
+  background: #ffffff !important;
+  color: #368fd3 !important;
+  padding: 12px 40px;
+  border: 2px solid #368fd3 !important;
+  border-radius: 20px;
   cursor: pointer;
-  border-radius: 25px;
-  margin-top: 15px;
-  transition: background-color 0.3s, transform 0.2s;
+  font-size: 16px;
 }
 
 .signin-button:hover {
-  background-color: #008cba;
-  transform: scale(1.05);
+  background: #368fd3 !important;
+  color: #ffffff !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
 
 .signup-text {
   margin-top: 15px;

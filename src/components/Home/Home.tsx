@@ -41,13 +41,13 @@ const HomePage: React.FC = () => {
         >
           {bubbleMessages.map((msg, index) => (
             <div key={index} className="bubble-slide">
-              <Typography sx={{ fontSize: "28px", fontWeight: "bold", color: "#333", fontFamily: "var(--bs-body-font-family);" }}>{msg.title}</Typography>
+              <Typography sx={{ fontSize: "28px", fontWeight: "bold", color: "#007bdc", fontFamily: "var(--bs-body-font-family);" }}>{msg.title}</Typography>
               <img
                 src="/assets/thumbs-up-wizo.png"
                 alt="SpotWise Logo"
                 className="logo"
               />
-              <Typography sx={{ fontSize: "18px", color: "#333", fontFamily: "var(--bs-body-font-family);" }}>{msg.description}</Typography>
+              <Typography sx={{ fontSize: "18px", color: "#007bdc", fontFamily: "var(--bs-body-font-family);" }}>{msg.description}</Typography>
             </div>
           ))}
         </div>
