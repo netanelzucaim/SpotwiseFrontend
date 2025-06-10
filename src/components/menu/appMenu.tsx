@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  AppBar, 
-  Toolbar
-} from "@mui/material";
+import { AppBar, Toolbar } from "@mui/material";
 import Box from "@mui/material/Box";
 import "../../styles/AppMenu.css";
 import { LogOut, User } from "lucide-react";
 
-// const userMode = localStorage.getItem("mode");
-// const destination = userMode === "Real Estate" ? "/real-estate-profile" : "/business-profile";
-
 const AppMenu: React.FC = () => {
-
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!localStorage.getItem("userId")
   );
@@ -22,7 +15,6 @@ const AppMenu: React.FC = () => {
       setIsLoggedIn(!!localStorage.getItem("userId"));
     };
 
-    // Listen for login/logout changes
     window.addEventListener("loginStatusChanged", handleStatusChange);
 
     return () => {
@@ -38,10 +30,11 @@ const AppMenu: React.FC = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("mode");
     setIsLoggedIn(false);
-
-    // Also trigger event to update other components if needed
     window.dispatchEvent(new Event("loginStatusChanged"));
   };
+
+  // ✅ Conditionally render the whole navbar
+  if (!isLoggedIn) return null;
 
   return (
     <AppBar position="fixed" color="default" elevation={1}>
@@ -52,26 +45,18 @@ const AppMenu: React.FC = () => {
             alt="SpotWise Logo"
             className="logo"
           />
-        <Link to="/home" className="logo-name">SpotWise</Link>
+          <Link to="/home" className="logo-name">SpotWise</Link>
         </Box>
         <Box display="flex" gap={3}>
-          <Link to="/discover-locations">
-            Discover
-          </Link>
-          <Link to="/ai-recommendations">
-            Help
-          </Link>
-          <Link to="/map">
-            Map
-          </Link>
+          <Link to="/discover-locations">Discover</Link>
+          <Link to="/ai-recommendations">Help</Link>
+          <Link to="/map">Map</Link>
           <Link to={destination}>
             <User fontSize="small" />
           </Link>
-          {isLoggedIn && (
-            <Link to="/login" onClick={handleLogout}>
-              <LogOut fontSize="small" />
-            </Link>
-          )}
+          <Link to="/login" onClick={handleLogout}>
+            <LogOut fontSize="small" />
+          </Link>
         </Box>
       </Toolbar>
     </AppBar>

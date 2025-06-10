@@ -1,32 +1,28 @@
 .bubble-carousel {
-  width: 100%;
-  max-width: 700px;
   overflow: hidden;
-  margin: 40px auto;
-  border-radius: 30px;
-  background-color: #f7fbff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
 }
 
 .bubble-slider {
   display: flex;
-  transition: transform 0.8s ease-in-out;
+  transition: transform 0.5s ease-in-out;
+  width: 100%;
 }
 
 .bubble-slide {
   min-width: 100%;
-  padding: 40px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
-.headline {
-  font-size: 28px;
-  font-weight: bold;
-  color: #007bdc;
-  margin-bottom: 10px;
-}
-
-.bubble-text {
-  font-size: 18px;
-  color: #444;
+.bubble-image {
+  width: 100%;
+  max-width: 640px;
+  border-radius: 12px;
+  object-fit: cover;
 }
