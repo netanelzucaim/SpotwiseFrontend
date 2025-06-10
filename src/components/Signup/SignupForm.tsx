@@ -9,6 +9,7 @@ import {
   Modal,
   Button,
   Box,
+  Link
 } from "@mui/material";
 import {
   ProfileWrapper,
@@ -161,7 +162,7 @@ const SignupForm = () => {
     >
       <GlassForm elevation={3}>
         <Typography variant="h5" className="signup-title">
-          Sign up & Start your journey
+          Sign up & Start your journey <br></br>
         </Typography>
 
         <div className="form-rows" style={{ marginBottom: "30px" }}>
@@ -171,7 +172,7 @@ const SignupForm = () => {
               height: 100,
               width: 100,
               cursor: "pointer",
-              boxShadow: "0 0 15px rgba(0, 225, 255, 0.6)",
+              boxShadow: "0 0 15px #368fd3",
             }}
             onClick={selectImg}
           />
@@ -255,7 +256,7 @@ const SignupForm = () => {
           sx={{ marginBottom: "30px" }}
         />
 
-        <StyledButton
+        <StyledButton className="signup-button"
           type="submit"
           onClick={handleSubmit}
           sx={{ marginBottom: "20px" }}
@@ -269,8 +270,15 @@ const SignupForm = () => {
           )}
           {error && <Typography color="error">{error}</Typography>}
           {success && <Typography color="success.main">{success}</Typography>}
+          <Typography variant="body2" fontFamily={"Montserrat"}>
+              Already have an account?{" "}
+              <Link href="/login" underline="hover">
+                Sign In
+              </Link>
+            </Typography>
         </div>
       </GlassForm>
+     
 
       <Modal
         open={modalOpen}

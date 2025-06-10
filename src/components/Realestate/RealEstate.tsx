@@ -52,7 +52,7 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, index, on
           width: "90%",
           maxWidth: 500,
           borderRadius: "1rem",
-          backgroundColor: "#D0CBBC",
+          backgroundColor: "#ffffff",
           boxShadow: 6,
           overflow: "hidden",
         }}

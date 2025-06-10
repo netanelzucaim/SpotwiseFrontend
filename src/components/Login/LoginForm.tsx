@@ -104,14 +104,14 @@ const LoginForm = () => {
             <Typography
               variant="h3"
               fontWeight="bold"
-              color="text.secondary"
+              sx={{ color: "#368fd3" }}
               fontFamily={"Montserrat"}
             >
               SpotWise
             </Typography>
             <Typography
               variant="subtitle1"
-              color="text.secondary"
+              sx={{ color: "#368fd3" }}
               fontFamily={"Montserrat"}
               fontWeight="bold"
             >
@@ -146,7 +146,7 @@ const LoginForm = () => {
               fullWidth
               required
             />
-            <StyledButton type="submit" onClick={onLoginUser}>
+            <StyledButton className="signin-button" type="submit" onClick={onLoginUser}>
               Sign In
             </StyledButton>
 
