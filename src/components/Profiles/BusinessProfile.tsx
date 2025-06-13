@@ -78,8 +78,7 @@ const BusinessProfile: React.FC = () => {
       };
 
       if (profile) {
-        let id = (await BusinessService.getCurrentUserBusiness())._id || "";
-        await BusinessService.update(businessData, id);
+        await BusinessService.update(businessData, profile._id!);
         setMessage("Business updated successfully!");
         setEditMode(false);
       } else {
