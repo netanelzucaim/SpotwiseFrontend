@@ -22,3 +22,7 @@ a {
 a:hover {
   color: #007bdc;
 }
+
+.space-div {
+  height: 100px;
+}
