@@ -1,4 +1,4 @@
-import apiClient from "./api-client";
+import {apiClient} from "./api-client";
 import axios from "axios";
 
 export interface Business {
@@ -12,7 +12,7 @@ export interface Business {
 }
 const BusinessService = {
   async create(businessData: Business): Promise<Business> {
-    const response = await apiClient.post<Business>("/business", businessData);
+    const response = await apiClient.auth.post<Business>("/business", businessData);
     return response.data;
   },
   async getCurrentUserBusiness(): Promise<Business> {
@@ -20,7 +20,7 @@ const BusinessService = {
     if (!ownerId) {
       throw new Error("User ID not found in local storage.");
     }
-    const response = await apiClient.get<Business[]>(`/business?owner=${ownerId}`);
+    const response = await apiClient.auth.get<Business[]>(`/business?owner=${ownerId}`);
     return response.data[0];
   },
 

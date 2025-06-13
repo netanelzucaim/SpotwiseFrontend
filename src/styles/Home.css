@@ -1,30 +1,71 @@
-.bubble-carousel {
-  overflow: hidden;
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+.carousel-container {
   position: relative;
-}
-
-.bubble-slider {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
   width: 100%;
-}
-
-.bubble-slide {
-  min-width: 100%;
+  height: 60vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  perspective: 1200px;
+  overflow: hidden;
+  background: white;
 }
 
-.bubble-image {
+.carousel {
+  position: relative;
   width: 100%;
-  max-width: 640px;
-  border-radius: 12px;
+  height: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70vw;
+  height: 80vh;
+  object-fit: contain;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transform: translate(-50%, -50%);
+  transition: transform 0.8s ease, opacity 0.8s ease;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  border-radius: 24px;
+}
+
+/* Centered slide */
+.slide.center {
+  transform: translate(-50%, -50%) scale(1) rotateY(0deg) translateZ(0);
+  opacity: 1;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+/* Left slide */
+.slide.left {
+  transform: translate(-130%, -50%) scale(0.8) rotateY(25deg);
+  opacity: 0.25;
+  z-index: 2;
+}
+
+/* Right slide */
+.slide.right {
+  transform: translate(30%, -50%) scale(0.8) rotateY(-25deg);
+  opacity: 0.25;
+  z-index: 2;
+}
+
+/* Hidden slides */
+.slide.hidden {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .arrow {
@@ -32,17 +73,18 @@
   top: 50%;
   transform: translateY(-50%);
   background-color: #007bdc;
-  color: #ffffff;
+  color: white;
   border: none;
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  cursor: pointer;
   font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .left-arrow {
