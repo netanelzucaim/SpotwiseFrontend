@@ -11,6 +11,9 @@ jobs:
   build-and-deploy:
     runs-on: self-hosted
     steps:
+    - name: Check runner user
+      run: whoami
+
     - name: Deploy Spotwise Frontend with Docker Compose
       run: |
         echo "Running on $(hostname)"
