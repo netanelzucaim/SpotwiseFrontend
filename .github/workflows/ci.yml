@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - woodpecker
   workflow_dispatch:  # manual trigger
 
 jobs:
