@@ -1,0 +1,41 @@
+name: CI & Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - woodpecker
+  workflow_dispatch:  # manual trigger
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+    steps:
+    - name: Check runner user
+      run: whoami
+
+    - name: Deploy Spotwise Frontend with Docker Compose
+      run: |
+        echo "Running on $(hostname)"
+        cd /home/cs144/spotwise/SpotwiseFrontend && git  pull
+        cd /home/cs144/spotwise/SpotwiseBackend &&  git  pull
+        cp -f /home/cs144/spotwise/SpotwiseFrontend/Dockerfile /home/cs144/
+        cd /home/cs144/spotwise
+        docker compose up --build -d
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
