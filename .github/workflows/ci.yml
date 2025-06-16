@@ -10,7 +10,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: self-hosted
-
     steps:
     - name: Deploy Spotwise Frontend with Docker Compose
       run: |
