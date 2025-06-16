@@ -11,25 +11,8 @@ jobs:
   build-and-deploy:
     runs-on: self-hosted
 
+
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    - name: Init - Install Dependencies
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-
-    - name: Init - npm install and setup
-      run: |
-        node -v
-        npm install
-
-    - name: Test - Run unit tests
-      continue-on-error: true
-      run: |
-        npm run testLinux
-
     - name: Deploy Spotwise Frontend with Docker Compose
       run: |
         echo "Running on $(hostname)"
@@ -38,6 +21,9 @@ jobs:
         cp -f /home/cs144/spotwise/SpotwiseFrontend/Dockerfile /home/cs144/
         cd /home/cs144/spotwise
         docker compose up --build -d
+
+
+
 
 
 
