@@ -27,8 +27,6 @@ jobs:
 
       - name: Deploy Spotwise Frontend with Docker Compose
         run: |
-          echo "Running on $(hostname)"
-          cd /home/cs144/spotwise
           docker compose up --build -d
 
 
