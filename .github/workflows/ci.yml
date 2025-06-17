@@ -26,7 +26,7 @@ jobs:
       - name: Build and push Spotwise Frontend image
         run: |
           cd /home/cs144/spotwise/SpotwiseFrontend
-          docker build -t netanelzucaim123/spotwise-frontend-dockerhub:${COMMIT_ID}  -t netanelzucaim123/spotwise-frontend:latest  .
+          docker build -t netanelzucaim123/spotwise-frontend-dockerhub:${COMMIT_ID}  -t netanelzucaim123/spotwise-frontend-dockerhub:latest  .
           docker push netanelzucaim123/spotwise-frontend-dockerhub:${COMMIT_ID}
           docker push netanelzucaim123/spotwise-frontend-dockerhub:latest
 
