@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - push_dockerhub  # added for manual Docker Hub push
   workflow_dispatch:  # manual trigger
 jobs:
   build-and-deploy:
@@ -25,8 +26,9 @@ jobs:
       - name: Build and push Spotwise Frontend image
         run: |
           cd /home/cs144/spotwise/SpotwiseFrontend
-          docker build -t netanelzucaim123/spotwise-frontend-dockerhub:${COMMIT_ID} .
+          docker build -t netanelzucaim123/spotwise-frontend-dockerhub:${COMMIT_ID}  -t netanelzucaim123/spotwise-frontend:latest  .
           docker push netanelzucaim123/spotwise-frontend-dockerhub:${COMMIT_ID}
+          docker push netanelzucaim123/spotwise-frontend-dockerhub:latest
 
       - name: Deploy Spotwise Frontend with Docker Compose
         run: |
