@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - dev
-      - push_dockerhub
   workflow_dispatch:  # manual trigger
 jobs:
   build-and-deploy:
