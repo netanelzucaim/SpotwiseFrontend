@@ -1,247 +1,107 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Button,
-  Typography,
-} from "@mui/material";
-import Box from "@mui/material/Box";
+import React, { useState, useEffect, useRef } from "react";
 import "../../styles/Home.css";
-import userService from "../../services/user_service"; 
-import BotpressChat from "../Chatbot/ChatbotButton";
 
 const HomePage: React.FC = () => {
-  const navigate = useNavigate();
-  const isLoggedIn = Boolean(localStorage.getItem("userId"));
-  const userMode = localStorage.getItem("mode"); 
-
-  const navItems = [
-    { label: "Home", icon: "🏠", path: "/home" },
-    { label: "Why SpotWise", icon: "❓", path: "/home" },
-    { label: "Success Stories", icon: "🌟", path: "/home" },
-    { label: "Contact", icon: "📞", path: "/home" },
-    ...(isLoggedIn
-      ? [
-          {
-            label: "Logout",
-            icon: "🚪",
-            path: "/login",
-            onClick: async () => {
-              try {
-                await userService.logout();
-                navigate("/login");
-              } catch (error) {
-                console.error("Failed to logout:", error);
-              }
-            },
-          },
-        ]
-      : [
-          {
-            label: "Login",
-            icon: "🔑",
-            path: "/login",
-            onClick: () => navigate("/login"),
-          },
-        ]),
+  const bubbleImages = [
+    "/posters/poster_1.JPG",
+    "/posters/poster_2.JPG",
+    "/posters/poster_3.JPG",
   ];
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const explanationRef = useRef<HTMLElement | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  const goToNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % bubbleImages.length);
+  };
+
+  const goToPrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? bubbleImages.length - 1 : prevIndex - 1
+    );
+  };
+
+  useEffect(() => {
+    const interval = setInterval(goToNext, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+
+    if (explanationRef.current) observer.observe(explanationRef.current);
+
+    return () => {
+      if (explanationRef.current) observer.unobserve(explanationRef.current);
+    };
+  }, []);
+
   return (
-    <div
-      className="min-h-screen 
-      bg-cover 
-      bg-center 
-      text-white 
-      flex flex-col 
-      items-center 
-      home-page"
-    >
-      <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+    <>
+      <div className="carousel-container">
+        <button className="arrow left-arrow" onClick={goToPrev}>
+          ‹
+        </button>
+        <div className="carousel">
+          {bubbleImages.map((src, index) => {
+            const offset = index - currentIndex;
+            let className = "slide";
+            if (offset === 0) className += " center";
+            else if (
+              offset === -1 ||
+              (currentIndex === 0 && index === bubbleImages.length - 1)
+            )
+              className += " left";
+            else if (
+              offset === 1 ||
+              (currentIndex === bubbleImages.length - 1 && index === 0)
+            )
+              className += " right";
+            else className += " hidden";
 
-      <header className="relative w-full flex flex-col items-center text-center p-4 z-10">
-        <h1 className="text-4xl font-bold text-green-400">SpotWise</h1>
-        <p className="text-sm text-gray-200">
-          Your Vision, The Perfect Location.
-        </p>
-        <nav className="flex gap-2 justify-center items-center mt-2">
-          {navItems.map((item, index) => (
-            <Button
-              key={index}
-              startIcon={<span>{item.icon}</span>}
-              onClick={item.onClick}
-              sx={{
-                backgroundColor: "",
-                "&:hover": { backgroundColor: "#588C87" },
-                borderRadius: "20px",
-                padding: "0.5rem 2rem",
-                color: "white",
-                fontWeight: "bold",
-                textTransform: "none",
-              }}
-            >
-              {item.label}
-            </Button>
-          ))}
-        </nav>
-      </header>
-
-      <section className="relative text-center py-8 px-4 max-w-90% z-10">
-        <h2 className="text-3xl font-semibold leading-tight">
-          Find the perfect spot <br /> for your business idea
-        </h2>
-        <p className="mt-4 text-base">
-          SpotWise provides AI recommendations for your business real estate
-          location for its best success by its location.
-        </p>
-      </section>
-
-      {isLoggedIn && (
-        <Box
-          sx={{
-            width: "100%",
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(20%, 1fr))",
-            gap: "2%",
-            padding: "2%",
-            zIndex: 10,
-          }}
+            return (
+              <img
+                key={index}
+                src={src}
+                alt={`Slide ${index}`}
+                className={className}
+              />
+            );
+          })}
+        </div>
+        <button className="arrow right-arrow" onClick={goToNext}>
+          ›
+        </button>
+      </div>
+      <div className="why-spotwise-container">
+        <header className="why-spotwise-title"
         >
-          {features.map((feature, index) => (
-            <Card
-              key={index}
-              sx={{
-                width: "100%",
-                height: "auto",
-                borderRadius: "1rem",
-                boxShadow: 3,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                flexShrink: 0,
-                "&:hover": {
-                  transform: "scale(1.05)",
-                  boxShadow: 6,
-                },
-                transition: "transform 0.3s, box-shadow 0.3s",
-              }}
-            >
-              <CardMedia
-                component="div"
-                sx={{
-                  height: "20%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "#588C87",
-                }}
-              >
-                <Typography variant="h3">{feature.icon}</Typography>
-              </CardMedia>
-              <CardContent
-                sx={{
-                  backgroundColor: "white",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{
-                    textAlign: "center",
-                    marginBottom: "1rem",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {feature.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" mb={2}>
-                  {feature.description}
-                </Typography>
-                {feature.title === "Create Your Property" ? (
-                  <Box sx={{ display: "flex", gap: 2, marginTop: "1rem" }}>
-                    {userMode === "Real Estate" && (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        onClick={() => navigate("/real-estate-profile")}
-                      >
-                        Real Estate
-                      </Button>
-                    )}
-                    {userMode === "Business" && (
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        fullWidth
-                        onClick={() => navigate("/business-profile")}
-                      >
-                        Business
-                      </Button>
-                    )}
-                  </Box>
-                ) : (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={() =>
-                      navigate(
-                        feature.title === "Find What’s Best For You"
-                          ? "/ai-recommendations"
-                          : feature.title === "Discover Locations"
-                          ? "/discover-locations"
-                          : feature.title === "Live Map"
-                          ? "/map"
-                          : "#"
-                      )
-                    }
-                    sx={{ marginTop: "1rem" }}
-                  >
-                    {feature.buttonText}
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-          <BotpressChat />
-        </Box>
-      )}
-    </div>
+          Why SpotWise ?
+        </header>
+        <section
+          ref={explanationRef}
+          className={`why-spotwise-content ${visible ? "visible" : ""}`}
+        >
+          <p>
+            <b> SpotWise is a smart platform that helps business owners find the best location for their business. </b>
+          </p>
+          <p>
+            By combining your target market, preferred area, 
+            and key factors like public transport or nearby businesses, 
+            SpotWise uses AI and real-time data to recommend ideal properties.
+          </p>
+          <p>
+            It’s perfect for those who want to make confident, 
+            data-driven location decisions - without needing deep local market knowledge.
+          </p>
+        </section>
+      </div>
+    </>
   );
 };
-
-const features = [
-  {
-    icon: "🏡",
-    title: "Discover Locations",
-    description: "Look at the listings of real estate",
-    buttonText: "Discover",
-  },
-  {
-    icon: "🔍",
-    title: "Find What’s Best For You",
-    description:
-      "Get AI recommendation on the real estate listed here for your business",
-    buttonText: "Find Now",
-  },
-  {
-    icon: "🗺️",
-    title: "Live Map",
-    description: "Look at the live map of the locations listed on the site",
-    buttonText: "Explore Map",
-  },
-  {
-    icon: "📢",
-    title: "Create Your Property",
-    description:
-      "Come and Create your property so more businesses/users can discover it",
-    buttonText: "List It",
-  },
-];
 
 export default HomePage;

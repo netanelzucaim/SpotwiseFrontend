@@ -56,8 +56,7 @@ const MapPage: FC = () => {
 
   const addMarker = (coords: { lat: number; lon: number }, listing: iRealestate, index: number) => {
     if (!map.current) return;
-    const popupContent = `<strong>${listing.address}, ${listing.city}</strong><p>${listing.description}</p>`;
-    const popup = new maptilersdk.Popup().setHTML(popupContent);
+    const popupContent = `<strong style="color: #368fd3;">${listing.address}, ${listing.city}</strong><p style="color: #368fd3;">${listing.description}</p>`;    const popup = new maptilersdk.Popup().setHTML(popupContent);
     const marker = new maptilersdk.Marker().setLngLat([coords.lon, coords.lat]).setPopup(popup).addTo(map.current);
 
     setMarkers((prevMarkers) => {

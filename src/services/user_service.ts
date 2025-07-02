@@ -39,6 +39,7 @@ export const login = async (user: IUser) => {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('userId', _id);
+    window.dispatchEvent(new Event("loginStatusChanged"));
     localStorage.setItem('mode', mode);
 
     return response.data;

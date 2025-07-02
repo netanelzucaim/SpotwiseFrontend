@@ -4,6 +4,7 @@ import { RealEstate } from "../../services/realestate-service";
 import RealEstateModal from "../Realestate/RealEstate";
 import UserService from "../../services/user_service";
 import "../../styles/DiscoverLocations.css";
+import { Space } from "lucide-react";
 
 
 interface RealEstateWithUser extends RealEstate {
@@ -73,10 +74,6 @@ const DiscoverLocations: React.FC = () => {
   
     return (
       <div className="discover-locations-container">
-        <div className="header">
-          <h1>SpotWise</h1>
-          <p>Your Vision, The Perfect Location.</p>
-        </div>
         <div className="real-estate-container">
         <h2 className="container-title">Discover Locations</h2> {/* Add title here */}
         <input

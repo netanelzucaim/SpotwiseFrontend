@@ -5,6 +5,8 @@ import BusinessService from "../../services/business_service";
 import userService from "../../services/user_service";
 import { ProfileWrapper, GlassForm, StyledButton, StyledUploadFileIcon } from "../../styles/ProfilePageStyle"; 
 import { useNavigate } from "react-router-dom";
+import "../../styles/ProfilePages.css";
+
 
 const BusinessProfile: React.FC = () => {
   const [name, setName] = useState("");
@@ -69,8 +71,8 @@ const BusinessProfile: React.FC = () => {
   return (
     <ProfileWrapper>
       <GlassForm elevation={3}>
-        <Typography variant="h5" sx={{ color: "#fff", textShadow: "0 0 10px rgba(255, 255, 255, 0.5)", textAlign: "center" }}>
-          Create your business profile & Make your dream come true⚡
+        <Typography variant="h5" className="profile-title">
+          Create your business profile <br></br> & Make your dream <br></br> come true ⚡
         </Typography>
         <TextField fullWidth label="Business Name" variant="outlined" margin="normal" value={name} onChange={(e) => setName(e.target.value)} error={!!errors.name} helperText={errors.name} />
         <TextField 
@@ -96,7 +98,7 @@ const BusinessProfile: React.FC = () => {
         <TextField fullWidth label="Website URL" variant="outlined" margin="normal" value={siteUrl} onChange={(e) => setSiteUrl(e.target.value)} error={!!errors.siteUrl} helperText={errors.siteUrl} />
         <TextField fullWidth label="Category" variant="outlined" margin="normal" value={category} onChange={(e) => setCategory(e.target.value)} error={!!errors.category} helperText={errors.category} />
         <TextField fullWidth label="Description" variant="outlined" margin="normal" value={description} onChange={(e) => setDescription(e.target.value)} error={!!errors.description} helperText={errors.description} />
-        <StyledButton onClick={handleSubmit}>Create My Business</StyledButton>
+        <StyledButton className="create-profile-button" onClick={handleSubmit}>Create My Business</StyledButton>
         {message && <Typography color="success.main" sx={{ mt: 2 }}>{message}</Typography>}
       </GlassForm>
     </ProfileWrapper>
