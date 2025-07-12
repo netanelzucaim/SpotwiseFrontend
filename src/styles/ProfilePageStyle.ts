@@ -3,10 +3,9 @@ import { Box, Button, Paper } from "@mui/material";
 import { UploadFile } from "@mui/icons-material";
 
 export const ProfileWrapper = styled(Box)({
-  minHeight: "100vh",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
+   display: "flex",
+  flexDirection: "column", // כדי שהתוכן יהיה אנכי
+  alignItems: "center",    // אם אתה עדיין רוצה מרכז אופקי
   padding: "2rem",
   fontFamily: 'Montserrat, sans-serif'
 });
