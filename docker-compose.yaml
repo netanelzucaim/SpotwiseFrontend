@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  spotwise-frontend:
+    image: netanelzucaim123/spotwise-frontend-dockerhub:latest
+    ports:
+      - "443:443"
+    depends_on:
+      - spotwise-backend
+
+  spotwise-backend:
+    image: netanelzucaim123/spotwise-backend-dockerhub:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:4.4
+    expose:
+      - "27017"
+    environment:
+      MONGO_INITDB_DATABASE: users

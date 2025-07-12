@@ -31,13 +31,24 @@
   }
 
   .container-title {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: #ffffff; /* White text color */
     text-align: center;
     margin-bottom: 20px;
-    text-shadow: 1px 1px 0 #000000, -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000; /* Subtle shadow for better visibility */
-  }
+    text-shadow:
+    1px 1px 0 #368fd3,
+    -1px -1px 0 #368fd3,
+    1px -1px 0 #368fd3,
+    -1px 1px 0 #368fd3,
+    2px 2px 0 #368fd3,
+    -2px -2px 0 #368fd3,
+    2px -2px 0 #368fd3,
+    -2px 2px 0 #368fd3,
+    3px 0px 0 #368fd3,
+   -3px 0px 0 #368fd3,
+    0px 3px 0 #368fd3,
+    0px -3px 0 #368fd3;  }
 
 .real-estate-container {
         /*background: #21948d; */
@@ -61,7 +72,7 @@
   }
   
   .real-estate-card {
-    background: #bce2e2;
+    background: #368fd3;
     border: 1px solid #bce2e2;
     border-radius: 8px;
     padding: 20px;
@@ -80,12 +91,12 @@
   .real-estate-card h3 {
     margin: 0;
     font-size: 1.5rem;
-    color: #212529;
+    color: #ffffff;
   }
   
   .real-estate-card p {
     margin: 10px 0 0;
-    color: #666;
+    color: #ffffff;
     font-size: 1rem;
   }
 
@@ -103,31 +114,26 @@
   
   .filter-textbox:focus {
     outline: none;
-    border-color: #21948d; /* Highlight border on focus */
+    border-color: #21948d; 
     box-shadow: 0 0 5px rgba(33, 148, 141, 0.5);
   }
 
   .show-more-button {
     display: block;
-    margin: 20px auto; /* Center the button horizontally */
-    padding: 12px 24px; /* Add padding for a larger button */
-    background-color: #1b5b56; /* Button background color */
-    color: #ffffff; /* Button text color */
-    border: none; /* Remove default border */
-    border-radius: 8px; /* Rounded corners */
-    font-size: 1rem; /* Font size */
-    font-weight: 600; /* Bold text */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    margin: 20px auto; 
+    padding: 12px 24px; 
+    background-color: #ffffff; 
+    color: #368fd3; 
+    border: none; 
+    border-radius: 8px; 
+    font-size: 1.2rem; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease, transform 0.2s ease; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
   }
   
   .show-more-button:hover {
-    background-color: #1b7a74; /* Darker background on hover */
-    transform: scale(1.05); /* Slightly enlarge the button on hover */
-  }
-  
-  .show-more-button:active {
-    background-color: #176a64; /* Even darker background when clicked */
-    transform: scale(0.95); /* Slightly shrink the button when clicked */
+    background-color: #368fd3 !important;
+    color: white !important;
   }

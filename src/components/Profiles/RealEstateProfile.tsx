@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
 import userService from "../../services/user_service";
 import RealEstateService from "../../services/realestate-service";
-import { ProfileWrapper, GlassForm, StyledButton } from "../../styles/ProfilePageStyle";
-import { TextField, Typography } from "@mui/material";
+import MapService from "../../services/map-service";
+import {
+  ProfileWrapper,
+  GlassForm,
+  StyledButton,
+} from "../../styles/ProfilePageStyle";
+import { TextField, Typography, Autocomplete } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import "../../styles/ProfilePages.css";
+import { BrandHeading } from "../Logo/Logo";
 
 const RealEstateProfile: React.FC = () => {
   const [city, setCity] = useState("");
@@ -11,10 +18,14 @@ const RealEstateProfile: React.FC = () => {
   const [area, setArea] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   const [ownerId, setOwnerId] = useState(localStorage.getItem("userId") || "");
   const [ownerName, setOwnerName] = useState("");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [addressOptions, setAddressOptions] = useState<AddressSuggestion[]>([]);
+  const [selectedAddress, setSelectedAddress] =
+    useState<AddressSuggestion | null>(null);
 
   const navigate = useNavigate();
 
@@ -38,8 +49,9 @@ const RealEstateProfile: React.FC = () => {
     if (!city.trim()) newErrors.city = "City is required";
     if (!address.trim()) newErrors.address = "Address is required";
     if (!area.trim()) newErrors.area = "Area is required";
-    if (!location.trim()) newErrors.location = "Location is required";
     if (!description.trim()) newErrors.description = "Description is required";
+    if (!price) newErrors.price = "Price is required";
+    if (price <= 0) newErrors.price = "Price must be positive number";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -50,10 +62,10 @@ const RealEstateProfile: React.FC = () => {
     try {
       await RealEstateService.create({
         city,
-        address,
+        address: selectedAddress?.label || "",
         area,
-        location,
         description,
+        price,
         owner: ownerId,
       });
 
@@ -64,11 +76,21 @@ const RealEstateProfile: React.FC = () => {
     }
   };
 
+  const handleAddressSearch = async (input: string) => {
+    setAddress(input);
+    if (input.length >= 3) {
+      const suggestions = await MapService.getAddressSuggestions(input);
+      setAddressOptions(suggestions);
+    }
+  };
+
   return (
+    <div>
+      <BrandHeading></BrandHeading>
     <ProfileWrapper>
       <GlassForm elevation={3}>
-        <Typography variant="h5" sx={{ color: "#fff", textAlign: "center" }}>
-          Create your real estate profile & Make your dream come true⚡
+        <Typography variant="h5" className="profile-title">
+          Create your real estate profile <br></br> & Make your dream <br></br> come true ⚡
         </Typography>
 
         <TextField
@@ -82,37 +104,39 @@ const RealEstateProfile: React.FC = () => {
           helperText={errors.city}
         />
 
-        <TextField
+        <Autocomplete
           fullWidth
-          label="Address"
-          variant="outlined"
-          margin="normal"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          error={!!errors.address}
-          helperText={errors.address}
+          options={addressOptions}
+          getOptionLabel={(option) => option.label}
+          filterOptions={(x) => x}
+          onInputChange={(_, value) => handleAddressSearch(value)}
+          onChange={(_, value) => {
+            setSelectedAddress(value);
+            setAddress(value?.label || "");
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              fullWidth
+              label="Address"
+              variant="outlined"
+              margin="normal"
+              error={!!errors.address}
+              helperText={errors.address}
+            />
+          )}
         />
 
         <TextField
           fullWidth
-          label="Area (e.g. 120 sqm)"
+          label="Area (in sqm)"
+          type="number"
           variant="outlined"
           margin="normal"
           value={area}
           onChange={(e) => setArea(e.target.value)}
           error={!!errors.area}
           helperText={errors.area}
-        />
-
-        <TextField
-          fullWidth
-          label="Location Link (e.g. Google Maps URL)"
-          variant="outlined"
-          margin="normal"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          error={!!errors.location}
-          helperText={errors.location}
         />
 
         <TextField
@@ -126,11 +150,31 @@ const RealEstateProfile: React.FC = () => {
           helperText={errors.description}
         />
 
-        <StyledButton onClick={handleSubmit}>Publish Property</StyledButton>
+        <TextField
+          fullWidth
+          label="Price"
+          variant="outlined"
+          margin="normal"
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          error={!!errors.price}
+          helperText={errors.price}
+          InputProps={{
+            endAdornment: <Typography sx={{ marginLeft: "8px" }}>ILS</Typography>,
+          }}
+        />
 
-        {message && <Typography sx={{ color: "green", marginTop: "1rem" }}>{message}</Typography>}
+        <StyledButton className="create-profile-button" onClick={handleSubmit}>Publish Property</StyledButton>
+
+        {message && (
+          <Typography sx={{ color: "green", marginTop: "1rem" }}>
+            {message}
+          </Typography>
+        )}
       </GlassForm>
     </ProfileWrapper>
+    </div>
   );
 };
 

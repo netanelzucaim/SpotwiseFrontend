@@ -1,4 +1,4 @@
-import apiClient from './api-client';
+import {apiClient} from './api-client';
 
 export interface RealEstate {
   city: string;
@@ -6,17 +6,17 @@ export interface RealEstate {
   owner: string;
   description: string;
   area: string;
-  location: string;
+  price: number;
   _id?: string;
 }
 
 const RealEstateService = {
   async getAll(): Promise<RealEstate[]> {
-    const response = await apiClient.get<RealEstate[]>('/realestate');
+    const response = await apiClient.auth.get<RealEstate[]>('/realestate');
     return response.data;
   },
   async create(realEstateData: RealEstate): Promise<RealEstate> {
-    const response = await apiClient.post<RealEstate>("/realestate", realEstateData);
+    const response = await apiClient.auth.post<RealEstate>("/realestate", realEstateData);
     return response.data;
   },
 };

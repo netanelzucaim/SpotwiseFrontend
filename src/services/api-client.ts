@@ -1,56 +1,88 @@
-import axios, { CanceledError, AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
-export { CanceledError };
+import axios, {
+    AxiosInstance,
+    AxiosResponse,
+    AxiosError,
+    CanceledError,
+    InternalAxiosRequestConfig,
+  } from 'axios';
+  import { BASE_URL } from '../config';
 
-const apiClient = axios.create({
-    baseURL: "http://localhost:3060",
-});
+  export { CanceledError };
 
-apiClient.interceptors.request.use(
-    (config: AxiosRequestConfig) => {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error: AxiosError) => {
-        return Promise.reject(error);
+  const getAccessToken = () => localStorage.getItem('accessToken');
+  const getRefreshToken = () => localStorage.getItem('refreshToken');
+
+  const purgeAuth = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
+  };
+
+  const redirectToLogin = () => {
+    window.location.href = '/login';
+  };
+
+  const noauth: AxiosInstance = axios.create({
+    baseURL: BASE_URL,
+  });
+
+  const auth: AxiosInstance = axios.create({
+    baseURL: BASE_URL,
+  });
+
+  async function handleTokenRefresh(originalRequest: any): Promise<AxiosResponse | void> {
+    const refreshToken = getRefreshToken();
+
+    if (!refreshToken) {
+      purgeAuth();
+      redirectToLogin();
+      return;
     }
-);
 
-apiClient.interceptors.response.use(
-    (response: AxiosResponse) => {
-        return response;
-    },
+    try {
+      const response = await noauth.post('/auth/refresh', { refreshToken });
+      const { accessToken, refreshToken: newRefreshToken, _id } = response.data;
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', newRefreshToken);
+      localStorage.setItem('userId', _id);
+
+      originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+      return auth(originalRequest);
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      purgeAuth();
+      redirectToLogin();
+      throw error;
+    }
+  }
+
+  auth.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+    const token = getAccessToken();
+    if (token && config.headers) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  });
+
+  auth.interceptors.response.use(
+    (response: AxiosResponse) => response,
     async (error: AxiosError) => {
-        const originalRequest = error.config;
-        if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
-            originalRequest._retry = true;
-            const refreshToken = localStorage.getItem('refreshToken');
-            if (refreshToken) {
-                try {
-                    const response = await axios.post('http://localhost:3060/auth/refresh', { refreshToken });
-                    const { accessToken, refreshToken: newRefreshToken,_id } = response.data;
-                    localStorage.setItem('accessToken', accessToken);
-                    localStorage.setItem('refreshToken', newRefreshToken);
-                    localStorage.setItem('userId',_id );
+      const originalRequest: any = error.config;
 
-                    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-                    return apiClient(originalRequest);
-                } catch (err) {
-                    console.error('Refresh token expired or invalid', err);
-                    localStorage.removeItem('accessToken');
-                    localStorage.removeItem('refreshToken');
-                    localStorage.removeItem('userId');
+      if (
+        (error.response?.status === 401 || error.response?.status === 403) &&
+        !originalRequest._retry
+      ) {
+        originalRequest._retry = true;
+        return handleTokenRefresh(originalRequest);
+      }
 
-                    window.location.href = '/login'; // Redirect to login page
-                }
-            } else {
-                window.location.href = '/login'; // Redirect to login page
-            }
-        }
-        return Promise.reject(error);
+      return Promise.reject(error);
     }
-);
+  );
 
-export default apiClient;
+  export const apiClient = {
+    noauth,
+    auth,
+  };

@@ -8,18 +8,30 @@ import {
   Box,
 } from "@mui/material";
 import { RealEstate } from "../../services/realestate-service";
+import { useNavigate } from "react-router-dom";
 
 
 interface RealEstateWithUser extends RealEstate {
-  userFullName?: string; // Optional full name of the owner
+  userFullName?: string; 
 }
 
 interface RealEstateModalProps {
   realEstate: RealEstateWithUser;
+  index: number;
   onClose: () => void;
 }
 
-const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }) => {
+const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, index, onClose }) => {
+  const navigate = useNavigate();
+
+  const handleDiscoverLocation = () => {
+    navigate("/map", {
+      state: {
+        index,
+      },
+    });
+  };
+  
   return (
     <Box
       sx={{
@@ -40,7 +52,7 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }
           width: "90%",
           maxWidth: 500,
           borderRadius: "1rem",
-          backgroundColor: "#D0CBBC",
+          backgroundColor: "#ffffff",
           boxShadow: 6,
           overflow: "hidden",
         }}
@@ -55,7 +67,6 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }
             position: "relative",
           }}
         >
-          {/* Button Overlay */}
   <Box
     sx={{
       position: "absolute",
@@ -77,7 +88,7 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }
         backgroundColor: "rgba(0, 0, 0, 0.8)", 
       },
     }}
-    onClick={() => console.log("Discover This Location clicked!")} // Add click handler here
+    onClick={() => handleDiscoverLocation()} 
   >
     Discover This Location
   </Box>
@@ -97,6 +108,9 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }
             <strong>Description:</strong> {realEstate.description}
           </Typography>
           <Typography variant="body1" color="text.secondary" gutterBottom>
+            <strong>Price:</strong> {realEstate.price}
+          </Typography>
+          <Typography variant="body1" color="text.secondary" gutterBottom>
             <strong>Area:</strong> {realEstate.area}
           </Typography>
           <Typography
@@ -107,7 +121,6 @@ const RealEstateModal: React.FC<RealEstateModalProps> = ({ realEstate, onClose }
             overflowWrap: "break-word",
   }}
 >
-  <strong>Location:</strong> {realEstate.location}
 </Typography>
         </CardContent>
         <Box

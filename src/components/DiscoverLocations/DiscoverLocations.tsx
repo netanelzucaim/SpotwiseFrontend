@@ -4,19 +4,19 @@ import { RealEstate } from "../../services/realestate-service";
 import RealEstateModal from "../Realestate/RealEstate";
 import UserService from "../../services/user_service";
 import "../../styles/DiscoverLocations.css";
-import BrandHeading from "../Logo/Logo";
+import { BrandHeading } from "../Logo/Logo";
 
 
 interface RealEstateWithUser extends RealEstate {
-  userFullName?: string; // Optional full name of the owner
+  userFullName?: string; 
 }
 
 const DiscoverLocations: React.FC = () => {
     const [realEstates, setRealEstates] = useState<RealEstateWithUser[]>([]);
-    const [visibleCount, setVisibleCount] = useState(6); // Number of cards to show initially
+    const [visibleCount, setVisibleCount] = useState(6); 
     const [selectedRealEstate, setSelectedRealEstate] = useState<RealEstateWithUser | null>(null);
     const [filteredRealEstates, setFilteredRealEstates] = useState<RealEstateWithUser[]>([]);
-    const [filterText, setFilterText] = useState(""); // State for the filter input
+    const [filterText, setFilterText] = useState(""); 
 
 
   
@@ -27,16 +27,16 @@ const DiscoverLocations: React.FC = () => {
       
           const realEstatesWithUserNames = await Promise.all(
             data.map(async (realEstate) => {
-              const user = await UserService.getUser(realEstate.owner); // Fetch user by ID
+              const user = await UserService.getUser(realEstate.owner); 
               return {
                 ...realEstate,
-                userFullName: user.fullName, // Add full name to the real estate object
+                userFullName: user.fullName, 
               };
             })
           );
       
           setRealEstates(realEstatesWithUserNames);
-          setFilteredRealEstates(realEstatesWithUserNames); // Initialize filtered list
+          setFilteredRealEstates(realEstatesWithUserNames); 
         } catch (error) {
           console.error("Error fetching real estates:", error);
         }
@@ -54,7 +54,7 @@ const DiscoverLocations: React.FC = () => {
     };
 
     const showMoreCards = () => {
-        setVisibleCount((prevCount) => prevCount + 6); // Show 6 more cards on each click
+        setVisibleCount((prevCount) => prevCount + 6); 
       };
 
       const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,8 +67,7 @@ const DiscoverLocations: React.FC = () => {
               realEstate.address.toLowerCase().includes(value) ||
               realEstate.userFullName?.toLowerCase().includes(value) ||
               realEstate.description.toLowerCase().includes(value) ||
-              realEstate.area.toLowerCase().includes(value) ||
-              realEstate.location.toLowerCase().includes(value)
+              realEstate.area.toLowerCase().includes(value)
           )
         );
       };
@@ -107,6 +106,7 @@ const DiscoverLocations: React.FC = () => {
           {selectedRealEstate && (
             <RealEstateModal
               realEstate={selectedRealEstate}
+              index={realEstates.findIndex((re) => re._id === selectedRealEstate._id)}
               onClose={closeModal}
             />
           )}

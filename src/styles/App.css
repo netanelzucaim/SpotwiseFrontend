@@ -1,8 +1,8 @@
 /* App.css */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
-
-body {
-  background: url('../utils/Spotwise_background.png') no-repeat center center fixed;
-  background-size: cover;
-  font-family: 'Montserrat', sans-serif !important;
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-image: url('../../utils/BG2.png');
+  background-repeat: repeat;
 }
