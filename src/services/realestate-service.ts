@@ -19,6 +19,10 @@ const RealEstateService = {
     const response = await apiClient.auth.post<RealEstate>("/realestate", realEstateData);
     return response.data;
   },
+  async update(id: string, realEstateData: RealEstate): Promise<RealEstate> {
+  const response = await apiClient.auth.put<RealEstate>(`/realestate/${id}`, realEstateData);
+  return response.data;
+}
 };
 
 export default RealEstateService;
