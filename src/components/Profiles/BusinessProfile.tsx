@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { TextField, Typography, IconButton } from "@mui/material";
 import { uploadPhoto } from "../../services/file-service";
 import BusinessService, { Business } from "../../services/business_service";
-import { ProfileWrapper, GlassForm, StyledButton, StyledUploadFileIcon } from "../../styles/ProfilePageStyle"; 
+import {
+  ProfileWrapper,
+  GlassForm,
+  StyledButton,
+  StyledUploadFileIcon,
+} from "../../styles/ProfilePageStyle";
 import { useNavigate } from "react-router-dom";
 import "../../styles/ProfilePages.css";
-
 
 const BusinessProfile: React.FC = () => {
   const [profile, setProfile] = useState<Business | null>(null);
@@ -26,17 +30,17 @@ const BusinessProfile: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const existing = await BusinessService.getCurrentUserBusiness();
-        if (existing) {
-          setProfile(existing);
-          setName(existing.name);
-          setSiteUrl(existing.siteUrl);
-          setCategory(existing.category);
-          setDescription(existing.description);
+        const existingBusiness = await BusinessService.getCurrentUserBusiness();
+        if (existingBusiness) {
+          setProfile(existingBusiness);
+          setName(existingBusiness.name);
+          setSiteUrl(existingBusiness.siteUrl);
+          setCategory(existingBusiness.category);
+          setDescription(existingBusiness.description);
           setLogoName("Current Logo");
         }
       } catch (e) {
-        console.log("No existing business found.");
+        console.log("No existingBusiness business found.");
       }
     };
     fetchProfile();
@@ -70,7 +74,7 @@ const BusinessProfile: React.FC = () => {
         logoUrl = await uploadPhoto(logo);
       }
 
-      let businessData = {
+      const businessData = {
         name,
         logo: logoUrl,
         owner: ownerId,
@@ -84,7 +88,14 @@ const BusinessProfile: React.FC = () => {
         setMessage("Business updated successfully!");
         setEditMode(false);
       } else {
-        await BusinessService.create({ name, logo: logoUrl, owner: ownerId, siteUrl, category, description });
+        await BusinessService.create({
+          name,
+          logo: logoUrl,
+          owner: ownerId,
+          siteUrl,
+          category,
+          description,
+        });
         setMessage("Business created successfully!");
         navigate("/home");
       }
@@ -97,44 +108,103 @@ const BusinessProfile: React.FC = () => {
     <ProfileWrapper>
       <GlassForm elevation={3}>
         <Typography variant="h5" sx={{ color: "#fff", textAlign: "center" }}>
-          {profile ? "Edit your business profile" : "Create your business profile & Make your dream come true⚡"}
+          {profile
+            ? "Edit your business profile"
+            : "Create your business profile & Make your dream come true⚡"}
         </Typography>
 
-        <TextField fullWidth label="Business Name" variant="outlined" margin="normal"
-          value={name} onChange={(e) => setName(e.target.value)}
-          error={!!errors.name} helperText={errors.name} disabled={!editMode && profile !== null} />
+        <TextField
+          fullWidth
+          label="Business Name"
+          variant="outlined"
+          margin="normal"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          error={!!errors.name}
+          helperText={errors.name}
+          disabled={!editMode && profile !== null}
+        />
 
-        <TextField fullWidth label="Logo" variant="outlined" margin="normal" value={logoName}
+        <TextField
+          fullWidth
+          label="Logo"
+          variant="outlined"
+          margin="normal"
+          value={logoName}
           InputProps={{
             readOnly: true,
             endAdornment: (
               <label htmlFor="logo-upload">
-                <input type="file" accept="image/*" onChange={handleLogoChange} style={{ display: "none" }} id="logo-upload" />
-                <IconButton component="span" disabled={!editMode && profile !== null}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoChange}
+                  style={{ display: "none" }}
+                  id="logo-upload"
+                />
+                <IconButton
+                  component="span"
+                  disabled={!editMode && profile !== null}
+                >
                   <StyledUploadFileIcon />
                 </IconButton>
               </label>
             ),
           }}
-          error={!!errors.logo} helperText={errors.logo} disabled={!editMode && profile !== null} />
+          error={!!errors.logo}
+          helperText={errors.logo}
+          disabled={!editMode && profile !== null}
+        />
 
-        <TextField fullWidth label="Website URL" variant="outlined" margin="normal"
-          value={siteUrl} onChange={(e) => setSiteUrl(e.target.value)}
-          error={!!errors.siteUrl} helperText={errors.siteUrl} disabled={!editMode && profile !== null} />
+        <TextField
+          fullWidth
+          label="Website URL"
+          variant="outlined"
+          margin="normal"
+          value={siteUrl}
+          onChange={(e) => setSiteUrl(e.target.value)}
+          error={!!errors.siteUrl}
+          helperText={errors.siteUrl}
+          disabled={!editMode && profile !== null}
+        />
 
-        <TextField fullWidth label="Category" variant="outlined" margin="normal"
-          value={category} onChange={(e) => setCategory(e.target.value)}
-          error={!!errors.category} helperText={errors.category} disabled={!editMode && profile !== null} />
+        <TextField
+          fullWidth
+          label="Category"
+          variant="outlined"
+          margin="normal"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          error={!!errors.category}
+          helperText={errors.category}
+          disabled={!editMode && profile !== null}
+        />
 
-        <TextField fullWidth label="Description" variant="outlined" margin="normal"
-          value={description} onChange={(e) => setDescription(e.target.value)}
-          error={!!errors.description} helperText={errors.description} disabled={!editMode && profile !== null} />
+        <TextField
+          fullWidth
+          label="Description"
+          variant="outlined"
+          margin="normal"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          error={!!errors.description}
+          helperText={errors.description}
+          disabled={!editMode && profile !== null}
+        />
 
-        <StyledButton onClick={() => profile && !editMode ? setEditMode(true) : handleSave()}>
+        <StyledButton
+          onClick={() =>
+            profile && !editMode ? setEditMode(true) : handleSave()
+          }
+        >
           {profile && !editMode ? "Edit" : "Save"}
         </StyledButton>
 
-        {message && <Typography sx={{ color: "green", marginTop: "1rem" }}>{message}</Typography>}
+        {message && (
+          <Typography sx={{ color: "green", marginTop: "1rem" }}>
+            {message}
+          </Typography>
+        )}
       </GlassForm>
     </ProfileWrapper>
   );
