@@ -60,12 +60,8 @@ input {
   color: red;
 }
 
-.success-message {
-  color: green;
-}
-
 .error-messages {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .signup-title {
