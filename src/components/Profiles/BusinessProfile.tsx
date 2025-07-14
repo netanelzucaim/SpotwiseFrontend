@@ -107,7 +107,7 @@ const BusinessProfile: React.FC = () => {
   return (
     <ProfileWrapper>
       <GlassForm elevation={3}>
-        <Typography variant="h5" sx={{ color: "#fff", textAlign: "center" }}>
+        <Typography variant="h5" className="profile-title">
           {profile
             ? "Edit your business profile"
             : "Create your business profile & Make your dream come true⚡"}
