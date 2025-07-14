@@ -17,7 +17,6 @@ export const GlassForm = styled(Paper)({
   padding: "2rem 3rem",
   maxWidth: "420px",
   width: "100%",
-  boxShadow: "0 0 30px rgba(0, 225, 255, 0.25)",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -32,7 +31,6 @@ export const StyledButton = styled(Button)({
   fontWeight: 600,
   fontSize: "1.1rem",
   borderRadius: "30px",
-  boxShadow: "0 0 10px rgba(0, 229, 255, 0.5)",
   '&:hover': {
     backgroundColor: "#00d1f5",
   },

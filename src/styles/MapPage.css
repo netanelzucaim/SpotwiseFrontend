@@ -11,7 +11,7 @@
   overflow-y: auto;
   font-size: 2rem;
   font-weight: bold;   
-  color: black;
+  color: #368fd3;
   text-align: center;             
 }
 .info-panel h2 {
@@ -88,7 +88,7 @@
   padding: 10px;
   font-size: 0.9rem;
   background-color: white !important;
-  color: black !important;
+  color: #368fd3 !important;
   border: none;
   border-radius: 8px !important;
   cursor: pointer;
@@ -99,6 +99,7 @@
 
 .evaluate-button:hover {
   background-color: #115293 !important;
+  color: white !important;
 }
 
 .dark-mode .info-panel {
@@ -120,7 +121,7 @@
 }
 
 .dark-mode .listing-box.selected {
-  background-color: #7a6fc2; 
+  background-color: #0c4b7d; 
   box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.15);
 }
 
@@ -144,13 +145,14 @@
 }
 
 .dark-mode .evaluate-button:hover {
-  background-color: #7a6fc2 !important;
+  background-color: #1063a7 !important;
 }
 
 .recommendation-popup {
   position: relative;
   padding: 16px;
   background-color: white;
+  color: #368fd3 !important;
   max-width: 400px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
@@ -205,7 +207,7 @@
   font-size: 14px;
   font-weight: bold;
   background-color: #0d99ff;
-  color: white;
+  color: #ffffff;
   border: none;
   border-radius: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -241,8 +243,8 @@
   bottom: 10px;
   right: 16px;
   z-index: 3;
-  background-color: #f44336;
-  color: white;
+  background-color: #ffffff !important;
+  color: #368fd3 !important;
   font-weight: bold;
   padding: 6px 12px;
   border: none;
@@ -253,7 +255,8 @@
 }
 
 .popup-close-button:hover {
-  background-color: #d32f2f;
+  background-color: #368fd3 !important;
+  color: #ffffff !important;
   transform: scale(1.05);
 }
 

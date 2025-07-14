@@ -9,6 +9,7 @@ import {
 } from "../../styles/ProfilePageStyle";
 import { TextField, Typography, Autocomplete } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import "../../styles/ProfilePages.css";
 
 const RealEstateProfile: React.FC = () => {
   const [profile, setProfile] = useState<RealEstate | null>(null);

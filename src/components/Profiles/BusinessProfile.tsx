@@ -4,6 +4,8 @@ import { uploadPhoto } from "../../services/file-service";
 import BusinessService, { Business } from "../../services/business_service";
 import { ProfileWrapper, GlassForm, StyledButton, StyledUploadFileIcon } from "../../styles/ProfilePageStyle"; 
 import { useNavigate } from "react-router-dom";
+import "../../styles/ProfilePages.css";
+
 
 const BusinessProfile: React.FC = () => {
   const [profile, setProfile] = useState<Business | null>(null);

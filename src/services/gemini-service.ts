@@ -81,29 +81,34 @@ const buildPrompt = async (userDream: string, realEstateData: any[]) => {
   );
 
   const prompt = `
-The user described their business idea as: "${userDream}"
+The user is looking for a real estate property for their business. Here's what they described:
 
-You have real estate listings with locations, nearby points of interest, and a score:
+"${userDream}"
+
+You have a list of real estate listings with the following details:
+- Full address and city
+- Square meters (area)
+- Nearby points of interest (amenities like restaurants, malls, public transport)
+- A score based on how relevant those amenities are to the business
+
+Here is the data:
 ${JSON.stringify(enrichedListings, null, 2)}
 
 Your task:
-- Pick the best matching real estate and return its ID.
-- Provide a short friendly description for the top match (max 4 sentences).
-- Also include another option in 2–3 sentences each.
-- When explaining why a location is good, include the specific names of any streets, buildings, stations, or landmarks (in both Hebrew and English if available).
-- Output should have only two sections:
-  1. description: <the formatted user-friendly content>
-  2. id: <the _id of the top recommended real estate>
-- Keep formatting clean and minimal, write the full address and do not write the ID in the description, also do not include the word score.
+- Choose the **best matching listing** for the business based on the user's description and available data.
+- Explain why this property is a great fit in a clear and friendly tone (no more than 4 sentences).
+- Mention any relevant landmarks or POIs (e.g., street names, malls, train stations) — include **both Hebrew and English names** if available.
+- Don't mention the ID or internal data in the description. Focus on clarity and persuasion.
+
+Output structure:
+1. description: <a short user-friendly explanation>
+2. id: <the _id of the top recommended real estate>
 
 Format:
 
 description:
 🏆 Top Match:
-<text>
-
-✨ Another Option:
-<text>
+<your explanation here>
 
 id:
 <topRealEstateId>
