@@ -23,7 +23,10 @@ const BusinessService = {
     const response = await apiClient.auth.get<Business[]>(`/business?owner=${ownerId}`);
     return response.data[0];
   },
-
+ async update(businessData: Business, id: string): Promise<Business> {
+    const response = await apiClient.auth.put<Business>(`business/${id}`, businessData);
+    return response.data;
+  },
   async getNearbyBusinesses(lat: number, lon: number): Promise<string[]> {
     const radius = 500;
     const query = `

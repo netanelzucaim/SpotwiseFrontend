@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import userService from "../../services/user_service";
-import RealEstateService from "../../services/realestate-service";
+import RealEstateService, { RealEstate } from "../../services/realestate-service";
 import MapService from "../../services/map-service";
 import {
   ProfileWrapper,
@@ -13,36 +13,44 @@ import "../../styles/ProfilePages.css";
 import { BrandHeading } from "../Logo/Logo";
 
 const RealEstateProfile: React.FC = () => {
+  const [profile, setProfile] = useState<RealEstate | null>(null);
+  const [editMode, setEditMode] = useState(false);
+
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
   const [area, setArea] = useState("");
-  const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [ownerId, setOwnerId] = useState(localStorage.getItem("userId") || "");
-  const [ownerName, setOwnerName] = useState("");
+  const [ownerId] = useState(localStorage.getItem("userId") || "");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [addressOptions, setAddressOptions] = useState<AddressSuggestion[]>([]);
-  const [selectedAddress, setSelectedAddress] =
-    useState<AddressSuggestion | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<AddressSuggestion | null>(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchOwner = async () => {
+    const fetchProfile = async () => {
       try {
-        if (ownerId) {
-          const user = await userService.getUser(ownerId);
-          setOwnerName(user.fullName || user.username || "Unknown User");
+        const owner = localStorage.getItem("userId");
+        const realestates = await RealEstateService.getAll();
+        const existing = realestates.find((re) => re.owner === owner);
+        if (existing) {
+          setProfile(existing);
+          setCity(existing.city);
+          setAddress(existing.address);
+          setArea(existing.area);
+          setDescription(existing.description);
+          setPrice(existing.price.toString());
+          setSelectedAddress({ label: existing.address });
         }
       } catch (error) {
-        console.error("Failed to fetch user name", error);
+        console.error("No existing real estate profile found.");
       }
     };
 
-    fetchOwner();
-  }, [ownerId]);
+    fetchProfile();
+  }, []);
 
   const validateFields = () => {
     const newErrors: { [key: string]: string } = {};
@@ -51,28 +59,35 @@ const RealEstateProfile: React.FC = () => {
     if (!area.trim()) newErrors.area = "Area is required";
     if (!description.trim()) newErrors.description = "Description is required";
     if (!price) newErrors.price = "Price is required";
-    if (price <= 0) newErrors.price = "Price must be positive number";
+    else if (+price <= 0) newErrors.price = "Price must be a positive number";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
+  const handleSave = async () => {
     if (!validateFields()) return;
 
-    try {
-      await RealEstateService.create({
-        city,
-        address: selectedAddress?.label || "",
-        area,
-        description,
-        price,
-        owner: ownerId,
-      });
+    const realEstateData: RealEstate = {
+      city,
+      address: selectedAddress?.label || address,
+      area,
+      description,
+      price: parseFloat(price),
+      owner: ownerId,
+    };
 
-      setMessage("Real estate profile created successfully!");
-      navigate("/home");
+    try {
+      if (profile) {
+        await RealEstateService.update(profile._id!, realEstateData);
+        setMessage("Profile updated successfully!");
+        setEditMode(false);
+      } else {
+        await RealEstateService.create(realEstateData);
+        setMessage("Profile created successfully!");
+        navigate("/home");
+      }
     } catch (error) {
-      setMessage("Failed to create real estate profile. Try again.");
+      setMessage("Failed to save real estate profile.");
     }
   };
 
@@ -89,88 +104,48 @@ const RealEstateProfile: React.FC = () => {
       <BrandHeading></BrandHeading>
     <ProfileWrapper>
       <GlassForm elevation={3}>
-        <Typography variant="h5" className="profile-title">
-          Create your real estate profile <br></br> & Make your dream <br></br> come true ⚡
+        <Typography variant="h5" sx={{ color: "#fff", textAlign: "center" }}>
+          {profile ? "Edit your real estate profile" : "Create your real estate profile & Make your dream come true⚡"}
         </Typography>
 
-        <TextField
-          fullWidth
-          label="City"
-          variant="outlined"
-          margin="normal"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          error={!!errors.city}
-          helperText={errors.city}
-        />
+        <TextField fullWidth label="City" variant="outlined" margin="normal"
+          value={city} onChange={(e) => setCity(e.target.value)}
+          error={!!errors.city} helperText={errors.city} disabled={!editMode && profile !== null} />
 
-        <Autocomplete
-          fullWidth
-          options={addressOptions}
-          getOptionLabel={(option) => option.label}
+        <Autocomplete fullWidth options={addressOptions} getOptionLabel={(option) => option.label}
           filterOptions={(x) => x}
           onInputChange={(_, value) => handleAddressSearch(value)}
           onChange={(_, value) => {
             setSelectedAddress(value);
             setAddress(value?.label || "");
           }}
+          value={selectedAddress}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              fullWidth
-              label="Address"
-              variant="outlined"
-              margin="normal"
-              error={!!errors.address}
-              helperText={errors.address}
-            />
+            <TextField {...params} fullWidth label="Address" variant="outlined" margin="normal"
+              error={!!errors.address} helperText={errors.address} disabled={!editMode && profile !== null} />
           )}
         />
 
-        <TextField
-          fullWidth
-          label="Area (in sqm)"
-          type="number"
-          variant="outlined"
-          margin="normal"
-          value={area}
-          onChange={(e) => setArea(e.target.value)}
-          error={!!errors.area}
-          helperText={errors.area}
-        />
+        <TextField fullWidth label="Area (in sqm)" type="number" variant="outlined" margin="normal"
+          value={area} onChange={(e) => setArea(e.target.value)}
+          error={!!errors.area} helperText={errors.area} disabled={!editMode && profile !== null} />
 
-        <TextField
-          fullWidth
-          label="Description"
-          variant="outlined"
-          margin="normal"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          error={!!errors.description}
-          helperText={errors.description}
-        />
+        <TextField fullWidth label="Description" variant="outlined" margin="normal"
+          value={description} onChange={(e) => setDescription(e.target.value)}
+          error={!!errors.description} helperText={errors.description} disabled={!editMode && profile !== null} />
 
-        <TextField
-          fullWidth
-          label="Price"
-          variant="outlined"
-          margin="normal"
-          type="number"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          error={!!errors.price}
-          helperText={errors.price}
-          InputProps={{
-            endAdornment: <Typography sx={{ marginLeft: "8px" }}>ILS</Typography>,
-          }}
-        />
+        <TextField fullWidth label="Price" type="number" variant="outlined" margin="normal"
+          value={price} onChange={(e) => setPrice(e.target.value)}
+          error={!!errors.price} helperText={errors.price}
+          InputProps={{ endAdornment: <Typography sx={{ ml: 1 }}>ILS</Typography> }}
+          disabled={!editMode && profile !== null} />
 
-        <StyledButton className="create-profile-button" onClick={handleSubmit}>Publish Property</StyledButton>
+        <StyledButton onClick={() => profile && !editMode ? setEditMode(true) : handleSave()}>
+          {profile && !editMode ? "Edit" : "Save"}
+        </StyledButton>
 
         {message && (
-          <Typography sx={{ color: "green", marginTop: "1rem" }}>
-            {message}
-          </Typography>
+          <Typography sx={{ color: "green", marginTop: "1rem" }}>{message}</Typography>
         )}
       </GlassForm>
     </ProfileWrapper>

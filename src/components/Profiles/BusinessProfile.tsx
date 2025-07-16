@@ -1,39 +1,51 @@
 import React, { useEffect, useState } from "react";
 import { TextField, Typography, IconButton } from "@mui/material";
 import { uploadPhoto } from "../../services/file-service";
-import BusinessService from "../../services/business_service";
-import userService from "../../services/user_service";
-import { ProfileWrapper, GlassForm, StyledButton, StyledUploadFileIcon } from "../../styles/ProfilePageStyle"; 
+import BusinessService, { Business } from "../../services/business_service";
+import {
+  ProfileWrapper,
+  GlassForm,
+  StyledButton,
+  StyledUploadFileIcon,
+} from "../../styles/ProfilePageStyle";
 import { useNavigate } from "react-router-dom";
 import "../../styles/ProfilePages.css";
 import { BrandHeading } from '../Logo/Logo';
 
-
 const BusinessProfile: React.FC = () => {
+  const [profile, setProfile] = useState<Business | null>(null);
+  const [editMode, setEditMode] = useState(false);
+
   const [name, setName] = useState("");
   const [logo, setLogo] = useState<File | null>(null);
   const [logoName, setLogoName] = useState("Choose a file");
   const [siteUrl, setSiteUrl] = useState("");
-  const [ownerId, setOwnerId] = useState(localStorage.getItem("userId") || "");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
+  const [ownerId, setOwnerId] = useState(localStorage.getItem("userId") || "");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchOwner = async () => {
+    const fetchProfile = async () => {
       try {
-        if (ownerId) {
-          await userService.getUser(ownerId);
+        const existingBusiness = await BusinessService.getCurrentUserBusiness();
+        if (existingBusiness) {
+          setProfile(existingBusiness);
+          setName(existingBusiness.name);
+          setSiteUrl(existingBusiness.siteUrl);
+          setCategory(existingBusiness.category);
+          setDescription(existingBusiness.description);
+          setLogoName("Current Logo");
         }
-      } catch (error) {
-        console.error("Failed to fetch user name", error);
+      } catch (e) {
+        console.log("No existingBusiness business found.");
       }
     };
-    fetchOwner();
-  }, [ownerId]);
+    fetchProfile();
+  }, []);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -46,7 +58,7 @@ const BusinessProfile: React.FC = () => {
   const validateFields = () => {
     const newErrors: { [key: string]: string } = {};
     if (!name) newErrors.name = "Business Name is required";
-    if (!logo) newErrors.logo = "Logo is required";
+    if (!profile && !logo) newErrors.logo = "Logo is required";
     if (!siteUrl) newErrors.siteUrl = "Website URL is required";
     if (!category) newErrors.category = "Category is required";
     if (!description) newErrors.description = "Description is required";
@@ -54,18 +66,42 @@ const BusinessProfile: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
+  const handleSave = async () => {
     if (!validateFields()) return;
+
     try {
-      let logoUrl = "";
+      let logoUrl = profile?.logo || "";
       if (logo) {
         logoUrl = await uploadPhoto(logo);
       }
-      await BusinessService.create({ name, logo: logoUrl, owner: ownerId, siteUrl, category, description });
-      setMessage("Business created successfully!");
-      navigate("/home");
+
+      const businessData = {
+        name,
+        logo: logoUrl,
+        owner: ownerId,
+        siteUrl,
+        category,
+        description,
+      };
+
+      if (profile) {
+        await BusinessService.update(businessData, profile._id!);
+        setMessage("Business updated successfully!");
+        setEditMode(false);
+      } else {
+        await BusinessService.create({
+          name,
+          logo: logoUrl,
+          owner: ownerId,
+          siteUrl,
+          category,
+          description,
+        });
+        setMessage("Business created successfully!");
+        navigate("/home");
+      }
     } catch (error) {
-      setMessage("Failed to create business. Try again.");
+      setMessage("Failed to save business. Try again.");
     }
   };
 
@@ -75,34 +111,103 @@ const BusinessProfile: React.FC = () => {
     <ProfileWrapper>
       <GlassForm elevation={3}>
         <Typography variant="h5" className="profile-title">
-          Create your business profile <br></br> & Make your dream <br></br> come true ⚡
+          {profile
+            ? "Edit your business profile"
+            : "Create your business profile & Make your dream come true⚡"}
         </Typography>
-        <TextField fullWidth label="Business Name" variant="outlined" margin="normal" value={name} onChange={(e) => setName(e.target.value)} error={!!errors.name} helperText={errors.name} />
-        <TextField 
-          fullWidth 
-          label="Logo" 
-          variant="outlined" 
-          margin="normal" 
-          value={logoName} 
+
+        <TextField
+          fullWidth
+          label="Business Name"
+          variant="outlined"
+          margin="normal"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          error={!!errors.name}
+          helperText={errors.name}
+          disabled={!editMode && profile !== null}
+        />
+
+        <TextField
+          fullWidth
+          label="Logo"
+          variant="outlined"
+          margin="normal"
+          value={logoName}
           InputProps={{
             readOnly: true,
             endAdornment: (
               <label htmlFor="logo-upload">
-                <input type="file" accept="image/*" onChange={handleLogoChange} style={{ display: "none" }} id="logo-upload" />
-                <IconButton component="span">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoChange}
+                  style={{ display: "none" }}
+                  id="logo-upload"
+                />
+                <IconButton
+                  component="span"
+                  disabled={!editMode && profile !== null}
+                >
                   <StyledUploadFileIcon />
                 </IconButton>
               </label>
             ),
           }}
-          error={!!errors.logo} 
-          helperText={errors.logo} 
+          error={!!errors.logo}
+          helperText={errors.logo}
+          disabled={!editMode && profile !== null}
         />
-        <TextField fullWidth label="Website URL" variant="outlined" margin="normal" value={siteUrl} onChange={(e) => setSiteUrl(e.target.value)} error={!!errors.siteUrl} helperText={errors.siteUrl} />
-        <TextField fullWidth label="Category" variant="outlined" margin="normal" value={category} onChange={(e) => setCategory(e.target.value)} error={!!errors.category} helperText={errors.category} />
-        <TextField fullWidth label="Description" variant="outlined" margin="normal" value={description} onChange={(e) => setDescription(e.target.value)} error={!!errors.description} helperText={errors.description} />
-        <StyledButton className="create-profile-button" onClick={handleSubmit}>Create My Business</StyledButton>
-        {message && <Typography color="success.main" sx={{ mt: 2 }}>{message}</Typography>}
+
+        <TextField
+          fullWidth
+          label="Website URL"
+          variant="outlined"
+          margin="normal"
+          value={siteUrl}
+          onChange={(e) => setSiteUrl(e.target.value)}
+          error={!!errors.siteUrl}
+          helperText={errors.siteUrl}
+          disabled={!editMode && profile !== null}
+        />
+
+        <TextField
+          fullWidth
+          label="Category"
+          variant="outlined"
+          margin="normal"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          error={!!errors.category}
+          helperText={errors.category}
+          disabled={!editMode && profile !== null}
+        />
+
+        <TextField
+          fullWidth
+          label="Description"
+          variant="outlined"
+          margin="normal"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          error={!!errors.description}
+          helperText={errors.description}
+          disabled={!editMode && profile !== null}
+        />
+
+        <StyledButton
+          onClick={() =>
+            profile && !editMode ? setEditMode(true) : handleSave()
+          }
+        >
+          {profile && !editMode ? "Edit" : "Save"}
+        </StyledButton>
+
+        {message && (
+          <Typography sx={{ color: "green", marginTop: "1rem" }}>
+            {message}
+          </Typography>
+        )}
       </GlassForm>
     </ProfileWrapper>
     </div>
