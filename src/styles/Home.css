@@ -8,6 +8,7 @@
   perspective: 1200px;
   overflow: hidden;
   background: white;
+  margin-top: -35px !important;
 }
 
 .carousel {
@@ -22,7 +23,7 @@
   left: 50%;
   width: 70vw;
   height: 70vh;
-  object-fit: contain;
+  object-fit:contain;
   border-radius: 24px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   transform: translate(-50%, -50%);
@@ -98,9 +99,10 @@
 .why-spotwise-container {
   border: 5px solid #d3d3d3;
   max-width: 950px;
-  margin: 60px auto 120px;
+  margin: 20px auto 120px;
   border-radius: 24px;
   padding: 20px;
+  height: 370px !important;
 }
 
 .why-spotwise-title {
@@ -113,7 +115,7 @@
 
 .why-spotwise-content {
   max-width: 900px;
-  margin: 60px auto 120px;
+  margin: 10px auto 10px;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   opacity: 0;

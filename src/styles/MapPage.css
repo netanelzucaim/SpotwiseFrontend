@@ -1,7 +1,8 @@
 .map-page-container {
   display: flex;                   
   width: 100%;
-  height: 100vh;        
+  height: 100vh;
+  margin-top: -20px !important;        
 }
 
 .info-panel {
@@ -162,6 +163,7 @@
   flex-direction: column;
   justify-content: space-between;
   transition: background-color 0.5s ease, box-shadow 0.5s ease;
+  padding-bottom: 16px !important;
 }
 
 .dark-mode .recommendation-popup {
@@ -239,8 +241,7 @@
 .popup-close-button {
   position: static;
   align-self: flex-end;
-  margin-top: 20px;
-  bottom: 10px;
+  bottom: 1px !important;
   right: 16px;
   z-index: 3;
   background-color: #ffffff !important;
