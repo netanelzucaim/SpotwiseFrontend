@@ -19,7 +19,7 @@ import {
   Modal,
   Button,
 } from "@mui/material";
-import Logo from "../Logo/Logo";
+import { Logo } from "../Logo/Logo";
 
 const LoginForm = () => {
   const usernameInputRef = useRef<HTMLInputElement>(null);

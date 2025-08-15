@@ -249,6 +249,7 @@ const MapPage: FC = () => {
         <div className="popup-container">
           <Paper className="recommendation-popup">
             <Typography variant="body1">{recommendationText}</Typography>
+            <br></br><br></br>
             <Button
               onClick={() => setRecPopupOpen(false)}
               className="popup-close-button"

@@ -10,6 +10,7 @@ import {
 import { TextField, Typography, Autocomplete } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import "../../styles/ProfilePages.css";
+import { BrandHeading } from "../Logo/Logo";
 
 const RealEstateProfile: React.FC = () => {
   const [profile, setProfile] = useState<RealEstate | null>(null);
@@ -99,6 +100,8 @@ const RealEstateProfile: React.FC = () => {
   };
 
   return (
+    <div>
+      <BrandHeading></BrandHeading>
     <ProfileWrapper>
       <GlassForm elevation={3}>
         <Typography variant="h5" sx={{ color: "#fff", textAlign: "center" }}>
@@ -146,6 +149,7 @@ const RealEstateProfile: React.FC = () => {
         )}
       </GlassForm>
     </ProfileWrapper>
+    </div>
   );
 };
 

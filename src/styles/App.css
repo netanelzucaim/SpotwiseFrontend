@@ -1,6 +1,10 @@
 /* App.css */
 html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  background-image: url('../../utils/BG2.png');
+  background-repeat: repeat;
+  box-sizing: border-box;
 }

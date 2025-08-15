@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../styles/Home.css";
+import userService from "../../services/user_service"; 
+import { BrandHeading } from "../Logo/Logo";
 
 const HomePage: React.FC = () => {
   const bubbleImages = [

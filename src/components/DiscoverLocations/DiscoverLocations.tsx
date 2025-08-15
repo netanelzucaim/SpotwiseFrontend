@@ -4,7 +4,7 @@ import { RealEstate } from "../../services/realestate-service";
 import RealEstateModal from "../Realestate/RealEstate";
 import UserService from "../../services/user_service";
 import "../../styles/DiscoverLocations.css";
-import { Space } from "lucide-react";
+import { BrandHeading } from "../Logo/Logo";
 
 
 interface RealEstateWithUser extends RealEstate {
@@ -73,41 +73,44 @@ const DiscoverLocations: React.FC = () => {
       };
   
     return (
-      <div className="discover-locations-container">
-        <div className="real-estate-container">
-        <h2 className="container-title">Discover Locations</h2> {/* Add title here */}
-        <input
-          type="text"
-          className="filter-textbox"
-          placeholder="Filter by city, address, description, etc."
-          value={filterText}
-          onChange={handleFilterChange}
-        />
-          <div className="real-estate-grid">
-            {filteredRealEstates.slice(0, visibleCount).map((realEstate) => (
-              <div
-                key={realEstate._id}
-                className="real-estate-card"
-                onClick={() => handleCardClick(realEstate)}
-              >
-                <h3>{realEstate.city}</h3>
-                <p>{realEstate.address}</p>
-              </div>
-            ))}
-          </div>
-          {visibleCount < filteredRealEstates.length && (
-          <button className="show-more-button" onClick={showMoreCards}>
-            Show Me More
-          </button>
-        )}
-        </div>
-        {selectedRealEstate && (
-          <RealEstateModal
-            realEstate={selectedRealEstate}
-            index={realEstates.findIndex((re) => re._id === selectedRealEstate._id)}
-            onClose={closeModal}
+      <div>
+        <BrandHeading></BrandHeading>
+        <div className="discover-locations-container">
+          <div className="real-estate-container">
+          <h2 className="container-title">Discover Locations</h2> {/* Add title here */}
+          <input
+            type="text"
+            className="filter-textbox"
+            placeholder="Filter by city, address, description, etc."
+            value={filterText}
+            onChange={handleFilterChange}
           />
-        )}
+            <div className="real-estate-grid">
+              {filteredRealEstates.slice(0, visibleCount).map((realEstate) => (
+                <div
+                  key={realEstate._id}
+                  className="real-estate-card"
+                  onClick={() => handleCardClick(realEstate)}
+                >
+                  <h3>{realEstate.city}</h3>
+                  <p>{realEstate.address}</p>
+                </div>
+              ))}
+            </div>
+            {visibleCount < filteredRealEstates.length && (
+            <button className="show-more-button" onClick={showMoreCards}>
+              Show Me More
+            </button>
+          )}
+          </div>
+          {selectedRealEstate && (
+            <RealEstateModal
+              realEstate={selectedRealEstate}
+              index={realEstates.findIndex((re) => re._id === selectedRealEstate._id)}
+              onClose={closeModal}
+            />
+          )}
+        </div>
       </div>
     );
   };

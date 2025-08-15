@@ -150,179 +150,221 @@ const SignupForm = () => {
   };
 
   return (
-    <ProfileWrapper
-      className="signup-div"
-      style={{
-        height: "80vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-      }}
+  <ProfileWrapper
+    className="signup-div"
+    style={{
+      height: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+      padding: "20px",
+    }}
+  >
+    <GlassForm 
+    elevation={3}
+    style={{
+      width: "80%",
+      maxWidth: "400px",
+      padding: "20px",
+      boxSizing: "border-box",
+    }}
     >
-      <GlassForm elevation={3}>
-        <Typography variant="h5" className="signup-title">
-          Sign up & Start your journey <br></br>
-        </Typography>
 
-        <div className="form-rows" style={{ marginBottom: "30px" }}>
-          <Avatar
-            src={imgSrc ? URL.createObjectURL(imgSrc) : logo}
-            sx={{
-              height: 100,
-              width: 100,
-              cursor: "pointer",
-              boxShadow: "0 0 15px #368fd3",
-            }}
-            onClick={selectImg}
-          />
-          <input
-            style={{ display: "none" }}
-            ref={fileInputRef}
-            type="file"
-            onChange={imgSelected}
-          ></input>
-        </div>
-
-        <TextField
-          fullWidth
-          label="Username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          error={!!errors.username}
-          helperText={errors.username}
-          required
-          sx={{ marginBottom: "20px" }}
-        />
-        <TextField
-          fullWidth
-          required
-          label="Full Name"
-          name="fullName"
-          error={!!errors.fullName}
-          helperText={errors.fullName}
-          value={formData.fullName}
-          onChange={handleChange}
-          sx={{ marginBottom: "20px" }}
-        />
-
-        <TextField
-          fullWidth
-          label="Email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          error={!!errors.email}
-          helperText={errors.email}
-          sx={{ marginBottom: "20px" }}
-        />
-        <TextField
-          fullWidth
-          label="Phone Number"
-          name="phoneNumber"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          required
-          error={!!errors.phoneNumber}
-          helperText={errors.phoneNumber}
-          sx={{ marginBottom: "20px" }}
-        />
-
-        <TextField
-          fullWidth
-          label="Password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-          error={!!errors.password}
-          helperText={errors.password}
-          sx={{ marginBottom: "20px" }}
-        />
-        <TextField
-          fullWidth
-          label="Confirm Password"
-          name="confirmPassword"
-          type="password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          required
-          error={!!errors.confirmPassword}
-          helperText={errors.confirmPassword}
-          sx={{ marginBottom: "30px" }}
-        />
-
-        <StyledButton className="signup-button"
-          type="submit"
-          onClick={handleSubmit}
-          sx={{ marginBottom: "20px" }}
-        >
-          Sign up
-        </StyledButton>
-
-        <div className="error-messages">
-          {errors.imgSrc && (
-            <Typography color="error">{errors.imgSrc}</Typography>
-          )}
-          {error && <Typography color="error">{error}</Typography>}
-          {success && <Typography color="success.main">{success}</Typography>}
-          <Typography variant="body2" fontFamily={"Montserrat"}>
-              Already have an account?{" "}
-              <Link href="/login" underline="hover">
-                Sign In
-              </Link>
-            </Typography>
-        </div>
-      </GlassForm>
-     
-
-      <Modal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        aria-labelledby="mode-selection-modal"
-        aria-describedby="select-real-estate-or-business"
-      >
-        <Box
+      <div className="form-rows" style={{ marginBottom: "12px" }}>
+        <Avatar
+          src={imgSrc ? URL.createObjectURL(imgSrc) : logo}
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-            textAlign: "center",
+            height: 100,
+            width: 100,
+            cursor: "pointer",
+            boxShadow: "0 0 15px #368fd3",
           }}
-        >
-          <Typography id="mode-selection-modal" variant="h6" component="h2">
-            Select Your Mode
+          onClick={selectImg}
+        />
+        <input
+          style={{ display: "none" }}
+          ref={fileInputRef}
+          type="file"
+          onChange={imgSelected}
+        ></input>
+      </div>
+
+      <TextField
+        fullWidth
+        label="Username"
+        name="username"
+        value={formData.username}
+        onChange={handleChange}
+        error={!!errors.username}
+        helperText={errors.username}
+        required
+        sx={{
+          marginBottom: "10px",
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "30px",
+            backgroundColor: "white"
+          },
+        }}
+      />
+      <TextField
+        fullWidth
+        required
+        label="Full Name"
+        name="fullName"
+        error={!!errors.fullName}
+        helperText={errors.fullName}
+        value={formData.fullName}
+        onChange={handleChange}
+        sx={{
+          marginBottom: "10px",
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "30px",
+            backgroundColor: "white"
+          },
+        }}
+      />
+
+      <TextField
+        fullWidth
+        label="Email"
+        name="email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+        error={!!errors.email}
+        helperText={errors.email}
+        sx={{
+          marginBottom: "10px",
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "30px",
+            backgroundColor: "white"
+          },
+        }}
+      />
+      <TextField
+        fullWidth
+        label="Phone Number"
+        name="phoneNumber"
+        value={formData.phoneNumber}
+        onChange={handleChange}
+        required
+        error={!!errors.phoneNumber}
+        helperText={errors.phoneNumber}
+        sx={{
+          marginBottom: "10px",
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "30px",
+            backgroundColor: "white"
+          },
+        }}
+      />
+
+      <TextField
+        fullWidth
+        label="Password"
+        name="password"
+        type="password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+        error={!!errors.password}
+        helperText={errors.password}
+        sx={{
+          marginBottom: "10px",
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "30px",
+            backgroundColor: "white"
+          },
+        }}
+      />
+      <TextField
+        fullWidth
+        label="Confirm Password"
+        name="confirmPassword"
+        type="password"
+        value={formData.confirmPassword}
+        onChange={handleChange}
+        required
+        error={!!errors.confirmPassword}
+        helperText={errors.confirmPassword}
+        sx={{
+          marginBottom: "20px",
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "30px",
+            backgroundColor: "white"
+          },
+        }}
+      />
+
+      <StyledButton className="signup-button"
+        type="submit"
+        onClick={handleSubmit}
+        sx={{ marginBottom: "10px" }}
+      >
+        Sign up
+      </StyledButton>
+
+      <div className="error-messages">
+        {errors.imgSrc && (
+          <Typography color="error">{errors.imgSrc}</Typography>
+        )}
+        {error && <Typography color="error">{error}</Typography>}
+        {success && <Typography color="success.main">{success}</Typography>}
+        <Typography variant="body2" fontFamily={"Montserrat"}>
+            Already have an account?{" "}
+            <Link href="/login" underline="hover">
+              Sign In
+            </Link>
           </Typography>
-          <Box
-            sx={{ display: "flex", gap: 2, justifyContent: "center", mt: 2 }}
+      </div>
+    </GlassForm>
+    
+
+    <Modal
+      open={modalOpen}
+      onClose={() => setModalOpen(false)}
+      aria-labelledby="mode-selection-modal"
+      aria-describedby="select-real-estate-or-business"
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 2,
+          textAlign: "center",
+        }}
+      >
+        <Typography id="mode-selection-modal" variant="h6" component="h2">
+          Select Your Mode
+        </Typography>
+        <Box
+          sx={{ display: "flex", gap: 2, justifyContent: "center", mt: 2 }}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleModeSelection("Real Estate")}
           >
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleModeSelection("Real Estate")}
-            >
-              Real Estate
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => handleModeSelection("Business")}
-            >
-              Business
-            </Button>
-          </Box>
+            Real Estate
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => handleModeSelection("Business")}
+          >
+            Business
+          </Button>
         </Box>
-      </Modal>
-    </ProfileWrapper>
+      </Box>
+    </Modal>
+  </ProfileWrapper>
   );
 };
 

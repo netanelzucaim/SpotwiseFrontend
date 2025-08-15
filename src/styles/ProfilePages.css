@@ -1,24 +1,41 @@
 .profile-title {
-    color: #368fd3;
-    text-align: center;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    margin-bottom: 20px;
-    font-family: "Montserrat", sans-serif;
+  font-size: 1.4rem !important;
+  font-weight: 670 !important;
+  color: #ffffff; /* White text color */
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow:
+  1px 1px 0 #368fd3,
+  -1px -1px 0 #368fd3,
+  1px -1px 0 #368fd3,
+  -1px 1px 0 #368fd3,
+  2px 2px 0 #368fd3,
+  -2px -2px 0 #368fd3,
+  2px -2px 0 #368fd3,
+  -2px 2px 0 #368fd3,
+  3px 0px 0 #368fd3,
+ -3px 0px 0 #368fd3,
+  0px 3px 0 #368fd3,
+  0px -3px 0 #368fd3;
   }
 
   .create-profile-button {
-    background: #ffffff !important;
-    color: #368fd3 !important;
-    padding: 12px 40px;
-    border: 2px solid #368fd3 !important;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 16px;
+    display: block !important;
+    margin: 20px auto !important; 
+    padding: 12px 24px !important; 
+    background-color: #ffffff !important; 
+    color: #368fd3 !important; 
+    border: none !important; 
+    border-radius: 8px !important; 
+    font-size: 1.2rem !important; 
+    font-weight: 600 !important; 
+    cursor: pointer !important; 
+    transition: background-color 0.3s ease, transform 0.2s ease !important; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important; 
   }
   
   .create-profile-button:hover {
-    background: #368fd3 !important;
-    color: #ffffff !important;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: #368fd3 !important;
+    color: white !important;
   }
   

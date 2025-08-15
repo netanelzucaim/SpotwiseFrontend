@@ -10,6 +10,7 @@ import {
 } from "../../styles/ProfilePageStyle";
 import { useNavigate } from "react-router-dom";
 import "../../styles/ProfilePages.css";
+import { BrandHeading } from '../Logo/Logo';
 
 const BusinessProfile: React.FC = () => {
   const [profile, setProfile] = useState<Business | null>(null);
@@ -105,6 +106,8 @@ const BusinessProfile: React.FC = () => {
   };
 
   return (
+    <div>
+      <BrandHeading></BrandHeading>
     <ProfileWrapper>
       <GlassForm elevation={3}>
         <Typography variant="h5" className="profile-title">
@@ -207,6 +210,7 @@ const BusinessProfile: React.FC = () => {
         )}
       </GlassForm>
     </ProfileWrapper>
+    </div>
   );
 };
 

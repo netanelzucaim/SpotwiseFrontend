@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import RealEstateService from "../../services/realestate-service";
-import GeminiService from "../../services/gemini-service";
-import "../../styles/AIRecommendations.css";
+import React, { useState } from 'react';
+import RealEstateService from '../../services/realestate-service';
+import GeminiService from '../../services/gemini-service';
+import '../../styles/AIRecommendations.css';
+import { BrandHeading } from '../Logo/Logo';
 import { useNavigate } from "react-router-dom";
 import LoadingGemini from "./LoadingGemini";
 
@@ -77,10 +78,11 @@ const AIRecommendations: React.FC = () => {
   }
 
   return (
+    <div>
+      <BrandHeading></BrandHeading>
     <div className="ai-recommendations-container">
       <div className="header">
-        <h1>SpotWise</h1>
-        <p>Your Vision, The Perfect Location.</p>
+        <h1>Let us work for you</h1>
       </div>
       <div className="content">
         <p>
@@ -102,6 +104,7 @@ const AIRecommendations: React.FC = () => {
         </button>
         {error && <p className="error-message">{error}</p>}
       </div>
+    </div>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { AppBar, Toolbar } from "@mui/material";
 import Box from "@mui/material/Box";
 import "../../styles/AppMenu.css";
 import { LogOut, User } from "lucide-react";
-import Logo from "../Logo/Logo";
+import Logo from "../Logo/Logo"; 
 
 const AppMenu: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(
