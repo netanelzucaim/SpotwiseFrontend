@@ -90,7 +90,7 @@ Please provide only the structured answer in the requested format.
 
 async function callHuggingFaceAPI(prompt: string): Promise<string> {
   const apiUrl = "https://router.huggingface.co/v1/chat/completions";
-  const model = "deepseek-ai/DeepSeek-R1:novita"
+  const model = "deepseek-ai/DeepSeek-R1:novita";
   const headers = {
     Authorization: `Bearer ${HUGGING_API_KEY}`,
     "Content-Type": "application/json",
