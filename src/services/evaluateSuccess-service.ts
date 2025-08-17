@@ -4,7 +4,6 @@ import { HUGGING_API_KEY } from "../config";
 import MapService from "./map-service";
 import BusinessService from "./business_service";
 import DemographicsService from "./demographics-service";
-import axios from "axios";
 
 export interface EvaluationRequest {
   businessDescription: Business;
@@ -90,30 +89,48 @@ Please provide only the structured answer in the requested format.
 
 
 async function callHuggingFaceAPI(prompt: string): Promise<string> {
-  const modelId = "mistralai/Mixtral-8x7B-Instruct-v0.1";
-  const apiUrl = `https://api-inference.huggingface.co/models/${modelId}`;
+  const apiUrl = "https://router.huggingface.co/v1/chat/completions";
+  const model = "deepseek-ai/DeepSeek-R1:novita";
+  const headers = {
+    Authorization: `Bearer ${HUGGING_API_KEY}`,
+    "Content-Type": "application/json",
+  };
+  const payload = {
+    messages: [
+      {
+        role: "user",
+        content: prompt, 
+      },
+    ],
+    model,
+
+  };
 
   try {
-    const response = await axios.post(
-      apiUrl,
-      { inputs: prompt },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${HUGGING_API_KEY}`,
-        },
-      }
-    );
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(payload),
+    });
 
-    const data = response.data;
-    return Array.isArray(data) && data[0]?.generated_text
-      ? data[0].generated_text
-      : data.generated_text || "";
+    const result = await response.json();
+
+    if (
+      result.choices &&
+      result.choices[0] &&
+      result.choices[0].message &&
+      typeof result.choices[0].message.content === "string"
+    ) {
+      return result.choices[0].message.content;
+    } else {
+      throw new Error("No valid response from Hugging Face API.");
+    }
   } catch (error: any) {
-    console.error("Error calling Hugging Face API:", error.message);
+    console.error("Error calling Hugging Face API:", error.message || error);
     throw new Error("Failed to retrieve response from Hugging Face API.");
   }
 }
+
 
 function parseEvaluationResponse(generatedText: string): EvaluationResponse {
 
