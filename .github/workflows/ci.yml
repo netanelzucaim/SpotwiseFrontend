@@ -27,7 +27,7 @@ jobs:
 
       - name: Deploy Spotwise Frontend with Docker Compose
         run: |
-          docker compose up --build -d
+          docker compose -p spotwise up --build -d
         env:
           HUGGING_API_KEY: ${{ secrets.HUGGING_API_KEY }}
 
