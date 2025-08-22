@@ -104,7 +104,7 @@ const RealEstateProfile: React.FC = () => {
       <BrandHeading></BrandHeading>
     <ProfileWrapper>
       <GlassForm elevation={3}>
-        <Typography variant="h5" sx={{ color: "#fff", textAlign: "center" }}>
+        <Typography variant="h5" class="profile-title">
           {profile ? "Edit your real estate profile" : "Create your real estate profile & Make your dream come true⚡"}
         </Typography>
 
